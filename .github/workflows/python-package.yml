@@ -24,9 +24,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: |
-        pip -m install flake8
-        bash ./script/install-dependencies.sh
+      run: bash ./script/install-dependencies.sh
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
