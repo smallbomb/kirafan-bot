@@ -33,8 +33,8 @@ class Icon:
                                                 grayscale=self.__grayscale,
                                                 confidence=self.__confidence)
         if center:
-            x,y = center
-            return (int(x),int(y))
+            x, y = center
+            return (int(x), int(y))
         return center
 
     def found(self) -> bool:
@@ -53,7 +53,6 @@ class Icon:
     # def scan_click(self, timeout: float = -1.0, not_found_click: bool = False, cool_down: float = 0.2) -> bool:
     #     if timeout <= 0:
     #         return self.click()
-        
     #     t0 = round(time(), 1)
     #     duration = 0
     #     while duration < timeout:
@@ -67,16 +66,18 @@ class Icon:
     def scan(self, timeout: float = -1.0, not_found_click: bool = False, cool_down: float = 0.2) -> bool:
         if timeout <= 0:
             return self.found()
-        
+
         t0 = round(time(), 1)
         duration = 0
         while duration < timeout:
             if self.found():
                 return True
-            if not_found_click: pyautogui.click()
+            if not_found_click:
+                pyautogui.click()
             sleep(cool_down)
             duration = round(time(), 1) - t0
         return False
+
 
 # Test
 if __name__ == '__main__':

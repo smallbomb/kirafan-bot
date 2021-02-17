@@ -42,8 +42,9 @@ def run():
                 logging.info('wave-{}/{} now...'.format(kirafan.wave_id, kirafan.wave_total))
 
             wave = kirafan.get_current_wave()
-            if wave.auto == True:
-                if not wave.objects['auto_button'].found(): wave.objects['auto_button'].click()
+            if wave.auto:
+                if not wave.objects['auto_button'].found():
+                    wave.objects['auto_button'].click()
             elif wave.is_myTurn():
                 if wave.update_characterID():
                     logging.debug('character_%d action start' % wave.ch_id)
@@ -54,7 +55,7 @@ def run():
                     logging.error('wave-{}/{}: character not found'.format(wave.id, wave.total))
             else:
                 kirafan.objects['center'].click_sec(1)
-        elif kirafan.wave_id == kirafan.wave_total or kirafan.wave_change_flag is None: # maybe finish?
+        elif kirafan.wave_id == kirafan.wave_total or kirafan.wave_change_flag is None:  # maybe finish?
             logging.debug("not battle")
             if kirafan.icons['kirara_face'].scan(2):
                 logging.debug('kirara_face was found')
@@ -71,7 +72,7 @@ def run():
                     break
                 elif status == 'found again' and kirafan.stamina['used'] and kirafan.icons['stamina_Au'].scan(2):
                     # again.png is found but player has no stamina.
-                    if not kirafan.use_stamina(): 
+                    if not kirafan.use_stamina():
                         logging.error('use stamina recovery item failed')
                         break
                     if not kirafan.icons['again'].click():

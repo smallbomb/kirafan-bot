@@ -5,22 +5,30 @@ from typeguard import typechecked
 from datetime import datetime
 from data import uData
 
+
 @typechecked
 def wait_until(clock: str):
-    def to_hour(s: float) -> int: return int(s / 3600) % 24
-    def to_min(s: float) -> str: return int(s / 60) % 60
-    def to_sec(s: float) -> int: return int(s) % 60
+    def to_hour(s: float) -> int:
+        return int(s / 3600) % 24
+
+    def to_min(s: float) -> str:
+        return int(s / 60) % 60
+
+    def to_sec(s: float) -> int:
+        return int(s) % 60
+
     clock = datetime.now().strftime("%Y-%m-%d") + "T" + clock
     next_time = datetime.strptime(clock, "%Y-%m-%dT%H:%M:%S")
     log_t = datetime.fromtimestamp(0)
     while True:
         now_time = datetime.now()
         wait_s = round((next_time - now_time).total_seconds(), 1)
-        if wait_s < 0: break
-        if (now_time-log_t).total_seconds() > 60:
+        if wait_s < 0:
+            break
+        if (now_time - log_t).total_seconds() > 60:
             logging.info("倒數: {:02d}時 {:02d}分 {:02d}秒, 現在時間: {:s} 設置時間: {:s}".format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s), now_time.strftime("%H:%M:%S"), next_time.strftime("%H:%M:%S")))
             log_t = now_time
-        sleep(wait_s/2)
+        sleep(wait_s / 2)
 
 
 @typechecked
@@ -50,7 +58,7 @@ class Job(threading.Thread):
         self.__not_Pause.clear()
 
     def resume(self):
-       self.__not_Pause.set()
+        self.__not_Pause.set()
 
     def stop(self):
         self.__not_Pause.set()

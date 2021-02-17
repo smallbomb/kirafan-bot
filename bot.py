@@ -30,8 +30,10 @@ class BOT:
 
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png']
-        if self.stamina['used'] == True: images += ['stamina_Au.png']
-        if self.loop_count > 0: images += ['again.png']
+        if self.stamina['used']:
+            images += ['stamina_Au.png']
+        if self.loop_count > 0:
+            images += ['again.png']
         icons = [Icon(image, self.data['common_confidence']) for image in images]
         return {icon.name: icon for icon in icons}
 
@@ -53,7 +55,8 @@ class BOT:
     def use_stamina(self) -> bool:
         for s in self.stamina['priority']:
             if self.objects['stamina_{}'.format(s)].found():
-                while not self.objects['stamina_add'].found(): self.objects['stamina_{}'.format(s)].click(1, 0.5)
+                while not self.objects['stamina_add'].found():
+                    self.objects['stamina_{}'.format(s)].click(1, 0.5)
                 self.objects['stamina_add'].click(self.stamina['count'] - 1)
                 self.objects['stamina_hai'].click(8)
                 return True
@@ -96,8 +99,8 @@ class BOT:
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
 
-#Test
+
+# Test
 if __name__ == '__main__':
     bot = BOT()
     print(bot.miss_icon_files())
-

@@ -71,6 +71,7 @@ def Load_Objects(obj_name: Owner) -> Dict:
         objects[key] = Object(key, c_name, ratio, tuple(rgb), tolerance)
     return objects
 
+
 # Test
 if __name__ == '__main__':
     obj = Object("sk", "ivory", (0.64634, 0.78623), (250, 250, 235), 25)
