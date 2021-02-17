@@ -6,7 +6,7 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 
 # Installation
 windows 使用者可以[**點擊這裡**](https://404.html)下載exe檔案來使用  
-### or
+#### or
 Python version >= 3.8  
 download [**source code**](https://404.html)
 ```
@@ -206,7 +206,7 @@ py main.py
 
 if any question which is usage, bot description or idea, you can open a [**new issue**](https://github.com/smallbomb/kirafan-bot/issues) or send message to me (Twitter account: @rockon590)
 
-support language: chinese >> english = japanese
+support language: Chinese >> English = Japanese
 
 
 
