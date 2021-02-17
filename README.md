@@ -1,4 +1,8 @@
-# Kirafan-bot
+
+!["License"](https://img.shields.io/github/license/smallbomb/kirafan-bot.svg?color=informational&style=plastic)
+!["Releases"](https://img.shields.io/github/release/smallbomb/kirafan-bot.svg?color=success&style=plastic)
+!["Releases-Date"](https://img.shields.io/github/release-date/smallbomb/kirafan-bot.svg?style=plastic)
+# Kirafan-bot on emulator
 [kirarafantasia遊戲](https://kirarafantasia.com/)機器人。  
 可以針對性練技(芳文跳、武器...等)、自動接關、可設定當天開始時間(如:AM:04:00後再開始執行)、偵測session clear、偵測作品珠任務、自動喝水...  
 
@@ -15,7 +19,7 @@ py main.py
 ```
 
 # BOT hotkey
-* z+1~z+9 => 記錄位置
+* z+1~z+9 (record position and rgb)
 * z+r (bot run)
 * z+p (bot pause)
 * z+s (bot stop)
@@ -31,17 +35,17 @@ py main.py
 {
   "loglevel": "info",                // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效
   "img_dir": "img_1274x718",         // 判斷圖片的素材位置 (目前比較適用於1274x718 模擬器視窗大小)
-  "game_region": [2, 41, 1274, 718], // 設定遊戲區域，不滿意可以設定[0,0,0,0]後重新調整(執行bot有互動教學)
-                                     // 但是1274x718圖片可能不適用，需換一個img_dir，並重新shotscreen(執行bot有互動教學)
+  "game_region": [2, 41, 1274, 718], // 設定遊戲區域，不滿意可以設定[0,0,1,1]後重新調整(執行bot有互動教學)
+                                     // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行bot有互動教學(z+c))
   "aspect_ratio": "16:9",            // 模擬器視窗比例
   "common_confidence": 0.8,          // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
   "mouse_duration_seconds": 0.1,     // 滑鼠移動的時間
-  "crea_stop": false,                // 遇到作品珠任務時 是否要停止bot
+  "crea_stop": false,                // 遇到作品珠任務時是否要停止bot
   "loop_count": 0,                   // loop幾次 (不包含當前回合)
   "set_timer": {                     // 定時器
     "used": false,                   // 是否用定時器?
     "time": "03:01:00",              // 時間
-    "session_check": true            // 是否偵測session clear。約AM 04:00 JST時，遊戲server會清除session
+    "session_check": false            // 是否偵測session clear。約AM 04:00 JST時，遊戲server會清除session
   },
   "sleep": {                         // 延遲時間(s) 根據電腦效能可調整，會導致bot判斷上變快或變慢(不一定)
     "click": 0.2,                    // 滑鼠click延遲時間(建議>=0.2)
@@ -62,11 +66,11 @@ py main.py
       "auto": false,                 // 使否全自動?
       "sp_weight_enable": true,      // 是否依照sp的權重來分配sp使用。若否，則有sp時直接使用且不保留sp能量。
       "character_1": {               // 角色1
-        "skill_priority": ["sk1", "sk2"],          // 技能施放優先順序 sk1 > sk2
-                                                   // 可以為空[]，目前有'sk1'、'sk2'、'weapon_sk'、'sp'、'normal_atk'、'auto_button'
-                                                   // **基本上'normal_atk'和'auto_button'必定會使用
-                                                   // **空[]或沒其他技能可使用時會用'auto_button'
-        "sp_weight": 1                             // 權重越高代表sp使用次數會越多
+        "skill_priority": ["sk1", "sk2"],   // 技能施放優先順序 sk1 > sk2
+                                            // 可以為空[]，目前有'sk1'、'sk2'、'weapon_sk'、'sp'、'normal_atk'、'auto_button'
+                                            // **基本上'normal_atk'和'auto_button'必定會使用
+                                            // **空[]或沒其他技能可使用時會用'auto_button'
+        "sp_weight": 1                      // 權重越高代表sp使用次數會越多
       },
       "character_2": {
         "skill_priority": ["sp", "sk1", "sk2"],
@@ -140,15 +144,15 @@ py main.py
       "center_left": {"x":0.03, "y":0.6, "color":"ivory", "owner": ["bot"]}
     },
     "4:3": { // 4:3解析度。
-             // 目前沒有實作，可參考16:9來增加，"aspect_ratio"記得要改
-             // 主要修改x,y即可，其它請複製原本的內容
+             // 目前沒有實作，可參考16:9來增加，若使用4:3則"aspect_ratio"記得要改
+             // 主要修改x,y即可，其它請複製原本16:9的內容
       "focus_ch1": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}
     }
   },
   "color": {
-    "ivory": {                   // color name
-      "rgb": [250, 250, 235],    // rgb value
-      "tolerance": 25            // rgb色差門檻(越高代表顏色差異可以越大)，可參考opencv document
+    "ivory": {                 // color name
+      "rgb": [250, 250, 235],  // rgb value
+      "tolerance": 25          // rgb色差門檻(越高代表顏色差異可以越大)，可參考opencv document
     },
     "flash_green": {
       "rgb": [129,225,117],
