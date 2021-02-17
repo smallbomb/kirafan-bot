@@ -9,10 +9,10 @@
 Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skills or sp(とっておき) level
 
 # Installation
-windows 使用者可以[**點擊這裡**](https://404.html)下載exe檔案來使用  
+windows 使用者可以[**點擊這裡**](https://github.com/smallbomb/kirafan-bot/releases)下載exe檔案來使用  
 #### or
 Python version >= 3.8  
-download [**source code**](https://404.html)
+download [**source code**](https://github.com/smallbomb/kirafan-bot/releases)
 ```
 py install.py
 py main.py
@@ -141,7 +141,7 @@ py main.py
       "stamina_add": {"x":0.63091, "y":0.41100, "color":"spring_green", "owner": ["bot"]},
       "stamina_hai": {"x":0.54069, "y":0.89068, "color":"ivory", "owner": ["bot"]},
       "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
-      "center_left": {"x":0.03, "y":0.6, "color":"ivory", "owner": ["bot"]}
+      "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]}
     },
     "4:3": { // 4:3解析度。
              // 目前沒有實作，可參考16:9來增加，若使用4:3則"aspect_ratio"記得要改
@@ -173,6 +173,10 @@ py main.py
     "bronze": {
       "rgb": [182, 133, 88],
       "tolerance": 25
+    },
+    "grey": {
+      "rgb": [127, 127, 127],
+      "tolerance": 15
     },
     "light_green": {
       "rgb": [6, 227, 209],
