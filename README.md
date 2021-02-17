@@ -44,14 +44,11 @@ ex:
 建議遊戲內的option設定如下
 !["option"](./tutorial_img/option.jpg)
 ## step3
-根據個人需求編輯[setting.json](#setting.json-description)
+根據個人需求編輯[setting.json](#settingjson-description)
 ## step4
 按下熱鍵  
 * z+l (reload settion.json)
 * z+r (run bot)
-## Abbreviation
-遊戲內技能或角色簡稱:
-!["naming"](./tutorial_img/naming.jpg)
 
 # setting.json description
 ```js
@@ -212,6 +209,9 @@ ex:
   }
 }
 ```
+遊戲內技能或角色簡稱:
+!["naming"](./tutorial_img/naming.jpg)
+
 一般使用者應該會用到的設定
 * loglevel 的值
 * game_region 的值
