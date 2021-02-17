@@ -10,8 +10,3 @@ from main import user_command
 
 def test_data_format():
     assert type(uData.setting) == dict
-
-    
-def test_user_command():
-    user_command('t')
-    user_command('x')

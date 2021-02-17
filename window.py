@@ -1,4 +1,8 @@
 import os
+if os.name == 'nt':
+    pass
+else:
+    exit(0)
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import threading
