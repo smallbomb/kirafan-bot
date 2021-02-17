@@ -4,11 +4,10 @@
 
 set -ex
 
-echo "$CI"
-echo "$GITHUB_ACTIONS"
-echo "$VIRTUAL_ENV"
+echo "CI=$CI"
+echo "GITHUB_ACTIONS=$GITHUB_ACTIONS"
+echo "VIRTUAL_ENV=$VIRTUAL_ENV"
 
 python -m pip install --disable-pip-version-check --upgrade pip setuptools
-python -m pip install --upgrade -r dev-requirements.txt
-python -m pip install pycountry
+python -m pip install --upgrade -r requirements.txt
 python -m pip install -e .
