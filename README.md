@@ -20,15 +20,38 @@ py main.py
 
 # BOT hotkey
 * z+1~z+9 (record position and rgb)
-* z+r (bot run)
-* z+p (bot pause)
-* z+s (bot stop)
+* z+r (run bot)
+* z+p (pause bot)
+* z+s (stop bot)
 * z+l (setting.json reload)
 * z+m (monitor mode)
 * z+t (test objects and icons exist?)
 * z+w (print position01~09)
 * z+c (check/add icon file)
 * z+x (open/close game region checking) --for windows system
+
+# Tutorialtips
+## step1
+windows使用者可以用z+x叫出一個綠色框矩陣，接著將遊戲視窗調整到接近綠色框大小  
+ex:
+!["z+x_example"](./tutorial_img/z+x_example.jpg)
+**又或者**  
+先將settion.json的game_region設為[0, 0, 1, 1]  
+再開啟exe程式，透過內建的互動式來設定game region  
+ex:
+!["resize"](./tutorial_img/resize.jpg)
+## step2
+建議遊戲內的option設定如下
+!["option"](./tutorial_img/option.jpg)
+## step3
+根據個人需求編輯[setting.json](#setting.json-description)
+## step4
+按下熱鍵  
+* z+l (reload settion.json)
+* z+r (run bot)
+## Abbreviation
+遊戲內技能或角色簡稱:
+!["naming"](./tutorial_img/naming.jpg)
 
 # setting.json description
 ```js
