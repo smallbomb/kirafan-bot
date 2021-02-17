@@ -17,5 +17,7 @@ deps = [
 
 if platform == 'win32':
     deps.append("pywin32>=300")
+if platform.startswith('linux'):
+    deps.append("python-xlib>=0.29")
 
 install(deps)

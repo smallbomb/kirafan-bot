@@ -22,8 +22,6 @@ if os.name == 'nt':
 # Posix (Linux, OS X)
 else:
     import sys
-    import termios
-    import atexit
     from select import select
 
 
@@ -35,29 +33,6 @@ class KBHit:
 
         if os.name == 'nt':
             pass
-
-        else:
-            # Save the terminal settings
-            self.fd = sys.stdin.fileno()
-            self.new_term = termios.tcgetattr(self.fd)
-            self.old_term = termios.tcgetattr(self.fd)
-
-            # New terminal setting unbuffered
-            self.new_term[3] = (self.new_term[3] & ~termios.ICANON & ~termios.ECHO)
-            termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.new_term)
-
-            # Support normal-terminal reset at exit
-            atexit.register(self.set_normal_term)
-
-    def set_normal_term(self):
-        ''' Resets to normal terminal.  On Windows this is a no-op.
-        '''
-
-        if os.name == 'nt':
-            pass
-
-        else:
-            termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
 
     def getch(self):
         ''' Returns a keyboard character after kbhit() has been called.
@@ -94,5 +69,3 @@ if __name__ == "__main__":
             if ord(c) == 27:  # ESC
                 break
             print(c)
-
-    kb.set_normal_term()
