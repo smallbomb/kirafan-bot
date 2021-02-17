@@ -32,7 +32,7 @@ py main.py
 
 # Tutorialtips
 ## step1
-windows使用者可以用z+x叫出一個綠色框矩陣，接著將遊戲視窗調整到接近綠色框大小  
+windows使用者可以用`z+x`叫出一個綠色框矩陣，接著將遊戲視窗調整到接近綠色框大小  
 ex:
 !["z+x_example"](./tutorial_img/z+x_example.jpg)
 **又或者**  
@@ -47,8 +47,8 @@ ex:
 根據個人需求編輯[setting.json](#settingjson-description)
 ## step4
 按下熱鍵  
-* z+l (reload settion.json)
-* z+r (run bot)
+* `z+l` (reload settion.json)
+* `z+r` (run bot)
 
 # setting.json description
 ```js
