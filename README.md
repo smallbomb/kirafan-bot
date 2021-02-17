@@ -3,10 +3,21 @@
 !["Releases"](https://img.shields.io/github/release/smallbomb/kirafan-bot.svg?color=success&style=plastic)
 !["Releases-Date"](https://img.shields.io/github/release-date/smallbomb/kirafan-bot.svg?style=plastic)
 # Kirafan-bot on emulator
-[kirarafantasia遊戲](https://kirarafantasia.com/)機器人。  
-可以針對性練技(芳文跳、武器...等)、自動接關、可設定當天開始時間(如:AM:04:00後再開始執行)、偵測session clear、偵測作品珠任務、自動喝水...  
+Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skills or sp(とっておき) level. Kirafan Bot is like auto click tool.
 
-Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skills or sp(とっておき) level
+[kirarafantasia遊戲](https://kirarafantasia.com/)機器人。有點像按鍵精靈。
+可以針對性練技(芳文跳、武器...等)、自動接關、可設定當天開始時間(如:AM:04:00後再開始執行)、偵測session clear、偵測作品珠任務、自動喝水...  
+ 
+**個人常用關卡**
+* [ゆゆ式 (作家クエスト)](https://wiki.kirafan.moe/#/quest/5004290)
+* [New Game (作家クエスト)](https://wiki.kirafan.moe/#/quest/5001270)
+* [外傳14-15節](https://wiki.kirafan.moe/#/quest/1108640)
+* [6-31](https://wiki.kirafan.moe/#/quest/1106310)
+* [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502)
+* [8-26(rank up)](https://wiki.kirafan.moe/#/quest/1108261)
+* [チノ專武關卡](https://wiki.kirafan.moe/#/quest/43001200)
+
+可參考[クエスト(Quests)](https://wikiwiki.jp/kirarafan/%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E3%82%B9%E3%82%AD%E3%83%AB%E4%B8%8A%E3%81%92)說明
 
 # Installation
 windows 使用者可以[**點擊這裡**](https://github.com/smallbomb/kirafan-bot/releases)下載exe檔案來使用  
@@ -18,7 +29,7 @@ py install.py
 py main.py
 ```
 
-# BOT hotkey
+# Kirafan-bot hotkey
 * z+1~z+9 (record position and rgb)
 * z+r (run bot)
 * z+p (pause bot)
@@ -37,7 +48,7 @@ ex:
 !["z+x_example"](./tutorial_img/z+x_example.jpg)
 **又或者**  
 先將settion.json的game_region設為[0, 0, 1, 1]  
-再開啟exe程式，透過內建的互動式來設定game region  
+再開啟exe程式，透過內建的互動式教學來設定game region  
 ex:
 !["resize"](./tutorial_img/resize.jpg)
 ## step2
@@ -54,7 +65,7 @@ ex:
 ```js
 {
   "loglevel": "info",                // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效
-  "img_dir": "img_1274x718",         // 判斷圖片的素材位置 (目前比較適用於1274x718 模擬器視窗大小)
+  "img_dir": "img_1274x718",         // 判斷圖片的素材位置 (目前比較適用於1274x718 遊戲視窗大小)
   "game_region": [2, 41, 1274, 718], // 設定遊戲區域，不滿意可以設定[0,0,1,1]後重新調整(執行bot有互動教學)
                                      // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行bot有互動教學(z+c))
   "aspect_ratio": "16:9",            // 模擬器視窗比例
