@@ -49,7 +49,6 @@ class KBHit:
             # Support normal-terminal reset at exit
             atexit.register(self.set_normal_term)
 
-
     def set_normal_term(self):
         ''' Resets to normal terminal.  On Windows this is a no-op.
         '''
@@ -60,19 +59,16 @@ class KBHit:
         else:
             termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
 
-
     def getch(self):
         ''' Returns a keyboard character after kbhit() has been called.
             Should not be called in the same program as getarrow().
         '''
-
 
         if os.name == 'nt':
             return msvcrt.getch()
 
         else:
             return sys.stdin.read(1)
-
 
     def kbhit(self):
         ''' Returns True if keyboard character was hit, False otherwise.
@@ -81,7 +77,7 @@ class KBHit:
             return msvcrt.kbhit()
 
         else:
-            dr,dw,de = select([sys.stdin], [], [], 0)
+            dr = select([sys.stdin], [], [], 0)[0]
             return dr != []
 
 
@@ -95,7 +91,7 @@ if __name__ == "__main__":
     while True:
         if kb.kbhit():
             c = kb.getch()
-            if ord(c) == 27: # ESC
+            if ord(c) == 27:  # ESC
                 break
             print(c)
 

@@ -5,7 +5,6 @@ import threading
 import win32api
 import win32con
 import win32gui
-import time
 from data import uData
 
 
@@ -17,10 +16,10 @@ def square():
     os.environ['SDL_VIDEO_WINDOW_POS'] = str(game_region[0]) + "," + str(game_region[1])
     size = (game_region[2], game_region[3])
     pygame.init()
-    screen = pygame.display.set_mode(size, pygame.NOFRAME) # For borderless, use pygame.NOFRAME
+    screen = pygame.display.set_mode(size, pygame.NOFRAME)  # For borderless, use pygame.NOFRAME
     black = (1, 1, 1)  # Transparency color, can't be (0,0,0) or (255,255,255)
     green = (0, 255, 0)
-    surface  = pygame.Surface(size, pygame.SRCALPHA)
+    surface = pygame.Surface(size, pygame.SRCALPHA)
     clock = pygame.time.Clock()
     # Create layered window
     hwnd = pygame.display.get_wm_info()["window"]

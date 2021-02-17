@@ -18,7 +18,6 @@ logging.basicConfig(level=loglevel[uData.setting['loglevel'].upper()].value,
 
 
 from thread import Job
-from bot import BOT
 from run import run, kirafan
 from position import Position, Shot, calc_region, monitor_mode
 from kbhit import KBHit
@@ -59,7 +58,7 @@ def user_command(key: str):
     while kb.kbhit():
         kb.getch()
     if '1' <= key <= '9':
-        positions[int(key)-1].record(bool(monitor_job) and monitor_job.is_alive())
+        positions[int(key) - 1].record(bool(monitor_job) and monitor_job.is_alive())
     elif monitor_job and monitor_job.is_alive():
         pass
     elif key.lower() == 'r':
@@ -86,7 +85,7 @@ def user_command(key: str):
         logging.info('kirafan region = {}'.format(list(kirafan.region)))
         logging.info('reload setting.json finish')
     elif key.lower() == 'm':
-        if monitor_job == None or not monitor_job.is_alive():
+        if monitor_job is None or not monitor_job.is_alive():
             monitor_job = Job(target=monitor_mode)
             monitor_job.start()
     elif key.lower() == 't':
@@ -98,14 +97,15 @@ def user_command(key: str):
         for position in positions:
             print(position, end='')
     elif key.lower() == 'c':
-        if shot_job == None or not shot_job.is_alive():
+        if shot_job is None or not shot_job.is_alive():
             tuple_files = kirafan.miss_icon_files()
             if tuple_files:
                 print('miss icon files:')
                 for i, tuple_file in enumerate(tuple_files):
                     print('  {}.{}'.format(i, tuple_file[0]))
                 sleep(0.1)
-                if kb.kbhit(): kb.getch()
+                if kb.kbhit():
+                    kb.getch()
                 number = input('select a number which you want to save icon: ')
                 if number.isnumeric() and 0 <= int(number) < len(tuple_files):
                     shot_job = Job(target=tutorial_screenshot, args=[tuple_files[int(number)]])
@@ -144,7 +144,7 @@ def _init():
         print('you can press hotkey "z+c" to add a miss icon file')
 
 
-def safe_exit(): 
+def safe_exit():
     if main_job and main_job.is_alive():
         main_job.stop()
         main_job.join()
@@ -159,6 +159,7 @@ def safe_exit():
         kb.getch()
     print("goodbye!")
 
+
 if __name__ == '__main__':
     try:
         _init()
@@ -167,4 +168,3 @@ if __name__ == '__main__':
         safe_exit()
     except KeyboardInterrupt:
         safe_exit()
-

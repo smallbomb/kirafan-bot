@@ -34,23 +34,27 @@ class Character:
             if sk_found:
                 logging.debug('character action: %s' % sk)
                 if sk == 'auto_button':
-                    while not self.objects[sk].found(): self.objects[sk].click()
+                    while not self.objects[sk].found():
+                        self.objects[sk].click()
                     self.objects['center'].click(2)
                 elif sk == 'sp':
                     if self.id == sp_id or self.objects['sp_charge2'].found():
                         self.objects[sk].click(2)
-                        while not self.objects['sp_cancel'].found(): continue
-                        while not self.objects['sp_ch1_set'].found(): self.objects['sp_ch1'].click(1)
+                        while not self.objects['sp_cancel'].found():
+                            continue
+                        while not self.objects['sp_ch1_set'].found():
+                            self.objects['sp_ch1'].click()
                         self.objects['sp_submit'].click(3)
                         self.objects['center'].click_sec(self.sp_sleep, 0.5)
-                        if self.id != sp_id: return 'sp2' # sp_charge2 found
+                        if self.id != sp_id:
+                            return 'sp2'  # sp_charge2 found
                     else:
                         continue
                 else:
                     self.objects[sk].click(4)
                 return sk
             elif animate_cd and sk in ['sk1', 'sk2', 'weapon_sk']:
-                animate_cd = False 
+                animate_cd = False
                 if self.objects['{}_cd'.format(sk)].found():
                     logging.debug('character action: wait skill cd animation 0.5 sec')
                     self.objects[sk].click_sec(0.6, 0.13)

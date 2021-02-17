@@ -14,7 +14,7 @@ windows 使用者可以[**點擊這裡**](https://404.html)下載exe檔案來使
 Python version >= 3.8  
 download [**source code**](https://404.html)
 ```
-pip install -r requirements.txt
+py install.py
 py main.py
 ```
 

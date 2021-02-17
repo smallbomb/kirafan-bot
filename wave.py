@@ -1,5 +1,3 @@
-
-import logging
 from defined import List, Coord, Optional
 from typeguard import typechecked
 from data import uData
@@ -10,8 +8,8 @@ from character import Character
 
 @typechecked
 def gen_circle_list(start: int, length: int) -> List:
-    l = list(range(1, length + 1))
-    return l[start-1:] + l[0:start-1]
+    lst = list(range(1, length + 1))
+    return lst[start - 1:] + lst[0:start - 1]
 
 
 @typechecked
@@ -29,8 +27,8 @@ def riffle(list1: List, list2: List) -> List:
         average = round(num1 / num2)
         ret = []
         for i in range(0, num2):
-            ret += list1[average*i:average*(i+1)] + [list2[i]]
-        return ret + list1[num2*average:]
+            ret += list1[average * i:average * (i + 1)] + [list2[i]]
+        return ret + list1[num2 * average:]
 
 
 @typechecked
@@ -76,6 +74,7 @@ class Wave:
 
     def get_icon_coord(self) -> Optional[Coord]:
         return self.icon.get_center()
+
 
 # Test
 if __name__ == '__main__':
