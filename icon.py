@@ -50,19 +50,6 @@ class Icon:
             return True
         return False
 
-    # def scan_click(self, timeout: float = -1.0, not_found_click: bool = False, cool_down: float = 0.2) -> bool:
-    #     if timeout <= 0:
-    #         return self.click()
-    #     t0 = round(time(), 1)
-    #     duration = 0
-    #     while duration < timeout:
-    #         if self.click():
-    #             return True
-    #         if not_found_click: pyautogui.click()
-    #         sleep(cool_down)
-    #         duration = round(time(), 1) - t0
-    #     return False
-
     def scan(self, timeout: float = -1.0, not_found_click: bool = False, cool_down: float = 0.2) -> bool:
         if timeout <= 0:
             return self.found()
