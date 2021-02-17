@@ -5,10 +5,10 @@
 Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skills or sp(とっておき) level
 
 # Installation
-windows 使用者可以[**點擊這裡**](https://ffmpeg.org/download.html)下載exe檔案來使用  
+windows 使用者可以[**點擊這裡**](https://404.html)下載exe檔案來使用  
 ### or
 Python version >= 3.8  
-download [**source code**](https://ffmpeg.org/download.html)
+download [**source code**](https://404.html)
 ```
 pip install -r requirements.txt
 py main.py
@@ -27,7 +27,7 @@ py main.py
 * z+x (open/close game region checking) --for windows system
 
 # setting.json description
-```json
+```js
 {
   "loglevel": "info",                // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效
   "img_dir": "img_1274x718",         // 判斷圖片的素材位置 (目前比較適用於1274x718 模擬器視窗大小)
@@ -64,8 +64,8 @@ py main.py
       "character_1": {               // 角色1
         "skill_priority": ["sk1", "sk2"],          // 技能施放優先順序 sk1 > sk2
                                                    // 可以為空[]，目前有'sk1'、'sk2'、'weapon_sk'、'sp'、'normal_atk'、'auto_button'
-                                                   // 基本上當'normal_atk'和'auto_button'必定會使用
-                                                   // **空[]或沒招是使用時會用'auto_button'
+                                                   // **基本上'normal_atk'和'auto_button'必定會使用
+                                                   // **空[]或沒其他技能可使用時會用'auto_button'
         "sp_weight": 1                             // 權重越高代表sp使用次數會越多
       },
       "character_2": {
@@ -112,7 +112,7 @@ py main.py
   },
   "ratio": { // 主要用於開發者or需要更換比率的使用者
     "16:9": { // 模擬器16:9解析度
-      // x,y 是座標在模擬器中的相對位置 (可用快捷建z+m或z+1~9偵測)
+      // x,y 是座標在模擬器中的相對位置 (可用快捷建z+m或z+1~9偵測或紀錄)
       "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},         
       "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},         
