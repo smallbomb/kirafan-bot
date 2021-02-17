@@ -1,22 +1,22 @@
 {
-  "loglevel": "debug",
+  "loglevel": "info",
   "img_dir": "img_1274x718",
   "game_region": [2, 41, 1274, 718],
   "aspect_ratio": "16:9",
   "common_confidence": 0.8,
   "mouse_duration_seconds": 0.1,
-  "crea_stop": true,
+  "crea_stop": false,
   "loop_count": 0,
   "set_timer": {
     "used": false,
-    "session_check": true,
-    "time": "03:01:00"
+    "time": "03:01:00",
+    "session_check": false
   },
   "sleep": {
     "click": 0.2,
-    "sp": 9,
-    "loading": 13,
-    "wave_transitions": 2.2
+    "sp": 7,
+    "loading": 9,
+    "wave_transitions": 2
   },
   "stamina": {
     "used": false,
@@ -31,7 +31,7 @@
       "auto": false,
       "sp_weight_enable": true,
       "character_1": {
-        "skill_priority": ["auto_button", "normal_atk"],
+        "skill_priority": ["sk1", "sk2"],
         "sp_weight": 1
       },
       "character_2": {
@@ -102,10 +102,10 @@
       "stamina_add": {"x":0.63091, "y":0.41100, "color":"spring_green", "owner": ["bot"]},
       "stamina_hai": {"x":0.54069, "y":0.89068, "color":"ivory", "owner": ["bot"]},
       "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
-      "center_left": {"x":0.03, "y":0.6, "color":"ivory", "owner": ["bot"]}
+      "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]}
     },
     "4:3": {
-      "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]}
+      "focus_ch1": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}
     }
   },
   "color": {
@@ -132,6 +132,10 @@
     "bronze": {
       "rgb": [182, 133, 88],
       "tolerance": 25
+    },
+    "grey": {
+      "rgb": [127, 127, 127],
+      "tolerance": 15
     },
     "light_green": {
       "rgb": [6, 227, 209],
