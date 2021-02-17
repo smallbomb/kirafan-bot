@@ -67,7 +67,7 @@ def monitor_mode():
             break
         elif out_of_region:
             continue
-        pix = pyautogui.screenshot(region=uData.setting['game_region']).getpixel((x - x0, y - y0))  # 獲取滑鼠所在螢幕點的RGB顏色
+        pix = pyautogui.screenshot(region=uData.setting['game_region']).getpixel((x - x0, y - y0))
         ratio = ((x - x0) / width, (y - y0) / height)
         pstr = 'position: (X,Y)=({:4d},{:4d}) RGB=({:3d},{:3d},{:3d}) Ratio({:.5f}, {:.5f})'.format(x, y, *pix, *ratio)
         print(pstr, end='')

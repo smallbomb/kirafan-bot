@@ -11,11 +11,11 @@ kirafan = BOT()
 def run():
 
     @typechecked
-    def _handle_result_page() -> str:
+    def _handle_result_page(thread) -> str:
         '''skip 'tojiru' or 'ok' event
         '''
         ct = 12
-        while True:
+        while thread.is_running():
             kirafan.objects['center_left'].click(ct)
             if kirafan.icons['again'].click():
                 return 'found again'
@@ -30,8 +30,8 @@ def run():
             elif kirafan.icons['ok'].click():
                 logging.error('icon: ok icon found')
                 continue
-            else:
-                return 'not found again'
+            break
+        return 'not found again'
 
     thread = threading.currentThread()
     logging.info('kirafan start...')
@@ -63,9 +63,9 @@ def run():
                     logging.info('loop_count(%d) less than or equal to 0' % kirafan.loop_count)
                     break
 
-                status = _handle_result_page()
+                status = _handle_result_page(thread)
                 if status == 'crea interrupt':
-                    logging.info('crea_stop: crea mission start...?')
+                    logging.info('crea_stop: crea mission start')
                     break
                 elif status == 'not found again':
                     logging.error('icon: again.png not found...')
