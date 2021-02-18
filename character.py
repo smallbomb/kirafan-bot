@@ -41,7 +41,7 @@ class Character:
                     if self.id == sp_id or self.objects['sp_charge2'].found():
                         self.objects[sk].click(2)
                         while not self.objects['sp_cancel'].found():
-                            continue
+                            self.objects[sk].click(2)
                         while not self.objects['sp_ch1_set'].found():
                             self.objects['sp_ch1'].click()
                         self.objects['sp_submit'].click(3)
