@@ -232,22 +232,22 @@ ex:
 * (主要) "stamina"內的值 
 * (主要) "wave"內的值  
 
-
 # TODO
-1. 使用kirara Orb
-2. 遊戲crash自動重啟(只支援戰鬥中crash發生)
+- [] 能使用kirara Orb
+- [] 能呼叫friend
+- [] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 
 # Major 3rd party library
 * [**keyboard**](https://pypi.org/project/keyboard/)
 * [**PyAutoGUI**](https://pypi.org/project/PyAutoGUI/)
 * [**openCV**](https://pypi.org/project/opencv-python/)
 
-# Question or Suggestion
+# Question or Suggestion👍
 有任何問題或想法可以[**直接發問**](https://github.com/smallbomb/kirafan-bot/issues)，或者私訊息到twitter帳號@rockon590
 
 if any question which is usage, bot description or idea, you can open a [**new issue**](https://github.com/smallbomb/kirafan-bot/issues) or send message to me (Twitter account: @rockon590)
 
-**Support language: Chinese >> English = Japanese**
+😖**Support language: Chinese >> English = Japanese**😖
 
 
 
