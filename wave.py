@@ -70,7 +70,7 @@ class Wave:
             self.chars_sp_order.append(self.chars_sp_order.pop(0))
 
     def is_myTurn(self) -> bool:
-        return self.objects['setting_button'].found()
+        return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
 
     def get_icon_coord(self) -> Optional[Coord]:
         return self.icon.get_center()
