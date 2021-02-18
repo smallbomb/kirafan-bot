@@ -1,22 +1,22 @@
 import os
-if os.name == 'nt':
-    pass
-else:
-    exit(0)
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-import pygame
-import threading
-import win32api
-import win32con
-import win32gui
 from data import uData
+if os.name == 'nt':
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+    import pygame
+    import threading
+    import win32api
+    import win32con
+    import win32gui
 
 
 def square():
-    game_region = uData.setting['game_region']
-    if all(x <= y for x, y in zip(game_region, (0, 0, 1, 1))):
+    if os.name != 'nt':
+        print('os not supported')
+        return
+    if uData.region_is_init():
         print('seting.json[game_region]: invaild value')
-        exit()
+        return
+    game_region = uData.setting['game_region']
     os.environ['SDL_VIDEO_WINDOW_POS'] = str(game_region[0]) + "," + str(game_region[1])
     size = (game_region[2], game_region[3])
     pygame.init()

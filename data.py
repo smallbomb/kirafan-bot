@@ -16,10 +16,13 @@ class _UserData():
         return data
 
     def reload(self):
-        region = self.setting['game_region']
+        old_region = self.setting['game_region']
         self.setting = self.__load()
-        if all(x <= y for x, y in zip(uData.setting['game_region'], (0, 0, 1, 1))):
-            self.setting['game_region'] = region
+        if self.region_is_init():
+            self.setting['game_region'] = old_region
+
+    def region_is_init(self) -> bool:
+        return all(x <= y for x, y in zip(self.setting['game_region'], (0, 0, 1, 1)))
 
 
 uData = _UserData()

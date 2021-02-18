@@ -12,29 +12,25 @@ class Object():
                  ratio: Ratio = (0.0, 0.0),
                  rgb: RGB = (0, 0, 0),
                  tolerance: int = 0):
-        self.__region = uData.setting['game_region']
-        self.__ratio = ratio  # relative position ratio by screen
-        self.__tolerance = tolerance
         self.name = coord_name
+        self.coord = self.__calc_relative_pos(ratio)
         self.rgb_kname = rgb_kname
-        self.coord = self.__calc_relative_pos()
         self.rgb = rgb
+        self.__tolerance = tolerance
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
     def found(self) -> bool:
-        """return True or False
-        """
         while True:
             try:
                 return pyautogui.pixelMatchesColor(*self.coord, self.rgb, tolerance=self.__tolerance)
-            except:
+            except WindowsError:
                 sleep(0.2)
 
-    def __calc_relative_pos(self) -> Coord:
-        x0, y0, width, height = self.__region
-        ratioX, ratioY = self.__ratio
+    def __calc_relative_pos(self, ratio: Ratio) -> Coord:
+        x0, y0, width, height = uData.setting['game_region']
+        ratioX, ratioY = ratio
         return (int(round(x0 + ratioX * width)), int(round(y0 + ratioY * height)))
 
     def moveTo(self):

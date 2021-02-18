@@ -24,8 +24,13 @@ class BOT:
         self.waves = self.__load_waves()
 
     def __str__(self) -> str:
-        string = str(self.__class__) + ":\n" + "\n\n".join("{} = {}".format(item, self.__dict__[item]) for item in self.__dict__ if item not in ['objects', 'icons', 'waves']) + "\n\n"
-        string += "\n\n".join("{} = {}".format(item, "\n".join(str(value) for value in self.__dict__[item].values())) for item in self.__dict__ if item in ['objects', 'icons', 'waves'])
+        string = str(self.__class__) + ":\n"
+        for item in self.__dict__:
+            if item in ['objects', 'icons', 'waves']:
+                for value in self.__dict__[item].values():
+                    string += item + str(value) + "\n"
+            else:
+                string += "{} = {}\n\n".format(item, self.__dict__[item])
         return string
 
     def __load_icons(self) -> Dict:

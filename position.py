@@ -16,7 +16,8 @@ class Position:
     def __str__(self):
         if self.__init is True:
             return ""
-        return 'position{:02d}: (X,Y)=({:4d},{:4d}) RGB=({:3d},{:3d},{:3d}) Ratio({:.5f}, {:.5f})\n'.format(self.id, *self.coord, *self.rgb, *self.ratio)
+        string = 'position{:02d}: (X,Y)=({:4d},{:4d}) RGB=({:3d},{:3d},{:3d}) Ratio({:.5f}, {:.5f})\n'
+        return string.format(self.id, *self.coord, *self.rgb, *self.ratio)
 
     def record(self, preNewline: bool = False):
         x0, y0, width, height = uData.setting['game_region']
@@ -27,9 +28,6 @@ class Position:
         msg = ('\n' if preNewline else '') + 'recode position{:02d}'.format(self.id)
         logging.info(msg)
         self.__init = False
-
-    def is_init(self):
-        return self.__init
 
 
 @typechecked

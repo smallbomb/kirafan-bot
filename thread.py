@@ -26,7 +26,9 @@ def wait_until(clock: str):
         if wait_s < 0:
             break
         if (now_time - log_t).total_seconds() > 60:
-            logging.info("倒數: {:02d}時 {:02d}分 {:02d}秒, 現在時間: {:s} 設置時間: {:s}".format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s), now_time.strftime("%H:%M:%S"), next_time.strftime("%H:%M:%S")))
+            s = '倒數: {:02d}時 {:02d}分 {:02d}秒, 現在時間: {:s} 設置時間: {:s}'
+            logging.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
+                                  now_time.strftime("%H:%M:%S"), next_time.strftime("%H:%M:%S")))
             log_t = now_time
         sleep(wait_s / 2)
 
