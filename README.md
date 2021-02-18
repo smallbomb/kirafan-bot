@@ -7,7 +7,7 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 
 [kirarafantasia遊戲](https://kirarafantasia.com/)機器人。有點像按鍵精靈。
 可以針對性練技(芳文跳、武器...等)、自動接關、可設定當天開始時間(如:AM:04:00後再開始執行)、偵測session clear、偵測作品珠任務、自動喝水...  
- 
+
 **個人常用關卡**
 * [ゆゆ式 (作家クエスト)](https://wiki.kirafan.moe/#/quest/5004290)
 * [New Game (作家クエスト)](https://wiki.kirafan.moe/#/quest/5001270)
@@ -151,7 +151,7 @@ ex:
       "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},         
       "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},         
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
-      "normal_atk": {"x":0.75000, "y":0.78623, "color":"None", "owner": ["character"]},
+      "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1_cd": {"x":0.64634, "y":0.78623, "color":"flash_green", "owner": ["character"]},
       "sk2": {"x":0.54065, "y":0.78623, "color":"ivory", "owner": ["character"]},
@@ -233,9 +233,9 @@ ex:
 * (主要) "wave"內的值  
 
 # TODO
-- [] 能使用kirara Orb
-- [] 能呼叫friend
-- [] 遊戲crash自動重啟(只支援戰鬥中crash發生)
+- [ ] 能使用kirara Orb
+- [ ] 能呼叫friend
+- [ ] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 
 # Major 3rd party library
 * [**keyboard**](https://pypi.org/project/keyboard/)
@@ -247,7 +247,7 @@ ex:
 
 if any question which is usage, bot description or idea, you can open a [**new issue**](https://github.com/smallbomb/kirafan-bot/issues) or send message to me (Twitter account: @rockon590)
 
-😖**Support language: Chinese >> English = Japanese**😖
+**Support language: Chinese, English, Japanese** 
 
 
 
