@@ -1,12 +1,13 @@
 import os
 import sys
-import inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
-from data import uData
-from main import user_command
+if True:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    parent_dir = os.path.abspath(os.path.join(dir_path, os.pardir))
+    sys.path.insert(0, parent_dir)
+    from data import uData
+    from main import main_job
 
 
 def test_data_format():
     assert type(uData.setting) == dict
+    assert main_job is None

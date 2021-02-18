@@ -1,27 +1,14 @@
-import logging
 import keyboard
+from log import logging
 from time import sleep
-from enum import Enum
-from data import uData
-from typeguard import typechecked
-from defined import Region, Tuple
-
-
-@typechecked
-class loglevel(Enum):
-    CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET = logging.CRITICAL, logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG, logging.NOTSET
-
-
-logging.basicConfig(level=loglevel[uData.setting['loglevel'].upper()].value,
-                    datefmt='%m-%d %H:%M',
-                    format='%(asctime)s %(levelname)s: %(message)s')
-
-
 from thread import Job
-from run import run, kirafan
-from position import Position, Shot, calc_region, monitor_mode
+from data import uData
 from kbhit import KBHit
-
+from defined import Region, Tuple
+from typeguard import typechecked
+from position import Position, Shot, calc_region, monitor_mode
+from run import run, kirafan
+from window import square
 
 main_job = shot_job = monitor_job = square_job = None
 kb = KBHit()
@@ -69,16 +56,14 @@ def user_command(key: str):
         else:
             logging.info('press resume now!')
             main_job.resume()
-    elif key.lower() == 'p':
-        if main_job:
-            logging.info('press pause now!')
-            main_job.pause()
-    elif key.lower() == 's':
-        if main_job:
-            logging.info('press stop now!')
-            main_job.stop()
-            main_job.join()
-            main_job = None
+    elif key.lower() == 'p' and main_job:
+        logging.info('press pause now!')
+        main_job.pause()
+    elif key.lower() == 's' and main_job:
+        logging.info('press stop now!')
+        main_job.stop()
+        main_job.join()
+        main_job = None
     elif key.lower() == 'l':
         uData.reload()
         kirafan.reload()
@@ -115,7 +100,6 @@ def user_command(key: str):
             else:
                 print('No miss icon file')
     elif key.lower() == 'x':
-        from window import square
         if not square_job:
             square_job = Job(target=square)
             square_job.start()
@@ -131,7 +115,7 @@ def _init():
         keyboard.add_hotkey(key, user_command, args=[key[-1]])
     logging.info("hotkey setting finish...")
 
-    if all(x <= y for x, y in zip(uData.setting['game_region'], (0, 0, 1, 1))):
+    if uData.region_is_init():
         uData.setting['game_region'] = tutorial_region()
         kirafan.reload()
     logging.info('kirafan region = {}'.format(list(kirafan.region)))
