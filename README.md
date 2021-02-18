@@ -57,8 +57,7 @@ ex:
 ## step3
 根據個人需求編輯[setting.json](#settingjson-description)
 ## step4
-按下熱鍵  
-* `z+l` (reload settion.json)
+開啟exe後，按下熱鍵
 * `z+r` (run bot)
 
 # setting.json description
@@ -248,7 +247,7 @@ ex:
 
 if any question which is usage, bot description or idea, you can open a [**new issue**](https://github.com/smallbomb/kirafan-bot/issues) or send message to me (Twitter account: @rockon590)
 
-support language: Chinese >> English = Japanese
+**Support language: Chinese >> English = Japanese**
 
 
 
