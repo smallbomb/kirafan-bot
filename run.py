@@ -109,7 +109,7 @@ def _skip_award_result(bot):
         if kirafan.icons['again'].click():
             break
         elif kirafan.crea_stop and kirafan.objects['center_left'].found() and kirafan.icons['tojiru'].found():
-            logging.info('crea_stop: crea mission start')
+            logging.info('crea_stop: appear crea mission')
             bot.stop()
         elif kirafan.icons['tojiru'].click():
             logging.debug('icon: tojiru icon found')
