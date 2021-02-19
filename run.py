@@ -84,6 +84,7 @@ def _try_to_move_next_new_battle(bot):
     if bot.is_running():
         if _ck_move_to_next_battle(bot):
             kirafan.loop_count -= 1
+            logging.debug('player is moving to next battle...')
             logging.info('loop_count = {} now'.format(kirafan.loop_count))
             sleep(kirafan.sleep['loading'])
         else:
