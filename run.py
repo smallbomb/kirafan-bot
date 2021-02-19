@@ -112,6 +112,7 @@ def _skip_award_result(bot):
             logging.info('crea_stop: crea mission start')
             bot.stop()
         elif kirafan.icons['tojiru'].click():
+            logging.debug('icon: tojiru icon found')
             ct = 8
         elif kirafan.icons['ok'].click():
             logging.warning('icon: ok icon found. maybe network disconnect?')
