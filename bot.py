@@ -57,15 +57,14 @@ class BOT:
     def get_current_wave(self) -> Optional[Wave]:
         return self.waves[str(self.wave_id)]
 
-    def use_stamina(self) -> bool:
+    def use_stamina(self):
         for s in self.stamina['priority']:
             if self.objects['stamina_{}'.format(s)].found():
                 while not self.objects['stamina_add'].found():
                     self.objects['stamina_{}'.format(s)].click(1, 0.5)
                 self.objects['stamina_add'].click(self.stamina['count'] - 1)
                 self.objects['stamina_hai'].click(8)
-                return True
-        return False
+                break
 
     def miss_icon_files(self) -> Tuple:
         ret = tuple()

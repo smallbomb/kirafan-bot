@@ -38,9 +38,6 @@ class Icon:
         return center
 
     def found(self) -> bool:
-        """
-        return True or False
-        """
         return True if self.get_center() else False
 
     def click(self, times: int = 1, interval: float = uData.setting['sleep']['click']) -> bool:
@@ -69,4 +66,4 @@ class Icon:
 # Test
 if __name__ == '__main__':
     icon = Icon("ok.png", 0.5)
-    print(icon.get_center())
+    print(icon.scan(1))

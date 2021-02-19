@@ -31,13 +31,12 @@ py main.py
 
 # Kirafan-bot hotkey
 * z+1~z+9 (record position and rgb)
-* z+r (run bot)
-* z+p (pause bot)
+* z+r (run/resume bot)
 * z+s (stop bot)
 * z+l (setting.json reload)
 * z+m (monitor mode)
 * z+t (test objects and icons exist?)
-* z+w (print position01~09)
+* z+p (print position01~09)
 * z+c (check/add icon file)
 * z+x (open/close game region checking) --for windows system
 
