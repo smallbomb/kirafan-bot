@@ -60,7 +60,7 @@ def monitor_mode():
     monitor_start = False
     while thread.is_running():
         x, y = pyautogui.position()
-        out_of_region = (x < x0 or y < y0 or x > x0 + width or y > y0 + height)
+        out_of_region = (x < x0 or y < y0 or x >= x0 + width or y >= y0 + height)
         if monitor_start and out_of_region:
             break
         elif out_of_region:
