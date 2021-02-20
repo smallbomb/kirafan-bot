@@ -13,6 +13,7 @@ deps = [
     "PyAutoGUI>=0.9.52",
     "typeguard>=2.10.0",
     "pygame>=2.0.1",
+    "Pillow>=8.1.0",
 ]
 
 if platform == 'win32':
