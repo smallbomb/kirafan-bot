@@ -13,12 +13,15 @@ jobs:
 
     steps:
       # ...
-      - name: "Build & test"
+      - uses: actions/checkout@v2
+      - name: "Set up Python 3.9"
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+      - name: "Build & test"
         run: |
           bash ./script/install-dependencies.sh
+          pytest
           pyinstall -F main.py
           echo "done!"
 
