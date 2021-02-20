@@ -13,8 +13,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        python-version: [3.8, 3.9]
+        os: [ubuntu-20.04]
+        python-version: [3.9]
+        # os: [macos-latest, ubuntu-latest, windows-latest]
+        # python-version: [3.8, 3.9]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -59,12 +61,14 @@ jobs:
         run: |
           bash ./script/install-dependencies.sh
           bash ./script/pre-release.sh
-          ls
-
+      - name: set release name
+        id: release-name
+        run: echo ::set-output name=verion_name::kirara-bot $(echo ${{ github.ref }} | sed 's/.*v//')
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
+          title: "${{ steps.release-name.outputs.verion_name }}"
           files: |
-            *.rar    
+            *.tar    
 
