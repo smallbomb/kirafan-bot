@@ -79,7 +79,6 @@ jobs:
       - name: Download installer artifact
         uses: actions/download-artifact@v2
         with:
-          name: kirafan-bot-$(echo ${{ github.ref }} | sed 's/.*v//')-windows
           path: download
       - name: Move artifact file to workspace
         run: for d in kirafan* ; do mv $d/kira* ../$d.tar ; done
@@ -89,5 +88,5 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
           files: |
-            *.tar  
+            *windows.tar
 
