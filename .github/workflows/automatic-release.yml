@@ -21,7 +21,7 @@ jobs:
       - name: "Build & test"
         run: |
           bash ./script/install-dependencies.sh
-          base ./script/pre-release.sh
+          bash ./script/pre-release.sh
           echo "done!"
 
       - uses: "marvinpinto/action-automatic-releases@latest"
