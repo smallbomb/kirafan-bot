@@ -27,9 +27,9 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          # automatic_release_tag: "auto-release-tag"
+          automatic_release_tag: "last-(auto-release-tag)"
           prerelease: true
           draft: true
-          title: "Development Build"
+          title: "Development Build-`r format(Sys.time(), '%d %B, %Y')`"
           files: |
             *.rar
