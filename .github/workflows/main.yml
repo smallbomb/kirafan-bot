@@ -48,8 +48,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      with:
-        fetch-depth: 300
+        with:
+          fetch-depth: 300
       - name: Fetch tags
         run: git fetch --depth=300 origin +refs/tags/*:refs/tags/*
       - uses: actions/setup-python@v1
