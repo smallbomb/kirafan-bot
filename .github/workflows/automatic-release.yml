@@ -22,7 +22,6 @@ jobs:
         run: |
           bash ./script/install-dependencies.sh
           bash ./script/pre-release.sh
-          mv 
           echo "done!"
 
       - uses: "marvinpinto/action-automatic-releases@latest"
