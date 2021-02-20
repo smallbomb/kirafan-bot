@@ -13,10 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
-        python-version: [3.9]
-        # os: [macos-latest, ubuntu-latest, windows-latest]
-        # python-version: [3.8, 3.9]
+        os: [macos-latest, ubuntu-20.04, windows-latest]
+        python-version: [3.8, 3.9]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -35,40 +33,61 @@ jobs:
     - name: Test with pytest
       if: "!startsWith(matrix.os, 'ubuntu')"
       run: pytest
-    - name: Upload coverage data
-      if: github.event_name != 'schedule'
-      continue-on-error: ${{ matrix.continue || false }}
-      uses: codecov/codecov-action@v1
+
+  installer:
+    name: Build installation
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-20.04, windows-latest]
+        python-version: [3.9]
+    runs-on:  ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
       with:
-        name: os:${{ matrix.os }} py:${{ matrix.python }}
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: bash ./script/install-dependencies.sh
+    - name: Pyinstaller
+      run: bash ./script/build_install.sh
+    - name: Set installer name
+      id: installer
+      run: echo ::set-output name=fname::kirafan-bot-$(echo ${{ github.ref }} | sed 's/.*v//')-$(echo ${{ matrix.os }} | sed 's/-.*//; s/ubuntu/linux/')
+      shell: bash
+    - name: Upload artifact
+      if: github.repository == 'smallbomb/kirafan-bot' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ steps.installer.outputs.fname }}
+        path: kirafan-bot.tar
 
   release:
     name: New release
     if: github.repository == 'smallbomb/kirafan-bot' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     needs:
       - test
-    runs-on: ubuntu-20.04
+      - installer
+    strategy:
+      matrix:
+        os: ubuntu-20.04
+        python-version: [3.9]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - name: Download installer artifact
+        uses: actions/download-artifact@v2
         with:
-          fetch-depth: 300
-      - name: Fetch tags
-        run: git fetch --depth=300 origin +refs/tags/*:refs/tags/*
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Install dependencies
-        run: |
-          bash ./script/install-dependencies.sh
-          bash ./script/pre-release.sh
-      - name: set release name
-        id: release-name
-        run: echo ::set-output name=verion_name::kirara-bot $(echo ${{ github.ref }} | sed 's/.*v//')
+          path: download
+      - name: Move artifact file to workspace
+        run: for d in kirafan* ; do mv $d/kira* ../$d.tar ; done
+        working-directory: download
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
-          title: "${{ steps.release-name.outputs.verion_name }}"
           files: |
-            *.tar    
+            *.tar  
 
