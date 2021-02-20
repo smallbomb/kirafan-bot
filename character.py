@@ -51,12 +51,9 @@ class Character:
                     return sk
 
     def __skill_is_ready(self, sk: str) -> bool:
-        if sk == 'normal_atk':
+        if sk in ['normal_atk', 'auto_button']:
             return True
-        elif sk != 'auto_button':
-            return self.objects[sk].found()
-        else:
-            return not self.objects[sk].found()
+        return self.objects[sk].found()
 
     def __action_cd_skill(self, sk: str) -> bool:
         # success: True, Failed: False
