@@ -4,7 +4,8 @@
 name: Test, build and deploy
 
 on:
-  push: {}
+  push: 
+    branches: {}
   pull_request: {}
 
 jobs:

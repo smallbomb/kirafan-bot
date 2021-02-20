@@ -1,0 +1,34 @@
+---
+name: "pre-release"
+
+on:
+  push:
+    branches:
+      - "release"
+
+jobs:
+  pre-release:
+    name: "Pre Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      # ...
+      - name: "Build & test"
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+        run: |
+          bash ./script/install-dependencies.sh
+          pyinstall -F main.py
+          echo "done!"
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            LICENSE.txt
+            setting.json
+            ./dist/main.exe
