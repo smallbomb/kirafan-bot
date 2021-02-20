@@ -33,9 +33,6 @@ class Object():
         ratioX, ratioY = ratio
         return (int(round(x0 + ratioX * width)), int(round(y0 + ratioY * height)))
 
-    def moveTo(self):
-        pyautogui.moveTo(*self.coord, uData.setting['mouse_duration_seconds'])
-
     def click(self, times: int = 1, interval: float = uData.setting['sleep']['click']):
         pyautogui.click(*self.coord, times, interval)
         sleep(interval)
