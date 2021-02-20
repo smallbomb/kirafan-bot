@@ -6,6 +6,7 @@ set -ex
 
 python -m pip install pyinstaller
 pyinstaller -F main.py
-ls
+ls dist
+ls build
 mv ./dist/main.exe ./kirafan-bot.exe
 tar cvf kirafan-bot-pre-release-win-x64-exe.tar kirafan-bot.exe img_1274x718 setting.json
