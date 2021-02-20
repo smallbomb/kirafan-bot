@@ -52,13 +52,13 @@ jobs:
           fetch-depth: 300
       - name: Fetch tags
         run: git fetch --depth=300 origin +refs/tags/*:refs/tags/*
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v2
         with:
           python-version: 3.9
       - name: Install dependencies
         run: |
-          ./script/install-dependencies.sh
-          ./script/pre-release.sh
+          bash ./script/install-dependencies.sh
+          bash ./script/pre-release.sh
           ls
 
       - uses: "marvinpinto/action-automatic-releases@latest"
