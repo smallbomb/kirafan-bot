@@ -10,11 +10,11 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 可以針對性練技(芳文跳、武器...等)、自動接關、可設定當天開始時間(如:AM:04:00後再開始執行)、偵測session clear、偵測作品珠任務、自動喝水...  
 
 **個人常用關卡**
+* [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502) <font color="#dd0000">(**recommend**)</font>
 * [ゆゆ式 (作家クエスト)](https://wiki.kirafan.moe/#/quest/5004290)
 * [New Game (作家クエスト)](https://wiki.kirafan.moe/#/quest/5001270)
 * [外傳14-15節](https://wiki.kirafan.moe/#/quest/1108640)
 * [6-31](https://wiki.kirafan.moe/#/quest/1106310)
-* [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502)
 * [8-26(rank up)](https://wiki.kirafan.moe/#/quest/1108261)
 * [チノ專武關卡](https://wiki.kirafan.moe/#/quest/43001200)
 
