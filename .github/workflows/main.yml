@@ -33,3 +33,38 @@ jobs:
     - name: Test with pytest
       if: "!startsWith(matrix.os, 'ubuntu')"
       run: pytest
+    - name: Upload coverage data
+      if: github.event_name != 'schedule'
+      continue-on-error: ${{ matrix.continue || false }}
+      uses: codecov/codecov-action@v1
+      with:
+        name: os:${{ matrix.os }} py:${{ matrix.python }}
+
+  release:
+    name: New release
+    if: github.repository == 'smallbomb/kirafan-bot' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    needs:
+      - test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      with:
+        fetch-depth: 300
+      - name: Fetch tags
+        run: git fetch --depth=300 origin +refs/tags/*:refs/tags/*
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          ./script/install-dependencies.sh
+          ./script/pre-release.sh
+          ls
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          files: |
+            *.rar    
+
