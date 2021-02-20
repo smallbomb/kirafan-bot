@@ -22,15 +22,15 @@ jobs:
         run: |
           bash ./script/install-dependencies.sh
           bash ./script/pre-release.sh
+          mv 
           echo "done!"
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          # automatic_release_tag: "auto-release-tag"
           prerelease: true
+          draft: true
           title: "Development Build"
           files: |
-            LICENSE
-            setting.json
-            ./dist/main.exe
+            *.rar
