@@ -10,10 +10,12 @@ if True:
 
 
 def test_data_format():
+  
     assert type(uData.setting) == dict
 
 
 def test_hotkey_and_mainfunc():
-    hotkey = Hotkey('rslmptcox')
-    assert hotkey.safe_exit() is None
-    assert check_basic_information(hotkey) is None
+    if os.name == 'nt':
+        hotkey = Hotkey('rslmptcox')
+        assert hotkey.safe_exit() is None
+        assert check_basic_information(hotkey) is None
