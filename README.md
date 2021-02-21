@@ -61,6 +61,15 @@ ex:
 * `z+r` (run bot)
 
 # setting.json description
+一般使用者可能會用到的設定
+* loglevel 的值
+* game_region 的值
+* crea_stop 的值
+* (主要) loop_count 的值
+* "set_timer"內的值
+* "sleep"內的值
+* (主要) "stamina"內的值 
+* (主要) "wave"內的值  
 ```js
 {
   "loglevel": "info",                // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效
@@ -221,16 +230,6 @@ ex:
 ```
 遊戲內技能或角色簡稱:
 !["naming"](./tutorial_img/naming.jpg)
-
-一般使用者應該會用到的設定
-* loglevel 的值
-* game_region 的值
-* crea_stop 的值
-* (主要) loop_count 的值
-* "set_timer"內的值
-* "sleep"內的值
-* (主要) "stamina"內的值 
-* (主要) "wave"內的值  
 
 # TODO
 - [ ] 這場結算頁面時，停止bot(`z+o`)
