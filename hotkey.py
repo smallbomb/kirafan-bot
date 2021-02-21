@@ -99,8 +99,8 @@ class Hotkey:
             print('No miss icon file')
 
     def __cmd_o(self):
-        kirafan.award_pause = not kirafan.award_pause
-        logging.info('(%5s) kirafan-bot be suspended at award page after current battle is completed' % str(kirafan.award_pause))
+        kirafan.stop_once = not kirafan.stop_once
+        logging.info('(%5s) kirafan-bot stop after current battle is completed' % str(kirafan.stop_once))
 
     def __cmd_x(self):
         if self.square_job.is_alive():

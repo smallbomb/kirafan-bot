@@ -11,7 +11,7 @@ class BOT:
     def __init__(self):
         self.wave_id = -1
         self.wave_change_flag = None
-        self.award_pause = False
+        self.stop_once = False
         self.data = uData.setting
         self.region = self.data['game_region']
         self.wave_total = self.data['wave']['total']
@@ -50,7 +50,7 @@ class BOT:
     def __init_flag(self, new_waveid: int):
         if new_waveid < self.wave_id:
             # is new battle
-            self.award_pause = False
+            self.stop_once = False
             # self.friend_used = False
             # self.orb_used = False
 
@@ -100,7 +100,7 @@ class BOT:
     def reload(self):
         # self.wave_id = -1
         # self.wave_change_flag = None
-        self.award_pause = False
+        self.stop_once = False
         self.data = uData.setting
         self.region = self.data['game_region']
         self.wave_total = self.data['wave']['total']

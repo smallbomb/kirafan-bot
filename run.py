@@ -24,7 +24,6 @@ def run():
             else:
                 logging.debug('transitions now...({}/{})'.format(kirafan.wave_id, kirafan.wave_total))
                 sleep(kirafan.sleep['wave_transitions'])
-        bot.wait()
     logging.info('kirafan stop...')
 
 
@@ -65,10 +64,6 @@ def _handle_award_flows(bot):
     3. loading?
     '''
     if kirafan.icons['kirara_face'].scan(2):
-        if kirafan.award_pause:
-            logging.info("kirafan-bot pause now")
-            bot.pause()
-            bot.wait()
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
     elif kirafan.session_check and kirafan.icons['ok'].click():
@@ -95,6 +90,7 @@ def _try_to_move_next_new_battle(bot):
         else:
             logging.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
             bot.pause()
+            bot.wait()
 
 
 def _skip_award_result(bot):
@@ -104,7 +100,10 @@ def _skip_award_result(bot):
     2. ok button -> maybe network disconnect.
     '''
     logging.debug("handle award result page")
-    if kirafan.loop_count <= 0:
+    if kirafan.stop_once:
+        logging.debug('kirafan-bot.stop_once be setup. (z+o)')
+        bot.stop()
+    elif kirafan.loop_count <= 0:
         logging.info('loop_count(%d) less than or equal to 0' % kirafan.loop_count)
         bot.stop()
 
@@ -132,4 +131,4 @@ def _ck_move_to_next_battle(bot) -> bool:
         kirafan.use_stamina()
         kirafan.icons['again'].click()
 
-    return kirafan.icons['kuromon'].scan(2)
+    return kirafan.icons['kuromon'].scan(3)
