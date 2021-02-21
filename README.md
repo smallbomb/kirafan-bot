@@ -40,10 +40,9 @@ py main.py
 * z+t (test objects and icons exist?)
 * z+p (print position01~09)
 * z+c (check/add icon file)
-
 * z+x (open/close game region checking) --for windows system
 
-# Tutorialtips
+# How to use?
 ## step1
 windows使用者可以用`z+x`叫出一個綠色框矩陣，接著將遊戲視窗調整到接近綠色框大小  
 ex:
@@ -63,6 +62,15 @@ ex:
 * `z+r` (run bot)
 
 # setting.json description
+一般使用者可能會用到的設定
+* loglevel 的值
+* game_region 的值
+* crea_stop 的值
+* (主要) loop_count 的值
+* "set_timer"內的值
+* "sleep"內的值
+* (主要) "stamina"內的值 
+* (主要) "wave"內的值  
 ```js
 {
   "loglevel": "info",                // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效
@@ -224,16 +232,6 @@ ex:
 遊戲內技能或角色簡稱:
 !["naming"](./tutorial_img/naming.jpg)
 
-一般使用者應該會用到的設定
-* loglevel 的值
-* game_region 的值
-* crea_stop 的值
-* (主要) loop_count 的值
-* "set_timer"內的值
-* "sleep"內的值
-* (主要) "stamina"內的值 
-* (主要) "wave"內的值  
-
 # TODO
 - [x] 這場結算頁面時，暫時停止(`z+o`)
 - [ ] 能使用kirara Orb
@@ -251,6 +249,3 @@ ex:
 if any question which is usage, bot description or idea, you can open a [**new issue**](https://github.com/smallbomb/kirafan-bot/issues) or send message to me (Twitter account: @rockon590)
 
 **Support language: Chinese, English, Japanese** 
-
-
-
