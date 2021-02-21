@@ -5,9 +5,15 @@ if True:
     parent_dir = os.path.abspath(os.path.join(dir_path, os.pardir))
     sys.path.insert(0, parent_dir)
     from data import uData
-    from main import main_job
+    from hotkey import Hotkey
+    from main import check_basic_information
 
 
 def test_data_format():
     assert type(uData.setting) == dict
-    assert main_job is None
+
+
+def test_hotkey_and_mainfunc():
+    hotkey = Hotkey('rslmptcox')
+    assert hotkey.safe_exit() is None
+    assert check_basic_information(hotkey) is None
