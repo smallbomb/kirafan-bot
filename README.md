@@ -41,7 +41,7 @@ py main.py
 * z+c (check/add icon file)
 * z+x (open/close game region checking) --for windows system
 
-# Tutorialtips
+# How to use?
 ## step1
 windows使用者可以用`z+x`叫出一個綠色框矩陣，接著將遊戲視窗調整到接近綠色框大小  
 ex:
@@ -249,6 +249,3 @@ ex:
 if any question which is usage, bot description or idea, you can open a [**new issue**](https://github.com/smallbomb/kirafan-bot/issues) or send message to me (Twitter account: @rockon590)
 
 **Support language: Chinese, English, Japanese** 
-
-
-
