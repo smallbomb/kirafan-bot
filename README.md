@@ -233,6 +233,7 @@ ex:
 * (主要) "wave"內的值  
 
 # TODO
+- [ ] 這場結算頁面時，停止bot(`z+o`)
 - [ ] 能使用kirara Orb
 - [ ] 能呼叫friend
 - [ ] 遊戲crash自動重啟(只支援戰鬥中crash發生)
