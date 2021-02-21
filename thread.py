@@ -46,7 +46,10 @@ class Job(threading.Thread):
     def is_running(self):
         return self.__running.is_set()
 
-    def is_pause(self):
+    def is_pausing(self):
+        return not self.__not_Pause.is_set()
+
+    def wait(self):
         return self.__not_Pause.wait()
 
     def run(self):

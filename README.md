@@ -39,6 +39,7 @@ py main.py
 * z+t (test objects and icons exist?)
 * z+p (print position01~09)
 * z+c (check/add icon file)
+* z+o (pause after current battle is completed)
 * z+x (open/close game region checking) --for windows system
 
 # Tutorialtips
@@ -233,6 +234,7 @@ ex:
 * (主要) "wave"內的值  
 
 # TODO
+- [x] 結算頁面時暫停(`z+o`)
 - [ ] 能使用kirara Orb
 - [ ] 能呼叫friend
 - [ ] 遊戲crash自動重啟(只支援戰鬥中crash發生)

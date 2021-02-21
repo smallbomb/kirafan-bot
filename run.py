@@ -24,6 +24,7 @@ def run():
             else:
                 logging.debug('transitions now...({}/{})'.format(kirafan.wave_id, kirafan.wave_total))
                 sleep(kirafan.sleep['wave_transitions'])
+        bot.wait()
     logging.info('kirafan stop...')
 
 
@@ -64,6 +65,10 @@ def _handle_award_flows(bot):
     3. loading?
     '''
     if kirafan.icons['kirara_face'].scan(2):
+        if kirafan.award_pause:
+            logging.info("kirafan-bot pause now")
+            bot.pause()
+            bot.wait()
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
     elif kirafan.session_check and kirafan.icons['ok'].click():

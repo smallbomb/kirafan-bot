@@ -8,7 +8,8 @@ from data import uData
 @typechecked
 class Object():
     def __init__(self,
-                 coord_name: str, rgb_kname: str,
+                 coord_name: str,
+                 rgb_kname: str,
                  ratio: Ratio = (0.0, 0.0),
                  rgb: RGB = (0, 0, 0),
                  tolerance: int = 0):
