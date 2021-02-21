@@ -31,7 +31,8 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         DISPLAY=:0
-        sudo pytest
+        full_cmdpath=$(command -v pytest)
+        sudo $full_cmdpath
     - name: Test with pytest
       if: "!startsWith(matrix.os, 'ubuntu')"
       run: pytest -s
