@@ -10,7 +10,6 @@ if True:
 
 
 def test_data_format():
-  
     assert type(uData.setting) == dict
 
 
