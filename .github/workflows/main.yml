@@ -29,10 +29,10 @@ jobs:
       run: flake8 . --count
     - name: Test with pytest
       if: startsWith(matrix.os, 'ubuntu')
-      run: DISPLAY=:0 sudo pytest -s
+      run: DISPLAY=:0; sudo pytest
     - name: Test with pytest
       if: "!startsWith(matrix.os, 'ubuntu')"
-      run: pytest
+      run: pytest -s
 
   installer:
     name: Build installation
