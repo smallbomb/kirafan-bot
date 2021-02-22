@@ -22,6 +22,7 @@ class BOT:
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
+        self.__ck_crash_count = 0
 
     def __str__(self) -> str:
         string = str(self.__class__) + ":\n"
@@ -39,6 +40,8 @@ class BOT:
             images += ['stamina_Au.png']
         if self.loop_count > 0:
             images += ['again.png']
+        if self.data['crash_detection']:
+            images += ['kirara_game_icon.png']
         icons = [Icon(image, self.data['common_confidence']) for image in images]
         return {icon.name: icon for icon in icons}
 
@@ -46,19 +49,25 @@ class BOT:
         return {str(wave_id): Wave(wave_id, self.wave_total)
                 for wave_id in range(1, self.wave_total + 1)}
 
-    def __init_flag(self, new_waveid: int):
+    def __update_value(self, new_waveid: int):
+        '''wave id was found and then update some value.
+        '''
         if new_waveid < self.wave_id:
             # is new battle
             self.stop_once = False
             # self.friend_used = False
             # self.orb_used = False
 
+        # crash count reset
+        self.__ck_crash_count = 0
+        # Will wave id be changed?
+        self.wave_change_flag = self.wave_id != new_waveid
+        self.wave_id = new_waveid
+
     def update_waveID(self) -> bool:
         for new_wid in gen_circle_list(self.wave_id, self.wave_total):
             if self.waves[str(new_wid)].current():
-                self.__init_flag(new_wid)
-                self.wave_change_flag = False if self.wave_id == new_wid else True
-                self.wave_id = new_wid
+                self.__update_value(new_wid)
                 return True
         return False
 
@@ -84,17 +93,23 @@ class BOT:
                 ret += (icon.name, icon.path)
         return tuple(zip(ret[0::2], ret[1::2]))
 
-    def objects_found_all(self):
+    def objects_found_all_print(self):
         print("objects found:")
         for object in Load_Objects('all').values():
             print("  {:16s} {}".format(object.name, object.found()))
 
-    def icons_found_all(self):
+    def icons_found_all_print(self):
         print("icons found:")
         for icon in self.icons.values():
             print("  {:16s} {}".format(icon.name, icon.get_center()))
         for wave in self.waves.values():
             print("  {:16s} {}".format(wave.name, wave.get_icon_coord()))
+
+    def detect_crashes(self) -> bool:
+        self.__ck_crash_count += 1
+        if self.data['crash_detection'] and self.__ck_crash_count > 50:
+            return self.icons['kirara_game_icon'].click()
+        return False
 
     def reload(self):
         # self.wave_id = -1
@@ -110,6 +125,7 @@ class BOT:
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
+        self.__ck_crash_count = 0
 
 
 # Test

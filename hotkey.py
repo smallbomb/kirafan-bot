@@ -71,8 +71,8 @@ class Hotkey:
 
     def __cmd_t(self):
         print('')
-        kirafan.objects_found_all()
-        kirafan.icons_found_all()
+        kirafan.objects_found_all_print()
+        kirafan.icons_found_all_print()
         print('')
 
     def __cmd_c(self):

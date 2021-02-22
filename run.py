@@ -18,8 +18,11 @@ def run():
                 logging.info('wave-{}/{} now...'.format(kirafan.wave_id, kirafan.wave_total))
             _handle_battle_flows()
         else:
-            # is not battle (maybe transitions, loading, sp animation ... etc)
-            if _is_last_wave():
+            # is not battle (maybe transitions, loading, sp animation, crash ... etc)
+            if kirafan.detect_crashes():
+                logging.warning('detect crashes. try to resume battle.')
+                _battle_resume(bot)
+            elif _is_last_wave():
                 _handle_award_flows(bot)
             else:
                 logging.debug('transitions now...({}/{})'.format(kirafan.wave_id, kirafan.wave_total))
@@ -43,9 +46,9 @@ def _handle_battle_flows():
             wave.objects['auto_button'].click()
     elif wave.is_myTurn():
         if wave.update_characterID():
-            logging.debug('character_%d action start' % wave.ch_id)
+            logging.debug('character(%02d) action start' % wave.ch_id)
             wave.charater_action()
-            logging.debug('character_%d action finish' % wave.ch_id)
+            logging.debug('character(%02d) action finish' % wave.ch_id)
         else:
             logging.error('wave-{}/{}: character not found'.format(wave.id, wave.total))
     else:
@@ -68,12 +71,7 @@ def _handle_award_flows(bot):
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click():
         logging.warning('discover ok button')
-        kirafan.objects['center'].click_sec(60)
-        if kirafan.icons['hai'].click():
-            logging.info('resume battle')
-        else:
-            logging.error('resume battle failed')
-            bot.stop()
+        _battle_resume(bot)
     else:
         logging.debug('still loading now...')
         sleep(1)
@@ -132,3 +130,12 @@ def _ck_move_to_next_battle(bot) -> bool:
         kirafan.icons['again'].click()
 
     return kirafan.icons['kuromon'].scan(3)
+
+
+def _battle_resume(bot):
+    kirafan.objects['center'].click_sec(60)
+    if kirafan.icons['hai'].click():
+        logging.info('resume battle')
+    else:
+        logging.error('resume battle failed')
+        bot.stop()
