@@ -9,8 +9,7 @@
   "loop_count": 0,
   "set_timer": {
     "used": false,
-    "time": "03:01:00",
-    "session_check": false
+    "time": "03:01:00"
   },
   "sleep": {
     "click": 0.2,

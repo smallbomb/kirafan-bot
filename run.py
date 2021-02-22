@@ -66,7 +66,7 @@ def _handle_award_flows(bot):
     if kirafan.icons['kirara_face'].scan(2):
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
-    elif kirafan.session_check and kirafan.icons['ok'].click():
+    elif kirafan.icons['ok'].click():
         logging.warning('discover ok button')
         kirafan.objects['center'].click_sec(60)
         if kirafan.icons['hai'].click():

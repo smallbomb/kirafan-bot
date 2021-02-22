@@ -85,7 +85,6 @@ ex:
   "set_timer": {                     // 定時器
     "used": false,                   // 是否用定時器?
     "time": "03:01:00",              // 時間
-    "session_check": false            // 是否偵測session clear。約AM 04:00 JST時，遊戲server會清除session
   },
   "sleep": {                         // 延遲時間(s) 根據電腦效能可調整，會導致bot判斷上變快或變慢(不一定)
     "click": 0.2,                    // 滑鼠click延遲時間(建議>=0.2)
