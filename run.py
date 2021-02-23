@@ -78,19 +78,24 @@ def _handle_award_flows(bot):
 
 def _try_to_move_next_new_battle(bot):
     _skip_award_result(bot)
-    if bot.is_running():
+    while bot.is_running():
         if _ck_move_to_next_battle(bot):
             kirafan.loop_count -= 1
             logging.debug('player is moving to next battle...')
             logging.info('loop_count = {} now'.format(kirafan.loop_count))
             sleep(kirafan.sleep['loading'])
-        elif kirafan.icons['ok'].found():
-            logging.error('Many possible situations. Do not handle bacause of effectiveness')
-            bot.stop()
+            break
+        elif kirafan.icons['ok'].click():
+            logging.critical('_try_to_move_next_new_battle(): click ok button (test)')
+            pass
+        elif kirafan.icons['tojiru'].click():
+            logging.critical('_try_to_move_next_new_battle(): click tojiru button (test)')
+            pass
         else:
             logging.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
             bot.pause()
             bot.wait()
+            break
 
 
 def _skip_award_result(bot):
