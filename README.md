@@ -194,7 +194,7 @@ ex:
       "tolerance": 25          // rgb色差門檻(越高代表顏色差異可以越大)，可參考opencv document
     },
     "flash_green": {
-      "rgb": [129,225,117],
+      "rgb": [129, 225, 117],
       "tolerance": 35
     },
     "blue": {
@@ -235,7 +235,7 @@ ex:
 - [x] 這場結算頁面時，暫時停止(`z+o`)
 - [ ] 能使用kirara Orb
 - [ ] 能呼叫friend
-- [ ] 遊戲crash自動重啟(只支援戰鬥中crash發生)
+- [x] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 
 # Major 3rd party library
 * [**keyboard**](https://pypi.org/project/keyboard/)

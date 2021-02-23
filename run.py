@@ -20,7 +20,7 @@ def run():
         else:
             # is not battle (maybe transitions, loading, sp animation, crash ... etc)
             if kirafan.detect_crashes():
-                logging.warning('detect crashes. try to resume battle.')
+                logging.warning('detect crashes')
                 _battle_resume(bot)
             elif _is_last_wave():
                 _handle_award_flows(bot)
@@ -70,8 +70,7 @@ def _handle_award_flows(bot):
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click():
-        logging.warning('discover ok button')
-        _battle_resume(bot)
+        _handle_ok_button(bot)
     else:
         logging.debug('still loading now...')
         sleep(1)
@@ -85,6 +84,9 @@ def _try_to_move_next_new_battle(bot):
             logging.debug('player is moving to next battle...')
             logging.info('loop_count = {} now'.format(kirafan.loop_count))
             sleep(kirafan.sleep['loading'])
+        elif kirafan.icons['ok'].found():
+            logging.error('Many possible situations. Do not handle bacause of effectiveness')
+            bot.stop()
         else:
             logging.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
             bot.pause()
@@ -92,11 +94,6 @@ def _try_to_move_next_new_battle(bot):
 
 
 def _skip_award_result(bot):
-    '''
-    Note: the 'tojiru button' or 'ok button' may appear on sreen.
-    1. tojiru button -> chara/crea mission
-    2. ok button -> maybe network disconnect.
-    '''
     logging.debug("handle award result page")
     if kirafan.stop_once:
         logging.debug('kirafan-bot.stop_once be setup. (z+o)')
@@ -116,8 +113,6 @@ def _skip_award_result(bot):
         elif kirafan.icons['tojiru'].click():
             logging.debug('icon: tojiru icon found')
             ct = 8
-        elif kirafan.icons['ok'].click():
-            logging.warning('icon: ok icon found. maybe network disconnect?')
         else:
             logging.error('icon: again.png not found...')
             bot.stop()
@@ -133,9 +128,22 @@ def _ck_move_to_next_battle(bot) -> bool:
 
 
 def _battle_resume(bot):
-    kirafan.objects['center'].click_sec(60)
+    logging.warning('try to resume battle...')
+    kirafan.objects['center'].click_sec(55)
     if kirafan.icons['hai'].click():
         logging.info('resume battle')
     else:
         logging.error('resume battle failed')
         bot.stop()
+
+
+def _handle_ok_button(bot):
+    '''
+    1. session clear
+    2. disconnect?
+    '''
+    logging.warning('discover ok button')
+    if kirafan.icons['kuromon'].scan(3):
+        _battle_resume(bot)
+    else:
+        logging.warning('maybe network disconnect?')
