@@ -19,6 +19,7 @@ class BOT:
         self.sleep = self.data['sleep']
         self.crea_stop = self.data['crea_stop']
         self.stamina = self.data['stamina']
+        self.orb = self.data['orb']
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
@@ -52,17 +53,22 @@ class BOT:
     def __update_value(self, new_waveid: int):
         '''wave id was found and then update some value.
         '''
-        if new_waveid < self.wave_id:
-            # is new battle
-            self.stop_once = False
-            # self.friend_used = False
-            # self.orb_used = False
+        if self.wave_id != new_waveid:
+            # wave id will be changed
+            self.wave_change_flag = True
+            self.waves[str(new_waveid)].reset()
+            if new_waveid < self.wave_id:
+                # is new battle
+                self.stop_once = False
+                # self.friend_used = False
+                # self.orb_used = False
+        else:
+            self.wave_change_flag = False
 
         # crash count reset
         self.__ck_crash_count = 0
-        # Will wave id be changed?
-        self.wave_change_flag = self.wave_id != new_waveid
         self.wave_id = new_waveid
+
 
     def update_waveID(self) -> bool:
         for new_wid in gen_circle_list(self.wave_id, self.wave_total):

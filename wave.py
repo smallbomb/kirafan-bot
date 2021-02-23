@@ -38,6 +38,7 @@ class Wave:
         self.id = id_
         self.ch_id = 3
         self.total = total
+        self.myTurn_count = 0
         self.auto = _wave[str(self.id)]['auto']
         self.name = 'wave_{0}-{1}'.format(self.id, self.total)
         self.objects = Load_Objects("wave")
@@ -68,12 +69,19 @@ class Wave:
         sk = self.characters[str(self.ch_id)].action(self.chars_sp_order)
         if sk == 'sp' and self.chars_sp_order:
             self.chars_sp_order.append(self.chars_sp_order.pop(0))
+        self.myTurn_count += 1
 
     def is_myTurn(self) -> bool:
         return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
 
     def get_icon_coord(self) -> Optional[Coord]:
         return self.icon.get_center()
+
+    def reset(self):
+        _wave = uData.setting['wave']
+        self.ch_id = 3
+        self.myTurn_count = 0
+        self.chars_sp_order = self.__sp_order_init() if _wave[str(self.id)]['sp_weight_enable'] else []
 
 
 # Test
