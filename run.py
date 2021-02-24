@@ -47,6 +47,7 @@ def _handle_battle_flows():
     elif wave.is_myTurn():
         if wave.update_characterID():
             logging.debug('character(%02d) action start' % wave.ch_id)
+            wave.orb_action()
             wave.charater_action()
             logging.debug('character(%02d) action finish' % wave.ch_id)
         else:

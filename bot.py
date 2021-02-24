@@ -19,7 +19,6 @@ class BOT:
         self.sleep = self.data['sleep']
         self.crea_stop = self.data['crea_stop']
         self.stamina = self.data['stamina']
-        self.orb = self.__orb_init()
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
@@ -34,14 +33,6 @@ class BOT:
             else:
                 string += "{} = {}\n\n".format(item, self.__dict__[item])
         return string
-
-    def __orb_init(self) -> Dict:
-        if not self.data['orb']['enable']:
-            return dict()
-        ret = dict()
-        for i in range(1, 4):
-            ret[i] = []
-        return ret
 
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png']
@@ -123,21 +114,6 @@ class BOT:
         if self.data['crash_detection'] and self.__ck_crash_count > 50:
             return self.icons['kirara_game_icon'].click()
         return False
-
-    def orb_action(self) -> bool:
-        if not self.orb['enable']:
-            return False
-        for i in range(1, 4):
-            orb = self.orb[str(i)]
-            if not orb['used'] or orb['wave_N'] != self.wave_id:
-                continue
-            if orb['myturn'] != self.waves[str(self.wave_id)].myTurn_count:
-                continue
-
-        return True
-
-    def __orb_action(self, target: int) -> bool:
-        return True
 
     def reload(self):
         # self.wave_id = -1

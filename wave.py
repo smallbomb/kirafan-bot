@@ -4,6 +4,7 @@ from data import uData
 from icon import Icon
 from object import Load_Objects
 from character import Character
+from orb import Orb
 
 
 @typechecked
@@ -45,18 +46,40 @@ class Wave:
         self.characters = {str(i): Character(i, self.id) for i in range(1, 4)}
         self.chars_sp_order = self.__sp_order_init() if _wave[str(self.id)]['sp_weight_enable'] else []
         self.icon = Icon('{}.png'.format(self.name), _wave['confidence'], _wave['grayscale'])
+        self.orbs = self.__orb_init()
 
     def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)
-
-    def current(self) -> bool:
-        return True if self.icon.found() else False
+        string = str(self.__class__) + ":\n"
+        for item in self.__dict__:
+            if item in ['objects', 'characters', 'icon', 'orbs']:
+                if type(self.__dict__[item]) == dict:
+                    for value in self.__dict__[item].values():
+                        string += item + str(value) + "\n\n"
+                elif type(self.__dict__[item]) == list:
+                    for value in self.__dict__[item]:
+                        string += item + str(value) + "\n\n"
+            else:
+                string += "{} = {}\n\n".format(item, self.__dict__[item])
+        return string
 
     def __sp_order_init(self) -> List:
         order = list()
         for i in range(1, 4):
             order = riffle(order, [i] * int(self.characters[str(i)].sp_use) * self.characters[str(i)].sp_weight)
         return order
+
+    def __orb_init(self) -> List:
+        if not uData.setting['orb']['enable']:
+            return []
+
+        lst = list()
+        for i in range(1, 4):
+            if self.id == uData.setting['orb'][str(i)]['wave_N']:
+                lst.append(Orb(str(i)))
+        return lst
+
+    def current(self) -> bool:
+        return True if self.icon.found() else False
 
     def update_characterID(self) -> bool:
         for c in gen_circle_list(self.ch_id % 3 + 1, 3):
@@ -71,6 +94,11 @@ class Wave:
             self.chars_sp_order.append(self.chars_sp_order.pop(0))
         self.myTurn_count += 1
 
+    def orb_action(self):
+        for orb in self.orbs:
+            if orb.turn == self.myTurn_count:
+                orb.action()
+
     def is_myTurn(self) -> bool:
         return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
 
@@ -82,9 +110,12 @@ class Wave:
         self.ch_id = 3
         self.myTurn_count = 0
         self.chars_sp_order = self.__sp_order_init() if _wave[str(self.id)]['sp_weight_enable'] else []
+        self.orbs = self.__orb_init()
 
 
 # Test
 if __name__ == '__main__':
     wave = Wave(1, 5)
     print(wave.chars_sp_order)
+    print(len(wave.orbs))
+    print(wave.orbs)
