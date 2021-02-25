@@ -26,7 +26,7 @@ class Orb:
                 ret['option'] = value
             elif key.startswith('orb_target') and key[-1] == self.target:
                 ret['target'] = value
-            elif key.startswith('orb_') and (key.rfind('cancel') >= 0 or key.rfind('entrypoint') >= 0):
+            elif key.startswith('orb_') and (key.rfind('cancel') >= 0 or key.rfind('entrypoint') >= 0 or key.rfind('sumbit')):
                 ret[key[4:]] = value
         return ret
 
@@ -37,34 +37,37 @@ class Orb:
         self.usable = False
         logging.critical('orb test: show orb list')
         self.__show_orb_list()
-        logging.critical('orb test: show use_orb')
+        logging.critical('orb test: use_orb')
         return self.__use_orb()
 
     def __use_orb(self) -> bool:
         if self.objects['option'].found():
-            self.objects['option'].click()
+            self.objects['option'].click(1, 0.5)
             logging.critical('orb test: option found')
-        try:
-            if self.objects['target'].found():
-                logging.critical('orb test: target found')
-                self.objects['target'].click()
-                return True
-            logging.critical('orb test: target cancel click')
-            self.objects['target_cancel'].click()
-        except KeyError:
-            return True
+            self.__click_target()  # True or False
         logging.critical('orb test: option cancel click')
-        self.objects['option_cancel'].click()
+        self.objects['cancel'].click()
         return False
+
+    def __click_target(self):
+        logging.critical('orb test: error target key element')
+        self.objects['option_submit'].click(1, 0.5)
+        try:
+            self.objects['target'].click()
+        except KeyError:
+            pass
+        logging.critical('orb test: target cancel click')
+        self.objects['target_cancel'].click(1, 0.5)
 
     def __show_orb_list(self):
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
         destY = self.objects['entrypoint'].coord[1]
         pyautogui.moveTo(*self.objects['entrypoint'].coord)
-        pyautogui.dragTo(destX, destY, 0.5, button='left')
+        pyautogui.dragTo(destX, destY, 1.3, button='left')
 
 
 # Test
 if __name__ == '__main__':
     orb = Orb('1')
+    # print(orb.objects['option'])
     print(orb.action())
