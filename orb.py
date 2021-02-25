@@ -10,7 +10,7 @@ from object import Load_Objects
 class Orb:
     def __init__(self, opt_num: str):
         _orb_skill = uData.setting['orb'][opt_num]
-        self.usable = _orb_skill['used']
+        self.usable = _orb_skill['use']
         self.turn = _orb_skill['myturn']
         self.target = str(_orb_skill['target'])
         self.objects = self.__object_init(opt_num)

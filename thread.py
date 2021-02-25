@@ -70,5 +70,5 @@ class Job(threading.Thread):
         self.__running.clear()
 
     def set_timer(self, timer: dict):
-        if timer['used']:
+        if timer['use']:
             self.__timer = timer['time']

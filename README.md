@@ -83,7 +83,7 @@ ex:
   "crea_stop": false,                // 遇到作品珠任務時是否要停止bot
   "loop_count": 0,                   // loop幾次 (不包含當前回合)
   "set_timer": {                     // 定時器
-    "used": false,                   // 是否用定時器?
+    "use": false,                    // 是否用定時器?
     "time": "03:01:00",              // 時間
   },
   "sleep": {                         // 延遲時間(s) 根據電腦效能可調整，會導致bot判斷上變快或變慢(不一定)
@@ -93,7 +93,7 @@ ex:
     "wave_transitions": 2            // 切換場景的延遲時間。
   },
   "stamina": {                       // 回復道具(錶)
-    "used": false,                   // 是否使用?
+    "use": false,                    // 是否使用?
     "count": 2,                      // 使用數量
     "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
   },

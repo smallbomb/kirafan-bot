@@ -36,7 +36,7 @@ class BOT:
 
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png']
-        if self.stamina['used']:
+        if self.stamina['use']:
             images += ['stamina_Au.png']
         if self.loop_count > 0:
             images += ['again.png']
