@@ -10,24 +10,23 @@ from object import Load_Objects
 class Orb:
     def __init__(self, opt_num: str):
         _orb_skill = uData.setting['orb'][opt_num]
+        self.option = opt_num
         self.usable = _orb_skill['use']
         self.turn = _orb_skill['myturn']
         self.target = str(_orb_skill['target'])
-        self.objects = self.__object_init(opt_num)
+        self.objects = self.__object_init()
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def __object_init(self, opt_num: str) -> Dict:
+    def __object_init(self) -> Dict:
         ret = dict()
         for (key, value) in Load_Objects('orb').items():
-            if key == 'orb':
-                ret['call'] = value
-            elif key.startswith('orb_option') and key[-1] == opt_num:
+            if key.startswith('orb_option') and key[-1] == self.option:
                 ret['option'] = value
             elif key.startswith('orb_target') and key[-1] == self.target:
                 ret['target'] = value
-            elif key.startswith('orb_') and key.rfind('cancel') >= 0:
+            elif key.startswith('orb_') and (key.rfind('cancel') >= 0 or key.rfind('entrypoint') >= 0):
                 ret[key[4:]] = value
         return ret
 
@@ -60,8 +59,8 @@ class Orb:
 
     def __show_orb_list(self):
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
-        destY = self.objects['call'].coord[1]
-        pyautogui.moveTo(*self.objects['call'].coord)
+        destY = self.objects['entrypoint'].coord[1]
+        pyautogui.moveTo(*self.objects['entrypoint'].coord)
         pyautogui.dragTo(destX, destY, 0.5, button='left')
 
 
