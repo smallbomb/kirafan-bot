@@ -119,11 +119,11 @@
       "orb_option1": {"x":0.71272, "y":0.45125, "color": "ivory", "owner": ["orb"]},
       "orb_option2": {"x":0.71272, "y":0.66017, "color": "ivory", "owner": ["orb"]},
       "orb_option3": {"x":0.71272, "y":0.86908, "color": "ivory", "owner": ["orb"]},
-      "orb_option_submit": {"x":0.56044, "y":0.65181, "color": "ivory", "owner": ["orb"]},
+      "orb_option_submit": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]},
       "orb_targetA": {"x":0.38148, "y":0.45125, "color": "None", "owner": ["orb"]},
       "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
       "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
-      "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "ivory", "owner": ["orb"]}
+      "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]}
     },
     "4:3": {
       "focus_ch1": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}
@@ -135,19 +135,19 @@
       "tolerance": 25
     },
     "flash_green": {
-      "rgb": [129,225,117],
+      "rgb": [129, 225, 117],
       "tolerance": 35
     },
     "blue": {
-      "rgb": [77,141,225],
+      "rgb": [77, 141, 225],
       "tolerance": 25
     },
     "light_khaki": {
-      "rgb": [255,229,185],
+      "rgb": [255, 229, 185],
       "tolerance": 25
     },
     "spring_green": {
-      "rgb": [1,206,120],
+      "rgb": [1, 206, 120],
       "tolerance": 25
     },
     "bronze": {
