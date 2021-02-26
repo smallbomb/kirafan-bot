@@ -97,6 +97,12 @@ ex:
     "count": 2,                      // 使用數量
     "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
   },
+  "orb": {
+    "enable": true,                  // 開關
+    "1": {"use": true, "wave_N": 1, "myturn": 20, "target": "A"},  // wave_N: 哪一個wave使用
+    "2": {"use": false, "wave_N": 2, "myturn": 20, "target": "B"}, // myturn: 我方的第幾回合? (從0開始)
+    "3": {"use": false, "wave_N": 1, "myturn": 20, "target": "N"}  // target: 施放對象A, B, C or N(no target) 可忽略大小寫
+  },
   "wave": {
     "grayscale": true,               // 灰階模式。可參考opencv document
     "confidence": 0.94,              // 相似度。可參考opencv document

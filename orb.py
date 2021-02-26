@@ -13,7 +13,7 @@ class Orb:
         self.option = opt_num
         self.use = _orb_skill['use']
         self.turn = _orb_skill['myturn']
-        self.target = str(_orb_skill['target'])
+        self.target = _orb_skill['target'].upper()
         self.objects = self.__object_init()
 
     def __str__(self):
@@ -37,9 +37,9 @@ class Orb:
         self.__show_orb_list()
         logging.critical('orb test: use_orb')
         if self.__use_orb():
-            logging.critical('use orb0(%s) skill success' % self.option)
+            logging.critical('orb action: use orb0%s skill success' % self.option)
         else:
-            logging.critical('use orb0(%s) skill failed' % self.option)
+            logging.critical('orb action: use orb0%s skill failed' % self.option)
 
     def __use_orb(self) -> bool:
         if self.objects['option'].found():
@@ -71,4 +71,4 @@ class Orb:
 # Test
 if __name__ == '__main__':
     orb = Orb('1')
-    print(orb.action())
+    orb.action()
