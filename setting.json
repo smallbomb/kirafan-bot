@@ -89,9 +89,9 @@
   },
   "ratio": {
     "16:9": {
-      "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
-      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
-      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
+      "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["wave", "character"]},
+      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["wave", "character"]},
+      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["wave", "character"]},
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
       "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
@@ -114,6 +114,9 @@
       "stamina_hai": {"x":0.54069, "y":0.89068, "color":"ivory", "owner": ["bot"]},
       "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
       "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]},
+      "friend": {"x":0.14044, "y":0.94968, "color": "None", "owner": ["wave"]},
+      "friend_ok": {"x":0.83333, "y":0.90354, "color": "ivory", "owner": ["wave"]},
+      "friend_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["wave"]},
       "orb_entrypoint": {"x":0.88854, "y":0.83008, "color": "None", "owner": ["orb"]},
       "orb_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["orb"]},
       "orb_option1": {"x":0.71272, "y":0.45125, "color": "ivory", "owner": ["orb"]},
@@ -124,6 +127,7 @@
       "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
       "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
       "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]}
+
     },
     "4:3": {
       "focus_ch1": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}

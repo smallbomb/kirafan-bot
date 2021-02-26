@@ -39,7 +39,7 @@ class Wave:
         self.id = id_
         self.ch_id = 3
         self.total = total
-        self.myTurn_count = 0
+        self.__myTurn_count = 0
         self.auto = _wave[str(self.id)]['auto']
         self.name = 'wave_{0}-{1}'.format(self.id, self.total)
         self.objects = Load_Objects("wave")
@@ -47,6 +47,7 @@ class Wave:
         self.chars_sp_order = self.__sp_order_init() if _wave[str(self.id)]['sp_weight_enable'] else []
         self.icon = Icon('{}.png'.format(self.name), _wave['confidence'], _wave['grayscale'])
         self.orbs = self.__orb_init()
+        self.__friend = uData.setting['friend_support'] if uData.setting['friend_support']['wave_N'] == self.id else None
 
     def __str__(self):
         string = str(self.__class__) + ":\n"
@@ -88,16 +89,28 @@ class Wave:
                 return True
         return False
 
+    def orb_action(self):
+        for orb in self.orbs:
+            if orb.turn == self.__myTurn_count:
+                orb.action()
+
+    def friend_action(self):
+        if self.__friend is None or not self.__friend['use'] or self.__myTurn_count != self.__friend['myturn']:
+            return
+
+        self.objects['friend'].click(3)
+        if self.objects['friend_ok'].found():
+            target = self.__friend['replace'].lower().replace('character_', 'focus_ch')
+            self.objects[target].click(3)
+            self.objects['friend_ok'].click(3)
+            while self.objects['friend_ok'].found():
+                self.objects['friend_cancel'].click()
+
     def charater_action(self):
         sk = self.characters[str(self.ch_id)].action(self.chars_sp_order)
         if sk == 'sp' and self.chars_sp_order:
             self.chars_sp_order.append(self.chars_sp_order.pop(0))
-        self.myTurn_count += 1
-
-    def orb_action(self):
-        for orb in self.orbs:
-            if orb.turn == self.myTurn_count:
-                orb.action()
+        self.__myTurn_count += 1
 
     def is_myTurn(self) -> bool:
         return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
@@ -108,7 +121,7 @@ class Wave:
     def reset(self):
         _wave = uData.setting['wave']
         self.ch_id = 3
-        self.myTurn_count = 0
+        self.__myTurn_count = 0
         self.chars_sp_order = self.__sp_order_init() if _wave[str(self.id)]['sp_weight_enable'] else []
         self.orbs = self.__orb_init()
 

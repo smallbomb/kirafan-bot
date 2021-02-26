@@ -46,6 +46,7 @@ def _handle_battle_flows():
             wave.objects['auto_button'].click()
     elif wave.is_myTurn():
         if wave.update_characterID():
+            kirafan.friend_action()
             wave.orb_action()
             logging.debug('character(%02d) action start' % wave.ch_id)
             wave.charater_action()
