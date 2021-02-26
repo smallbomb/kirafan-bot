@@ -44,11 +44,11 @@ class Orb:
     def __use_orb(self) -> bool:
         if self.objects['option'].found():
             logging.critical('orb test: option found')
-            self.objects['option'].click(1, 0.5)
+            self.objects['option'].click(2)
             self.__click_target()
         if self.objects['cancel'].found():
             logging.critical('orb test: option cancel found')
-            self.objects['cancel'].click(1, 0.5)
+            self.objects['cancel'].click(3)
             return False
         else:
             return True
@@ -56,7 +56,7 @@ class Orb:
     def __click_target(self):
         self.objects['option_submit'].click(1, 0.5)
         try:
-            self.objects['target'].click()
+            self.objects['target'].click(2)
         except KeyError:
             pass
         self.objects['target_cancel'].click(1, 0.5)
