@@ -93,6 +93,8 @@ class Wave:
         for orb in self.orbs:
             if orb.turn == self.__myTurn_count:
                 orb.action()
+                while not self.is_myTurn():
+                    pass
 
     def friend_action(self):
         if self.__friend is None or not self.__friend['use'] or self.__myTurn_count != self.__friend['myturn']:
