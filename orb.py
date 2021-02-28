@@ -37,9 +37,9 @@ class Orb:
         self.__show_orb_list()
         logging.critical('orb test: use_orb')
         if self.__use_orb():
-            logging.critical('orb action: use orb0%s skill success' % self.option)
+            logging.critical('orb action: use orb0%s success' % self.option)
         else:
-            logging.critical('orb action: use orb0%s skill failed' % self.option)
+            logging.critical('orb action: use orb0%s failed' % self.option)
 
     def __use_orb(self) -> bool:
         if self.objects['option'].found():
