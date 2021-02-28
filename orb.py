@@ -56,7 +56,7 @@ class Orb:
     def __click_target(self):
         self.objects['option_submit'].click(1, 0.5)
         try:
-            self.objects['target'].click(2)
+            self.objects['target'].click(3)
         except KeyError:
             pass
         self.objects['target_cancel'].click(1, 0.5)
@@ -65,7 +65,7 @@ class Orb:
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
         destY = self.objects['entrypoint'].coord[1]
         pyautogui.moveTo(*self.objects['entrypoint'].coord)
-        pyautogui.dragTo(destX, destY, 0.3, button='left')
+        pyautogui.dragTo(destX, destY, 1, button='left')
 
 
 # Test
