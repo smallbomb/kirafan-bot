@@ -25,8 +25,8 @@
   "friend_support": {
     "use": false,
     "wave_N": 1,
-    "myturn": 20,
-    "replace": "character_1"
+    "myturn": 0,
+    "replace": "character_3"
   },
   "orb": {
     "enable": true,
@@ -89,9 +89,9 @@
   },
   "ratio": {
     "16:9": {
-      "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["wave", "character"]},
-      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["wave", "character"]},
-      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["wave", "character"]},
+      "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
+      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
+      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
       "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
@@ -114,9 +114,11 @@
       "stamina_hai": {"x":0.54069, "y":0.89068, "color":"ivory", "owner": ["bot"]},
       "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
       "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]},
-      "friend": {"x":0.14044, "y":0.94968, "color": "None", "owner": ["wave"]},
-      "friend_ok": {"x":0.83333, "y":0.90354, "color": "ivory", "owner": ["wave"]},
-      "friend_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["wave"]},
+      "friend": {"x":0.11695, "y":0.79109, "color": "ivory", "owner": ["wave"]},
+      "friend_replace1": {"x":0.61146, "y":0.44847, "color": "None", "owner": ["wave"]},
+      "friend_replace2": {"x":0.74568, "y":0.52786, "color": "None", "owner": ["wave"]},
+      "friend_replace3": {"x":0.87912, "y":0.44847, "color": "None", "owner": ["wave"]},
+      "friend_ok": {"x":0.84929, "y":0.93315, "color": "ivory", "owner": ["wave"]},
       "orb_entrypoint": {"x":0.88854, "y":0.83008, "color": "None", "owner": ["orb"]},
       "orb_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["orb"]},
       "orb_option1": {"x":0.71272, "y":0.45125, "color": "ivory", "owner": ["orb"]},

@@ -99,14 +99,16 @@ class Wave:
     def friend_action(self):
         if self.__friend is None or not self.__friend['use'] or self.__myTurn_count != self.__friend['myturn']:
             return
+        elif not self.objects['friend'].found():
+            return
 
         self.objects['friend'].click(3)
         if self.objects['friend_ok'].found():
-            target = self.__friend['replace'].lower().replace('character_', 'focus_ch')
+            target = self.__friend['replace'].lower().replace('character_', 'friend_replace')
             self.objects[target].click(3)
             self.objects['friend_ok'].click(3)
-            while self.objects['friend_ok'].found():
-                self.objects['friend_cancel'].click()
+        while not self.is_myTurn():
+            pass
 
     def charater_action(self):
         sk = self.characters[str(self.ch_id)].action(self.chars_sp_order)
@@ -134,3 +136,4 @@ if __name__ == '__main__':
     print(wave.chars_sp_order)
     print(len(wave.orbs))
     print(wave.orbs)
+    wave.friend_action()
