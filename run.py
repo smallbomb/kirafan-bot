@@ -69,6 +69,7 @@ def _handle_award_flows(bot):
     3. loading?
     '''
     if kirafan.icons['kirara_face'].scan(2):
+        kirafan.wave_id += 1
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click():
@@ -89,10 +90,11 @@ def _try_to_move_next_new_battle(bot):
             break
         elif kirafan.icons['ok'].click():
             logging.critical('_try_to_move_next_new_battle(): click ok button (test)')
-            pass
-        elif kirafan.icons['tojiru'].click():
-            logging.critical('_try_to_move_next_new_battle(): click tojiru button (test)')
-            pass
+        elif kirafan.stamina['use'] and kirafan.icons['tojiru'].click():
+            # disconnection after using stamina
+            sleep(0.5)
+            kirafan.icons['again'].click()
+            logging.critical('_try_to_move_next_new_battle(): click tojiru button (test), sta')
         else:
             logging.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
             bot.pause()
