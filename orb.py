@@ -33,21 +33,17 @@ class Orb:
     def action(self):
         if not self.use:
             return
-        logging.critical('orb test: show orb list')
         self.__show_orb_list()
-        logging.critical('orb test: use_orb')
         if self.__use_orb():
-            logging.critical('orb action: use orb0%s success' % self.option)
+            logging.info('orb action: use orb0%s success' % self.option)
         else:
-            logging.critical('orb action: use orb0%s failed' % self.option)
+            logging.info('orb action: use orb0%s failed' % self.option)
 
     def __use_orb(self) -> bool:
         if self.objects['option'].found():
-            logging.critical('orb test: option found')
             self.objects['option'].click(2)
             self.__click_target()
         if self.objects['cancel'].found():
-            logging.critical('orb test: option cancel found')
             self.objects['cancel'].click(3)
             return False
         else:
