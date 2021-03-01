@@ -6,7 +6,7 @@
   "common_confidence": 0.8,
   "crea_stop": false,
   "loop_count": 0,
-  "crash_detection": true,
+  "crash_detection": false,
   "set_timer": {
     "use": false,
     "time": "03:01:00"
