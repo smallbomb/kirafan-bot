@@ -239,8 +239,8 @@ ex:
 
 # TODO
 - [x] 這場結算頁面時，暫時停止(`z+o`)
-- [ ] 能使用kirara Orb
-- [ ] 能呼叫friend
+- [x] 能使用kirara Orbv (v1.4.0)
+- [x] 能呼叫friend (v1.4.0)
 - [x] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 
 # Major 3rd party library
