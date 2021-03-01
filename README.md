@@ -79,9 +79,9 @@ ex:
                                      // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行bot有互動教學(z+c))
   "aspect_ratio": "16:9",            // 模擬器視窗比例
   "common_confidence": 0.8,          // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
-  "mouse_duration_seconds": 0.1,     // 滑鼠移動的時間
   "crea_stop": false,                // 遇到作品珠任務時是否要停止bot
   "loop_count": 0,                   // loop幾次 (不包含當前回合)
+  "crash_detection": false,          // 是否偵測app crash? 若有，則嘗試回到戰鬥中 (需要app icon，設true請按z+c(hotkey)抓取。抓取範例大小可參考img_1274x718)
   "set_timer": {                     // 定時器
     "use": false,                    // 是否用定時器?
     "time": "03:01:00",              // 時間
@@ -96,6 +96,12 @@ ex:
     "use": false,                    // 是否使用?
     "count": 2,                      // 使用數量
     "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
+  },
+  "friend_support": {
+    "use": false,                    // 是否使用?
+    "wave_N": 1,                     // 哪一個wave使用
+    "myturn": 0,                     // 我方的第幾回合? (從0開始)
+    "replace": "character_3"         // 取代我方的哪一個角色 character_1, character_2 or character_3
   },
   "orb": {
     "enable": true,                  // 開關
@@ -163,8 +169,8 @@ ex:
     "16:9": { // 模擬器16:9解析度
       // x,y 是座標在模擬器中的相對位置 (可用快捷建z+m或z+1~9偵測或紀錄)
       "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
-      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},         
-      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},         
+      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
+      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
       "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
@@ -186,7 +192,22 @@ ex:
       "stamina_add": {"x":0.63091, "y":0.41100, "color":"spring_green", "owner": ["bot"]},
       "stamina_hai": {"x":0.54069, "y":0.89068, "color":"ivory", "owner": ["bot"]},
       "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
-      "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]}
+      "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]},
+      "friend": {"x":0.11695, "y":0.79109, "color": "ivory", "owner": ["wave"]},
+      "friend_replace1": {"x":0.61146, "y":0.44847, "color": "None", "owner": ["wave"]},
+      "friend_replace2": {"x":0.74568, "y":0.52786, "color": "None", "owner": ["wave"]},
+      "friend_replace3": {"x":0.87912, "y":0.44847, "color": "None", "owner": ["wave"]},
+      "friend_ok": {"x":0.84929, "y":0.93315, "color": "ivory", "owner": ["wave"]},
+      "orb_entrypoint": {"x":0.88854, "y":0.83008, "color": "None", "owner": ["orb"]},
+      "orb_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["orb"]},
+      "orb_option1": {"x":0.71272, "y":0.45125, "color": "ivory", "owner": ["orb"]},
+      "orb_option2": {"x":0.71272, "y":0.66017, "color": "ivory", "owner": ["orb"]},
+      "orb_option3": {"x":0.71272, "y":0.86908, "color": "ivory", "owner": ["orb"]},
+      "orb_option_submit": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]},
+      "orb_targetA": {"x":0.38148, "y":0.45125, "color": "None", "owner": ["orb"]},
+      "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
+      "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
+      "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]}
     },
     "4:3": { // 4:3解析度。
              // 目前沒有實作，可參考16:9來增加，若使用4:3則"aspect_ratio"記得要改
@@ -239,8 +260,8 @@ ex:
 
 # TODO
 - [x] 這場結算頁面時，暫時停止(`z+o`)
-- [x] 能使用kirara Orbv (v1.4.0)
-- [x] 能呼叫friend (v1.4.0)
+- [x] 能使用kirara Orbv
+- [x] 能呼叫friend
 - [x] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 
 # Major 3rd party library
