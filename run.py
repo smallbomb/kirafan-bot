@@ -15,7 +15,7 @@ def run():
     while bot.is_running():
         if _is_battle_now():
             if kirafan.wave_change_flag:
-                logging.info('wave-{}/{} now...'.format(kirafan.wave_id, kirafan.wave_total))
+                logging.info('wave({}/{}) now...'.format(kirafan.wave_id, kirafan.wave_total))
             _handle_battle_flows()
         else:
             # is not battle (maybe transitions, loading, sp animation, crash ... etc)
@@ -70,6 +70,7 @@ def _handle_award_flows(bot):
     '''
     if kirafan.icons['kirara_face'].scan(2):
         kirafan.wave_id += 1
+        kirafan.loop_count -= 1
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click():
@@ -83,18 +84,17 @@ def _try_to_move_next_new_battle(bot):
     _skip_award_result(bot)
     while bot.is_running():
         if _ck_move_to_next_battle(bot):
-            kirafan.loop_count -= 1
             logging.debug('player is moving to next battle...')
             logging.info('loop_count = {} now'.format(kirafan.loop_count))
             sleep(kirafan.sleep['loading'])
             break
         elif kirafan.icons['ok'].click():
-            logging.critical('_try_to_move_next_new_battle(): click ok button (test)')
+            logging.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
         elif kirafan.stamina['use'] and kirafan.icons['tojiru'].click():
             # disconnection after using stamina
             sleep(0.5)
             kirafan.icons['again'].click()
-            logging.critical('_try_to_move_next_new_battle(): click tojiru button (test), sta')
+            logging.debug('_try_to_move_next_new_battle(): click tojiru button (stamina page was not closed)')
         else:
             logging.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
             bot.pause()

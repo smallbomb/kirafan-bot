@@ -260,7 +260,7 @@ ex:
 
 # TODO
 - [x] 這場結算頁面時，暫時停止(`z+o`)
-- [x] 能使用kirara Orbv
+- [x] 能使用kirara Orb
 - [x] 能呼叫friend
 - [x] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 

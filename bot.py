@@ -59,7 +59,6 @@ class BOT:
             if new_waveid < self.wave_id:
                 # is new battle
                 self.stop_once = False
-
         else:
             self.wave_change_flag = False
 
