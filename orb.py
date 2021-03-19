@@ -55,7 +55,7 @@ class Orb:
             self.objects['target'].click(3)
         except KeyError:
             pass
-        self.objects['target_cancel'].click(1, 0.5)
+        self.objects['target_cancel'].click(1, 1.5)
 
     def __show_orb_list(self):
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
