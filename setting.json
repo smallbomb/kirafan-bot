@@ -146,7 +146,7 @@
     },
     "blue": {
       "rgb": [77, 141, 225],
-      "tolerance": 25
+      "tolerance": 30
     },
     "light_khaki": {
       "rgb": [255, 229, 185],

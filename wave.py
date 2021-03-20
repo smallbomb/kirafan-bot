@@ -48,6 +48,7 @@ class Wave:
         self.icon = Icon('{}.png'.format(self.name), _wave['confidence'], _wave['grayscale'])
         self.orbs = self.__orb_init()
         self.__friend = uData.setting['friend_support'] if uData.setting['friend_support']['wave_N'] == self.id else None
+        self.__auto_checktime = 0
 
     def __str__(self):
         string = str(self.__class__) + ":\n"
@@ -116,6 +117,11 @@ class Wave:
             self.chars_sp_order.append(self.chars_sp_order.pop(0))
         self.__myTurn_count += 1
 
+    def auto_click(self):
+        self.__auto_checktime = (self.__auto_checktime + 1) if not self.objects['auto_button'].found() else 0
+        if self.__auto_checktime > 1:
+            self.objects['auto_button'].click()
+
     def is_myTurn(self) -> bool:
         return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
 
@@ -128,6 +134,7 @@ class Wave:
         self.__myTurn_count = 0
         self.chars_sp_order = self.__sp_order_init() if _wave[str(self.id)]['sp_weight_enable'] else []
         self.orbs = self.__orb_init()
+        self.__auto_checktime = 0
 
 
 # Test

@@ -42,8 +42,7 @@ def _handle_battle_flows():
     wave = kirafan.get_current_wave()
 
     if wave.auto:
-        if not wave.objects['auto_button'].found():
-            wave.objects['auto_button'].click()
+        wave.auto_click()
     elif wave.is_myTurn():
         if wave.update_characterID():
             wave.friend_action()
@@ -129,7 +128,7 @@ def _skip_award_result(bot):
 
 def _ck_move_to_next_battle(bot) -> bool:
     # check stamina_Au first. wait for loading time even if user has enough stamina.
-    if kirafan.stamina['use'] and kirafan.icons['stamina_Au'].scan(1):
+    if kirafan.stamina['use'] and kirafan.icons['stamina_Au'].scan(1.5):
         kirafan.use_stamina()
         kirafan.icons['again'].click()
 
