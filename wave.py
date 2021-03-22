@@ -121,6 +121,7 @@ class Wave:
         self.__auto_double_check = (self.__auto_double_check + 1) if not self.objects['auto_button'].found() else 0
         if self.__auto_double_check > 1:
             self.objects['auto_button'].click()
+            self.__auto_double_check = 0
 
     def is_myTurn(self) -> bool:
         return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
