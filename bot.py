@@ -81,7 +81,8 @@ class BOT:
             if self.objects['stamina_{}'.format(s)].found():
                 while not self.objects['stamina_add'].found():
                     self.objects['stamina_{}'.format(s)].click(1, 0.5)
-                if self.stamina['count'] > 1: self.objects['stamina_add'].click(self.stamina['count'] - 1)
+                if self.stamina['count'] > 1:
+                    self.objects['stamina_add'].click(self.stamina['count'] - 1)
                 self.objects['stamina_hai'].click(8)
                 break
 
