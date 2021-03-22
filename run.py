@@ -58,7 +58,7 @@ def _handle_battle_flows():
 
 @typechecked
 def _is_last_wave() -> bool:
-    return kirafan.wave_id == kirafan.wave_total or kirafan.wave_change_flag is None
+    return kirafan.wave_id >= kirafan.wave_total or kirafan.wave_change_flag is None
 
 
 def _handle_award_flows(bot):
@@ -68,7 +68,7 @@ def _handle_award_flows(bot):
     3. loading?
     '''
     if kirafan.icons['kirara_face'].scan(2):
-        kirafan.wave_id += 1
+        kirafan.wave_id = kirafan.wave_total + 1  # for wave reset.
         kirafan.loop_count -= 1
         logging.debug("try to move next new battle")
         _try_to_move_next_new_battle(bot)
@@ -88,6 +88,7 @@ def _try_to_move_next_new_battle(bot):
             sleep(kirafan.sleep['loading'])
             break
         elif kirafan.icons['ok'].click():
+            # if event is session clear, bot will not resume battle. because of batttle finish.
             logging.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
         elif kirafan.stamina['use'] and kirafan.icons['tojiru'].click():
             # disconnection after using stamina
