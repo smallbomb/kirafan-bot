@@ -79,8 +79,7 @@ class BOT:
     def use_stamina(self):
         for s in self.stamina['priority']:
             if self.objects['stamina_{}'.format(s)].found():
-                while not self.objects['stamina_add'].found():
-                    self.objects['stamina_{}'.format(s)].click(1, 0.5)
+                self.objects['stamina_{}'.format(s)].click(2, 0.5)
                 if self.stamina['count'] > 1:
                     self.objects['stamina_add'].click(self.stamina['count'] - 1)
                 self.objects['stamina_hai'].click(8)
