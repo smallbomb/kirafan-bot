@@ -45,8 +45,8 @@ def _handle_battle_flows():
         wave.auto_click()
     elif wave.is_myTurn():
         if wave.update_characterID():
-            wave.friend_action()
-            wave.orb_action()
+            if wave.friend_action() or wave.orb_action():
+                return
             logging.debug('character(%02d) action start' % wave.ch_id)
             wave.charater_action()
             logging.debug('character(%02d) action finish' % wave.ch_id)
@@ -141,6 +141,7 @@ def _battle_resume(bot):
     kirafan.objects['center'].click_sec(75)
     if kirafan.icons['hai'].click():
         logging.info('resume battle')
+        kirafan.wave_id -= 1
     else:
         logging.error('resume battle failed')
         bot.stop()

@@ -30,14 +30,17 @@ class Orb:
                 ret[key[4:]] = value
         return ret
 
-    def action(self):
+    def action(self) -> bool:
         if not self.use:
-            return
-        self.__show_orb_list()
+            return False
+
+        self.__slide_out_orb_list()
         if self.__use_orb():
             logging.info('orb action: use orb0%s success' % self.option)
         else:
             logging.info('orb action: use orb0%s failed' % self.option)
+        self.use = False
+        return True
 
     def __use_orb(self) -> bool:
         if self.objects['option'].found():
@@ -57,7 +60,7 @@ class Orb:
             pass
         self.objects['target_cancel'].click(1, 1.5)
 
-    def __show_orb_list(self):
+    def __slide_out_orb_list(self):
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
         destY = self.objects['entrypoint'].coord[1]
         pyautogui.moveTo(*self.objects['entrypoint'].coord)

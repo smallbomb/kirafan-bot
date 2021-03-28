@@ -90,26 +90,24 @@ class Wave:
                 return True
         return False
 
-    def orb_action(self):
+    def orb_action(self) -> bool:
         for orb in self.orbs:
-            if orb.turn == self.__myTurn_count:
-                orb.action()
-                while not self.is_myTurn():
-                    pass
+            if orb.turn == self.__myTurn_count and orb.action():
+                return True
+        return False
 
-    def friend_action(self):
+    def friend_action(self) -> bool:
         if self.__friend is None or not self.__friend['use'] or self.__myTurn_count != self.__friend['myturn']:
-            return
+            return False
         elif not self.objects['friend'].found():
-            return
+            return False
 
         self.objects['friend'].click(3)
         if self.objects['friend_ok'].found():
             target = self.__friend['replace'].lower().replace('character_', 'friend_replace')
             self.objects[target].click(3)
             self.objects['friend_ok'].click(3)
-        while not self.is_myTurn():
-            pass
+        return True
 
     def charater_action(self):
         sk = self.characters[str(self.ch_id)].action(self.chars_sp_order)
