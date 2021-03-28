@@ -87,6 +87,9 @@ def _try_to_move_next_new_battle(bot):
             logging.info('loop_count = {} now'.format(kirafan.loop_count))
             sleep(kirafan.sleep['loading'])
             break
+        elif not bot.is_running():
+            # insufficient stamina items.
+            break
         elif kirafan.icons['ok'].click():
             # if event is session clear, bot will not resume battle. because of batttle finish.
             logging.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
@@ -131,10 +134,14 @@ def _skip_award_result(bot):
 def _ck_move_to_next_battle(bot) -> bool:
     # check stamina_Au first. wait for loading time even if user has enough stamina.
     if kirafan.stamina['use'] and kirafan.icons['stamina_Au'].scan(1.5):
-        kirafan.use_stamina()
-        kirafan.icons['again'].click()
+        if not kirafan.use_stamina():
+            logging.info('insufficient stamina items.')
+            bot.stop()
+            return False
+        if not kirafan.icons['again'].click():
+            return False
 
-    return kirafan.icons['kuromon'].scan(3)
+    return kirafan.icons['kuromon'].scan(4)
 
 
 def _battle_resume(bot):
