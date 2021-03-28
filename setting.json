@@ -158,7 +158,7 @@
     },
     "bronze": {
       "rgb": [182, 133, 88],
-      "tolerance": 25
+      "tolerance": 15
     },
     "grey": {
       "rgb": [127, 127, 127],
