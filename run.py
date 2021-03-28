@@ -106,6 +106,7 @@ def _skip_award_result(bot):
     logging.debug("handle award result page")
     if kirafan.stop_once:
         logging.debug('kirafan-bot.stop_once be setup. (z+o)')
+        kirafan.stop_once = False
         bot.stop()
     elif kirafan.loop_count <= 0:
         logging.info('loop_count(%d) less than or equal to 0' % kirafan.loop_count)
