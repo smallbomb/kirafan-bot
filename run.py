@@ -152,7 +152,7 @@ def _handle_ok_button(bot):
     2. disconnect?
     '''
     logging.warning('discover ok button')
-    if kirafan.icons['kuromon'].scan(3):
+    if kirafan.icons['kuromon'].scan(4):
         _battle_resume(bot)
     else:
         logging.warning('maybe network disconnect?')
