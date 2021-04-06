@@ -110,8 +110,14 @@ class BOT:
 
     def detect_crashes(self) -> bool:
         self.__ck_crash_count += 1
-        if self.data['crash_detection'] and self.__ck_crash_count > 50:
-            return self.icons['kirara_game_icon'].click()
+        if self.data['crash_detection']:
+            if self.__ck_crash_count > 300:  # bot will be stoped.
+                return True
+            if self.__ck_crash_count > 100:  # try to move mouse and then click.
+                self.objects['center'].click()
+            if self.__ck_crash_count > 50:
+                self.objects['center_left'].click()
+                return self.icons['kirara_game_icon'].click()
         return False
 
     def reload(self):
