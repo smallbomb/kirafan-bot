@@ -41,7 +41,7 @@ class BOT:
         if self.loop_count > 0:
             images += ['again.png']
         if self.data['crash_detection']:
-            images += ['kirara_game_icon.png']
+            images += ['kirara_game_icon.png', 'start_screen.png']
         icons = [Icon(image, self.data['common_confidence']) for image in images]
         return {icon.name: icon for icon in icons}
 
@@ -113,11 +113,13 @@ class BOT:
         if self.data['crash_detection']:
             if self.__ck_crash_count > 300:  # bot will be stoped.
                 return True
+            if self.__ck_crash_count > 150:
+                self.objects['home_page'].click()
             if self.__ck_crash_count > 100:  # try to move mouse and then click.
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:
                 self.objects['center_left'].click()
-                return self.icons['kirara_game_icon'].click()
+                return self.icons['kirara_game_icon'].click() or self.icons['start_screen'].found()
         return False
 
     def reload(self):

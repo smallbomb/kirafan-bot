@@ -128,8 +128,8 @@
       "orb_targetA": {"x":0.38148, "y":0.45125, "color": "None", "owner": ["orb"]},
       "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
       "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
-      "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]}
-
+      "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]},
+      "home_page": {"x":0.19074, "y":-0.02228, "color": "None", "owner": ["bot"]}
     },
     "4:3": {
       "focus_ch1": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}

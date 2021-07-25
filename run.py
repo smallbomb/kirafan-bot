@@ -141,7 +141,7 @@ def _ck_move_to_next_battle(bot) -> bool:
         if not kirafan.icons['again'].click():
             return False
 
-    return kirafan.icons['kuromon'].scan(4)
+    return kirafan.icons['kuromon'].scan(4.5)
 
 
 def _battle_resume(bot):
