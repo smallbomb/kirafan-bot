@@ -11,7 +11,7 @@ class Character:
         self.wave_id = wave_id
         self.objects = Load_Objects("character")
         self.sk_priority = _character['skill_priority'] + ['auto_button']
-        self.sp_weight = _character['sp_weight']
+        self.sp_weight = _character['sp_weight'] if 'sp_weight' in _character else 1
         self.sp_use = 'sp' in self.sk_priority
         self.sp_sleep = uData.setting['sleep']['sp']
 

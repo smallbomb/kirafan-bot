@@ -9,6 +9,7 @@ def check_basic_information(hotkey):
         uData.setting['game_region'] = hotkey.tutorial_region()
         kirafan.reload()
     logging.info('kirafan region = {}'.format(list(kirafan.region)))
+    logging.info('kirafan quest setting = \x1b[41m{}\x1b[0m'.format(kirafan.quest_name))
 
     tuple_files = kirafan.miss_icon_files()
     if tuple_files:

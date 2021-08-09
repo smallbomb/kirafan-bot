@@ -59,6 +59,7 @@ class Hotkey:
         kirafan.reload()
         logging.info('kirafan region = {}'.format(list(kirafan.region)))
         logging.info('reload setting.json finish')
+        logging.info('kirafan quest setting = \x1b[41m{}\x1b[0m'.format(kirafan.quest_name))
 
     def __cmd_m(self):
         if not self.monitor_job.is_alive():

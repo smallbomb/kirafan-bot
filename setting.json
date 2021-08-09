@@ -4,86 +4,105 @@
   "game_region": [2, 41, 1274, 718],
   "aspect_ratio": "16:9",
   "common_confidence": 0.8,
-  "crea_stop": false,
-  "loop_count": 0,
   "crash_detection": false,
   "set_timer": {
     "use": false,
+    "during_pausetime": "02:50:00-03:01:00",
     "time": "03:01:00"
   },
   "sleep": {
     "click": 0.2,
-    "sp": 7,
-    "loading": 9,
+    "sp": 9,
+    "loading": 13,
     "wave_transitions": 2
   },
-  "stamina": {
-    "use": false,
-    "count": 2,
-    "priority": ["Cu", "Ag", "Au"]
-  },
-  "friend_support": {
-    "use": false,
-    "wave_N": 1,
-    "myturn": 0,
-    "replace": "character_3"
-  },
-  "orb": {
-    "enable": true,
-    "1": {"use": true, "wave_N": 1, "myturn": 20, "target": "A"},
-    "2": {"use": false, "wave_N": 2, "myturn": 20, "target": "B"},
-    "3": {"use": false, "wave_N": 1, "myturn": 20, "target": "N"}
-  },
-  "wave": {
-    "grayscale": true,
-    "confidence": 0.94,
-    "total": 3,
-    "1": {
-      "auto": false,
-      "sp_weight_enable": true,
-      "character_1": {
-        "skill_priority": ["sk1", "sk2"],
-        "sp_weight": 1
+  "questList": {
+    "quest_selector": "example",
+    "example": {
+      "loop_count": 30,
+      "crea_stop": false,
+      "friend_support": {
+        "use": false,
+        "wave_N": 1,
+        "myturn": 0,
+        "replace": "character_2"
       },
-      "character_2": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+      "stamina": {
+        "use": true,
+        "count": 1,
+        "priority": ["Cu", "Ag", "Au"]
       },
-      "character_3": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+      "orb": {
+        "orb_name": "ゆゆ式",
+        "1": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"},
+        "2": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"},
+        "3": {"use": false, "wave_N": 1, "myturn": 0, "target": "N"}
+      },
+      "wave": {
+        "grayscale": true,
+        "confidence": 0.94,
+        "total": 3,
+        "1": {
+          "auto": true
+        },
+        "2,3": {
+          "auto": false,
+          "sp_weight_enable": true,
+          "character_1": {
+            "skill_priority": ["sp", "normal_atk"],
+            "sp_weight": 9
+          },
+          "character_2": {
+            "skill_priority": ["sp", "weapon_sk", "sk2", "sk1", "normal_atk"],
+            "sp_weight": 2
+          },
+          "character_3": {
+            "skill_priority": ["sk2"]
+          }
+        }
       }
     },
-    "2": {
-      "auto": false,
-      "sp_weight_enable": true,
-      "character_1": {
-        "skill_priority": ["auto_button", "normal_atk"],
-        "sp_weight": 1
+    "8-26": {
+      "loop_count": 100,
+      "crea_stop": true,
+      "stamina": {
+        "use": true,
+        "count": 1,
+        "priority": ["Au"]
       },
-      "character_2": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
-      },
-      "character_3": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+      "wave": {
+        "grayscale": true,
+        "confidence": 0.94,
+        "total": 1,
+        "1": {
+          "auto": true
+        }
       }
     },
-    "3": {
-      "auto": false,
-      "sp_weight_enable": false,
-      "character_1": {
-        "skill_priority": ["auto_button", "normal_atk"],
-        "sp_weight": 1
+    "event": {
+      "loop_count": 50,
+      "crea_stop": false,
+      "orb": {
+        "orb_name": "ゆゆ式",
+        "1": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"},
+        "2": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"}
       },
-      "character_2": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
-      },
-      "character_3": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+      "wave": {
+        "grayscale": true,
+        "confidence": 0.94,
+        "total": 3,
+        "1,2,3": {
+          "auto": false,
+          "character_1": {
+            "skill_priority": ["sp", "weapon_sk", "sk2", "sk1"]
+          },
+          "character_2": {
+            "skill_priority": ["weapon_sk", "normal_atk"]
+          },
+          "character_3": {
+            "skill_priority": ["weapon_sk", "sk1", "sp", "sk2", "normal_atk"]
+          }
+        }
       }
     }
   },

@@ -14,11 +14,12 @@ class BOT:
         self.stop_once = False
         self.data = uData.setting
         self.region = self.data['game_region']
+        self.quest_name = self.data['quest_selector']
         self.wave_total = self.data['wave']['total']
         self.loop_count = self.data['loop_count']
         self.sleep = self.data['sleep']
         self.crea_stop = self.data['crea_stop']
-        self.stamina = self.data['stamina']
+        self.stamina = self.data['stamina'] or {"use": False}
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
@@ -128,11 +129,12 @@ class BOT:
         self.stop_once = False
         self.data = uData.setting
         self.region = self.data['game_region']
+        self.quest_name = self.data['quest_selector']
         self.wave_total = self.data['wave']['total']
         self.loop_count = self.data['loop_count']
         self.sleep = self.data['sleep']
         self.crea_stop = self.data['crea_stop']
-        self.stamina = self.data['stamina']
+        self.stamina = self.data['stamina'] or {"use": False}
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
