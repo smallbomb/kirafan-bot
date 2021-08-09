@@ -7,13 +7,12 @@
   "crash_detection": false,
   "set_timer": {
     "use": false,
-    "during_pausetime": "02:50:00-03:01:00",
     "time": "03:01:00"
   },
   "sleep": {
     "click": 0.2,
-    "sp": 9,
-    "loading": 13,
+    "sp": 7,
+    "loading": 9,
     "wave_transitions": 2
   },
   "questList": {
