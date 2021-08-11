@@ -2,6 +2,7 @@ import json
 from typeguard import typechecked
 from defined import Dict
 
+
 @typechecked
 def _wave_parse(wave: Dict) -> Dict:
     for key in list(wave.keys()):

@@ -46,9 +46,9 @@ class Wave:
         self.icon = Icon('{}.png'.format(self.name), _wave['confidence'], _wave['grayscale'])
         if not self.auto:
             self.characters = {str(i): Character(i, self.id) for i in range(1, 4)}
-            self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []
+            self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []  # noqa: E501
             self.orbs = self.__orb_init()
-            self.__friend = uData.setting['friend_support'] if uData.setting['friend_support'] and uData.setting['friend_support']['wave_N'] == self.id else None
+            self.__friend = uData.setting['friend_support'] if uData.setting['friend_support'] and uData.setting['friend_support']['wave_N'] == self.id else None  # noqa: E501
         self.__auto_button_multi_check = 0
 
     def __str__(self):
@@ -98,7 +98,7 @@ class Wave:
         return False
 
     def friend_action(self) -> bool:
-        if self.__friend is None or ('use' in self.__friend and not self.__friend['use']) or self.__myTurn_count != self.__friend['myturn']:
+        if self.__friend is None or ('use' in self.__friend and not self.__friend['use']) or self.__myTurn_count != self.__friend['myturn']:  # noqa: E501
             return False
         elif not self.objects['friend'].found():
             return False
@@ -133,7 +133,7 @@ class Wave:
         self.ch_id = 3
         self.__myTurn_count = 0
         if not self.auto:
-            self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []
+            self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []  # noqa: E501
             self.orbs = self.__orb_init()
         self.__auto_button_multi_check = 0
 

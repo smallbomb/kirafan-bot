@@ -42,6 +42,8 @@ class Character:
                         continue
                 else:
                     self.objects[sk].click(4)
+                    if sk == 'weapon_sk' and self.current():
+                        continue  # has no weapons
                 logging.debug('character action: %s finsih' % sk)
                 return sk
             elif ck_animate_cd and sk in ['sk1', 'sk2', 'weapon_sk']:
