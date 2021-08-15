@@ -14,6 +14,8 @@ def run():
     logging.info('loop_count = {} now'.format(kirafan.loop_count))
     while bot.is_running():
         if _is_battle_now():
+            if kirafan.ck_timer_pause():
+                continue
             if kirafan.wave_change_flag:
                 logging.info('wave({}/{}) now...'.format(kirafan.wave_id, kirafan.wave_total))
             _handle_battle_flows()

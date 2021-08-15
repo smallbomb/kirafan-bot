@@ -1,9 +1,37 @@
+import logging
 from typeguard import typechecked
 from defined import Optional, Tuple, Dict
 from data import uData
 from wave import Wave, gen_circle_list
 from icon import Icon
 from object import Load_Objects
+from time import sleep
+from datetime import datetime, timedelta
+
+
+@typechecked
+def wait_until(time: datetime):
+    def to_hour(s: float) -> int:
+        return int(s / 3600) % 24
+
+    def to_min(s: float) -> str:
+        return int(s / 60) % 60
+
+    def to_sec(s: float) -> int:
+        return int(s) % 60
+
+    log_t = datetime.fromtimestamp(0)
+    while True:
+        now_time = datetime.now()
+        wait_s = round((time - now_time).total_seconds(), 1)
+        if wait_s < 0:
+            break
+        if (now_time - log_t).total_seconds() > 60:
+            s = '倒數: {:02d}時 {:02d}分 {:02d}秒, 現在時間: {:s} 結束暫停時間: {:s}'
+            logging.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
+                                  now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
+            log_t = now_time
+        sleep(wait_s / 2)
 
 
 @typechecked
@@ -23,6 +51,7 @@ class BOT:
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
+        self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
 
     def __str__(self) -> str:
@@ -123,6 +152,24 @@ class BOT:
                 return self.icons['kirara_game_icon'].click() or self.icons['start_screen'].found()
         return False
 
+    def ck_timer_pause(self) -> bool:
+        def time_in_range(start: datetime, end: datetime, now: datetime) -> bool:
+            if start <= end:
+                return start <= now <= end
+            else:
+                return start <= now or now <= end
+
+        if self.__timer:
+            start_clock, end_clock = self.__timer.split('-')
+            start_time = datetime.strptime(str(datetime.now().date()) + "T" + start_clock, "%Y-%m-%dT%H:%M:%S")
+            end_time = datetime.strptime(str(datetime.now().date()) + "T" + end_clock, "%Y-%m-%dT%H:%M:%S")
+            now_time = datetime.now()
+            if time_in_range(start_time, end_time, datetime.now()):
+                self.objects['center'].click(3)  # advoid auto mode
+                wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1))
+                return True
+        return False
+
     def reload(self):
         # self.wave_id = -1
         # self.wave_change_flag = None
@@ -138,6 +185,7 @@ class BOT:
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
         self.waves = self.__load_waves()
+        self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
 
 

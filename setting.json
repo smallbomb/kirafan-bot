@@ -1,13 +1,13 @@
 {
   "loglevel": "info",
   "img_dir": "img_1274x718",
-  "game_region": [2, 41, 1274, 718],
+  "game_region": [0, 41, 1274, 718],
   "aspect_ratio": "16:9",
   "common_confidence": 0.8,
   "crash_detection": false,
   "set_timer": {
-    "use": false,
-    "time": "03:01:00"
+    "use": true,
+    "pause_range": "02:50:00-03:01:00"
   },
   "sleep": {
     "click": 0.2,

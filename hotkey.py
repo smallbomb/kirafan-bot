@@ -42,7 +42,6 @@ class Hotkey:
         if not self.run_job.is_alive():
             logging.info('press start now!')
             self.run_job = Job(target=run)
-            self.run_job.set_timer(uData.setting['set_timer'])
             self.run_job.start()
         elif self.run_job.is_pausing():
             logging.info('press resume now!')
