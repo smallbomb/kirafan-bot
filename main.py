@@ -1,9 +1,7 @@
-import os
 from log import logging
 from data import uData
 from run import kirafan
 from hotkey import Hotkey
-os.system("color")
 
 
 def check_basic_information(hotkey):
