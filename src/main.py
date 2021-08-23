@@ -19,7 +19,7 @@ def check_basic_information(hotkey):
         print('you can press hotkey "z+c" to add a miss icon file')
 
 
-if __name__ == '__main__':
+def main():
     try:
         hotkey = Hotkey('rslmptcox')
         logging.info("hotkey setting finish...")
@@ -29,3 +29,7 @@ if __name__ == '__main__':
         hotkey.safe_exit()
     except KeyboardInterrupt:
         hotkey.safe_exit()
+
+
+if __name__ == '__main__':
+    main()

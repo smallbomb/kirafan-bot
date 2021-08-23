@@ -20,7 +20,7 @@ class _UserData():
         self.setting = self.__load()
 
     def __load(self) -> Dict:
-        with open('setting.json', encoding="utf-8") as f:
+        with open('bot_setting.json', encoding="utf-8") as f:
             data = json.load(f)
         data['ratio'] = data['ratio'][data['aspect_ratio']]
         data['game_region'] = tuple(data['game_region'])

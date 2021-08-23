@@ -5,6 +5,6 @@
 set -ex
 
 python -m pip install pyinstaller
-pyinstaller -F main.py
+pyinstaller -F src
 mv ./dist/main* ./kirafan-bot.exe
-tar cvf kirafan-bot.tar kirafan-bot.exe setting.json img_1274x718
+tar cvf kirafan-bot.tar kirafan-bot.exe bot_setting.json img_1274x718
