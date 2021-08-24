@@ -6,7 +6,7 @@
   "common_confidence": 0.8,
   "crash_detection": false,
   "set_timer": {
-    "use": true,
+    "use": false,
     "pause_range": "02:50:00-03:01:00"
   },
   "sleep": {
@@ -82,9 +82,8 @@
       "loop_count": 50,
       "crea_stop": false,
       "orb": {
-        "orb_name": "ゆゆ式",
-        "1": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"},
-        "2": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"}
+        "orb_name": "まほうつかい",
+        "3": {"use": true, "wave_N": 2, "myturn": 0, "target": "C"}
       },
       "wave": {
         "grayscale": true,
@@ -101,6 +100,23 @@
           "character_3": {
             "skill_priority": ["weapon_sk", "sk1", "sp", "sk2", "normal_atk"]
           }
+        }
+      }
+    },
+    "user_defined": {
+      "grayscale": true,
+      "confidence": 0.94,
+      "total": 3,
+      "1,2,3": {
+        "auto": false,
+        "character_1": {
+          "skill_priority": []
+        },
+        "character_2": {
+          "skill_priority": []
+        },
+        "character_3": {
+          "skill_priority": []
         }
       }
     }

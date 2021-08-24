@@ -6,8 +6,7 @@
 # Kirafan-bot on emulator
 Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skills or sp(とっておき) level. Kirafan Bot is like auto click tool.
 
-[kirarafantasia遊戲](https://kirarafantasia.com/)機器人。有點像按鍵精靈。
-可以針對性練技(芳文跳、武器...等)、自動接關、可設定當天開始時間(如:AM:04:00後再開始執行)、偵測session clear、偵測作品珠任務、自動喝水...  
+[kirarafantasia遊戲](https://kirarafantasia.com/)機器人。可自動練技能，類似按鍵精靈。
 
 **個人常用關卡**
 * [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502) (**recommend**👍)
@@ -20,14 +19,24 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 
 可參考[おすすめスキル上げ](https://wikiwiki.jp/kirarafan/%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E3%82%B9%E3%82%AD%E3%83%AB%E4%B8%8A%E3%81%92)說明
 
+# Feature
+1. 針對性練技(芳文跳、武器...等)
+2. 刷簡易關卡 (手順不會變化)
+3. 自動續關
+4. 自動使用回體道具
+5. 可設定當天暫停時間(如:AM:03:50-04:01暫停bot)
+6. 偵測session clear
+7. 偵測作品珠任務
+8. 偵測遊戲crash，並嘗試回到戰鬥中 (**Note: 如果戰鬥結束發生，則無法回復**)
+
 # Installation
 windows 使用者可以[**點擊這裡**](https://github.com/smallbomb/kirafan-bot/releases)下載exe檔案來使用  
 #### or
 Python version >= 3.8  
 download [**source code**](https://github.com/smallbomb/kirafan-bot/releases)
 ```
-py install.py
-py main.py
+pip install -r requirements.txt
+py src
 ```
 
 # Kirafan-bot hotkey
@@ -35,7 +44,7 @@ py main.py
 * z+r (run/resume bot)
 * z+s (stop bot)
 * z+o (stop bot after current battle is completed)
-* z+l (setting.json reload)
+* z+l (bot_setting.json reload)
 * z+m (monitor mode)
 * z+t (test objects and icons exist?)
 * z+p (print position01~09)
@@ -56,112 +65,142 @@ ex:
 建議遊戲內的option設定如下
 !["option"](./tutorial_img/option.jpg)
 ## step3
-根據個人需求編輯[setting.json](#settingjson-description)
+根據個人需求編輯[bot_setting.json](#bot_settingjson-description)
 ## step4
 開啟exe後，按下熱鍵
 * `z+r` (run bot)
 
-# setting.json description
-一般使用者可能會用到的設定
-* loglevel 的值
-* game_region 的值
-* crea_stop 的值
-* (主要) loop_count 的值
-* "set_timer"內的值
-* "sleep"內的值
-* (主要) "stamina"內的值 
-* (主要) "wave"內的值  
+# bot_setting.json description
+一般使用者需要會改的設定
+* (一開始) game_region 的值 
+* (主要)   questList的內容(follow json format)，提供了範例('example', '8-26', 'event')，可供參考
+
 ```js
 {
-  "loglevel": "info",                // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效
-  "img_dir": "img_1274x718",         // 判斷圖片的素材位置 (目前比較適用於1274x718 遊戲視窗大小)
-  "game_region": [2, 41, 1274, 718], // 設定遊戲區域，不滿意可以設定[0,0,1,1]後重新調整(執行bot有互動教學)
-                                     // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行bot有互動教學(z+c))
-  "aspect_ratio": "16:9",            // 模擬器視窗比例
-  "common_confidence": 0.8,          // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
-  "crea_stop": false,                // 遇到作品珠任務時是否要停止bot
-  "loop_count": 0,                   // loop幾次 (不包含當前回合)
-  "crash_detection": false,          // 是否偵測app crash? 若有，則嘗試回到戰鬥中 (需要app icon，設true請按z+c(hotkey)抓取。抓取範例大小可參考img_1274x718)
-  "set_timer": {                     // 定時器
-    "use": false,                    // 是否用定時器?
-    "time": "03:01:00",              // 時間
+  "loglevel": "info",                  // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效**
+  "img_dir": "img_1274x718",           // 判斷圖片的素材位置 (目前比較適用於1274x718 遊戲視窗大小)
+  "game_region": [0, 41, 1274, 718],   // 設定遊戲區域，不滿意可以設定[0,0,1,1]後重新調整(執行kirafan-bot有互動教學)
+                                       // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行kirafan-bot有互動教學(z+c))
+  "aspect_ratio": "16:9",              // 模擬器視窗比例
+  "common_confidence": 0.8,            // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
+  "crash_detection": false,            // 是否偵測遊戲 crash? 若是，則嘗試回到戰鬥中 (需要app icon，設true請按z+c(hotkey)抓取。抓取範例大小可參考img_1274x718)
+  "set_timer": {                       // 定時器
+    "use": false,                      // 是否用定時器?
+    "pause_range": "02:50:00-03:01:00" // bot暫停運作區間
   },
-  "sleep": {                         // 延遲時間(s) 根據電腦效能可調整，會導致bot判斷上變快或變慢(不一定)
-    "click": 0.2,                    // 滑鼠click延遲時間(建議>=0.2)
-    "sp": 7,                         // 芳文跳(とっておき)延遲時間
-    "loading": 9,                    // 接關時的延遲時間。
-    "wave_transitions": 2            // 切換場景的延遲時間。
+  "sleep": {                           // 延遲時間(s) 根據電腦效能可調整，會導致bot判斷上變快或變慢(不一定)
+    "click": 0.2,                      // 滑鼠click延遲時間(建議>=0.2)
+    "sp": 7,                           // 芳文跳(とっておき)延遲時間
+    "loading": 9,                      // 接關時的延遲時間。
+    "wave_transitions": 2              // 切換場景的延遲時間。
   },
-  "stamina": {                       // 回復道具(錶)
-    "use": false,                    // 是否使用?
-    "count": 2,                      // 使用數量
-    "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
-  },
-  "friend_support": {
-    "use": false,                    // 是否使用?
-    "wave_N": 1,                     // 哪一個wave使用
-    "myturn": 0,                     // 我方的第幾回合? (從0開始)
-    "replace": "character_3"         // 取代我方的哪一個角色 character_1, character_2 or character_3
-  },
-  "orb": {
-    "enable": true,                  // 開關
-    "1": {"use": true, "wave_N": 1, "myturn": 20, "target": "A"},  // wave_N: 哪一個wave使用
-    "2": {"use": false, "wave_N": 2, "myturn": 20, "target": "B"}, // myturn: 我方的第幾回合? (從0開始)
-    "3": {"use": false, "wave_N": 1, "myturn": 20, "target": "N"}  // target: 施放對象A, B, C or N(no target) 可忽略大小寫
-  },
-  "wave": {
-    "grayscale": true,               // 灰階模式。可參考opencv document
-    "confidence": 0.94,              // 相似度。可參考opencv document
-    "total": 3,                      // 此關有幾個wave
-    "1": {                           // wave1的戰鬥模式
-      "auto": false,                 // 使否全自動?
-      "sp_weight_enable": true,      // 是否依照sp的權重來分配sp使用。若否，則有sp時直接使用且不保留sp能量。
-      "character_1": {               // 角色1
-        "skill_priority": ["sk1", "sk2"],   // 技能施放優先順序 sk1 > sk2
-                                            // 可以為空[]，目前有'sk1'、'sk2'、'weapon_sk'、'sp'、'normal_atk'、'auto_button'
-                                            // **基本上'normal_atk'和'auto_button'必定會使用
-                                            // **空[]或沒其他技能可使用時會用'auto_button'
-        "sp_weight": 1                      // 權重越高代表sp使用次數會越多
+  "questList": {
+    "quest_selector": "example",         // 選擇哪一個quest_name (依照範例目前有: example, 8-26, event。**使用者可以自行按照格式增加**)
+    "example": {                         // quest_name (可任意取名)
+      "loop_count": 30,                  // loop幾次 (不包含當前回合)
+      "crea_stop": false,                // 遇到作品珠任務時是否要停止bot
+
+      "friend_support": {                // 好友支援 (option.)
+        "use": false,                    // 是否使用?
+        "wave_N": 1,                     // 第幾個wave使用
+        "myturn": 0,                     // 我方的第幾回合? (從0開始)
+        "replace": "character_2"         // 取代我方的哪一個角色
       },
-      "character_2": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+
+      "stamina": {                       // 回復道具 (option.)
+        "use": true,                     // 是否使用?
+        "count": 1,                      // 一次使用的數量
+        "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
       },
-      "character_3": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+
+      "orb": {                           // orb or kirara skills (option.)
+        "orb_name": "ゆゆ式",             // 名稱 (使用者紀錄用的，可以隨便取名)
+        "1": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"}, // wave_N: 哪一個wave使用
+        "2": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"}, // myturn: 我方的第幾回合? (從0開始)
+        "3": {"use": false, "wave_N": 1, "myturn": 0, "target": "N"} // target: 施放對象'A', 'B', 'C' or 'N'(no target) 可忽略大小寫
+      },
+
+      "wave": {
+        "grayscale": true,            // 灰階模式。可參考opencv document
+        "confidence": 0.94,           // 相似度。可參考opencv document
+        "total": 3,                   // 此關有幾個wave
+        "1": {                        // wave1的戰鬥模式
+          "auto": true                // 是否全自動?
+        },
+        "2,3": {                      // wave2、wave3的戰鬥模式 (可用','連接)
+          "auto": false,          
+          "sp_weight_enable": true,   // 是否依照sp的權重(sp_weight)來分配sp使用。若否，則有sp時直接使用且不保留sp能量。
+          "character_1": {            // 角色1
+            "skill_priority": ["sp", "normal_atk"], // 技能施放優先順序 sp > normal_atk
+            "sp_weight": 9                          // 權重越高，代表sp使用比例越高 (相對於另外2隻角色)
+          },
+          "character_2": {            // 角色2
+            "skill_priority": ["sp", "weapon_sk", "sk2", "sk1", "normal_atk"], // 技能施放優先順序 sp > weapon_sk > sk2 > sk1 > normal_atk
+            "sp_weight": 2
+          },
+          "character_3": {            // 角色3
+            "skill_priority": ["sk2"] // 技能施放優先順序 sk2 > auto_button。 **如果沒有normal_atk則會使用auto_button**
+          }
+        }
       }
     },
-    "2": {
-      "auto": false,
-      "sp_weight_enable": true,
-      "character_1": {
-        "skill_priority": ["auto_button", "normal_atk"],
-        "sp_weight": 1
+    "8-26": {                         // 8-26範例
+      "loop_count": 100,
+      "crea_stop": true,
+      "stamina": {
+        "use": true,
+        "count": 1,
+        "priority": ["Au"]
       },
-      "character_2": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
-      },
-      "character_3": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+      "wave": {
+        "grayscale": true,
+        "confidence": 0.94,
+        "total": 1,
+        "1": {
+          "auto": true
+        }
       }
     },
-    "3": {
-      "auto": false,
-      "sp_weight_enable": false,
-      "character_1": {
-        "skill_priority": ["auto_button", "normal_atk"],
-        "sp_weight": 1
+    "event": {                       // event範例
+      "loop_count": 50,
+      "crea_stop": false,
+      "orb": {
+        "orb_name": "まほうつかい",
+        "3": {"use": true, "wave_N": 2, "myturn": 0, "target": "C"}
       },
-      "character_2": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
-      },
-      "character_3": {
-        "skill_priority": ["sp", "sk1", "sk2"],
-        "sp_weight": 1
+      "wave": {
+        "grayscale": true,
+        "confidence": 0.94,
+        "total": 3,
+        "1,2,3": {
+          "auto": false,
+          "character_1": {
+            "skill_priority": ["sp", "weapon_sk", "sk2", "sk1"]
+          },
+          "character_2": {
+            "skill_priority": ["weapon_sk", "normal_atk"]
+          },
+          "character_3": {
+            "skill_priority": ["weapon_sk", "sk1", "sp", "sk2", "normal_atk"]
+          }
+        }
+      }
+    },
+    "user_defined": {                // you can try to add and modify it
+      "grayscale": true,
+      "confidence": 0.94,
+      "total": 3,
+      "1,2,3": {
+        "auto": false,
+        "character_1": {
+          "skill_priority": []
+        },
+        "character_2": {
+          "skill_priority": []
+        },
+        "character_3": {
+          "skill_priority": []
+        }
       }
     }
   },
@@ -208,6 +247,7 @@ ex:
       "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
       "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
       "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]}
+      "home_page": {"x":0.19074, "y":-0.02228, "color": "None", "owner": ["bot"]}
     },
     "4:3": { // 4:3解析度。
              // 目前沒有實作，可參考16:9來增加，若使用4:3則"aspect_ratio"記得要改
@@ -257,12 +297,6 @@ ex:
 ```
 遊戲內技能或角色簡稱:
 !["naming"](./tutorial_img/naming.jpg)
-
-# TODO
-- [x] 這場結算頁面時，暫時停止(`z+o`)
-- [x] 能使用kirara Orb
-- [x] 能呼叫friend
-- [x] 遊戲crash自動重啟(只支援戰鬥中crash發生)
 
 # Major 3rd party library
 * [**keyboard**](https://pypi.org/project/keyboard/)
