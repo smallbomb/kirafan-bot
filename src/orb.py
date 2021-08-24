@@ -36,9 +36,9 @@ class Orb:
 
         self.__slide_out_orb_list()
         if self.__use_orb():
-            logging.info('orb action: use orb0%s success' % self.option)
+            logging.info(f'orb action: use orb0{self.option} success')
         else:
-            logging.info('orb action: use orb0%s failed' % self.option)
+            logging.info(f'orb action: use orb0{self.option} failed')
         self.use = False
         return True
 

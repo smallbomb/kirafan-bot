@@ -1,4 +1,4 @@
-from defined import List, Coord, Optional
+from defined import List, Coord, Optional, CharaID
 from typeguard import typechecked
 from data import uData
 from icon import Icon
@@ -8,8 +8,8 @@ from orb import Orb
 
 
 @typechecked
-def gen_circle_list(start: int, length: int) -> List:
-    lst = list(range(1, length + 1))
+def gen_circle_list(start: int, length: int, df_list: Optional[List] = None) -> List:
+    lst = df_list or list(range(1, length + 1))
     return lst[start - 1:] + lst[0:start - 1]
 
 
@@ -37,15 +37,16 @@ class Wave:
     def __init__(self, id_: int, total: int):
         _wave = uData.setting['wave']
         self.id = id_
-        self.ch_id = 3
+        self.ch_id = 'right'
+        self.__chara_list = ['left', 'middle', 'right']
         self.total = total
         self.__myTurn_count = 0
         self.auto = _wave[str(self.id)]['auto']
-        self.name = 'wave_{0}-{1}'.format(self.id, self.total)
+        self.name = f'wave_{self.id}-{self.total}'
         self.objects = Load_Objects("wave")
-        self.icon = Icon('{}.png'.format(self.name), _wave['confidence'], _wave['grayscale'])
+        self.icon = Icon(f'{self.name}.png', _wave['confidence'], _wave['grayscale'])
         if not self.auto:
-            self.characters = {str(i): Character(i, self.id) for i in range(1, 4)}
+            self.characters = {c: Character(c, self.id) for c in self.__chara_list}
             self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []  # noqa: E501
             self.orbs = self.__orb_init()
             self.__friend = uData.setting['friend_support'] if uData.setting['friend_support'] and uData.setting['friend_support']['wave_N'] == self.id else None  # noqa: E501
@@ -62,13 +63,13 @@ class Wave:
                     for value in self.__dict__[item]:
                         string += item + str(value) + "\n\n"
             else:
-                string += "{} = {}\n\n".format(item, self.__dict__[item])
+                string += "{item} = {self.__dict__[item]}\n\n"
         return string
 
-    def __sp_order_init(self) -> List:
+    def __sp_order_init(self) -> List[CharaID]:
         order = list()
-        for i in range(1, 4):
-            order = riffle(order, [i] * int(self.characters[str(i)].sp_use) * self.characters[str(i)].sp_weight)
+        for c in self.__chara_list:
+            order = riffle(order, [c] * int(self.characters[c].sp_use) * self.characters[c].sp_weight)
         return order
 
     def __orb_init(self) -> List:
@@ -85,8 +86,8 @@ class Wave:
         return True if self.icon.found() else False
 
     def update_characterID(self) -> bool:
-        for c in gen_circle_list(self.ch_id % 3 + 1, 3):
-            if self.characters[str(c)].current():
+        for c in gen_circle_list(self.__chara_list.index(self.ch_id) + 1, len(self.__chara_list), self.__chara_list):
+            if self.characters[c].current():
                 self.ch_id = c
                 return True
         return False
@@ -105,13 +106,13 @@ class Wave:
 
         self.objects['friend'].click(3)
         if self.objects['friend_ok'].found():
-            target = self.__friend['replace'].lower().replace('character_', 'friend_replace')
+            target = self.__friend['replace'].lower().replace('character', 'friend_replace')
             self.objects[target].click(3)
             self.objects['friend_ok'].click(3)
         return True
 
     def charater_action(self):
-        sk = self.characters[str(self.ch_id)].action(self.chars_sp_order)
+        sk = self.characters[self.ch_id].action(self.chars_sp_order)
         if sk == 'sp' and self.chars_sp_order:
             self.chars_sp_order.append(self.chars_sp_order.pop(0))
         self.__myTurn_count += 1
@@ -123,14 +124,14 @@ class Wave:
             self.__auto_button_multi_check = 0
 
     def is_myTurn(self) -> bool:
-        return self.objects['setting_button'].found() and self.characters[str(self.ch_id)].objects['normal_atk'].found()
+        return self.objects['setting_button'].found() and self.characters[self.ch_id].objects['normal_atk'].found()
 
     def get_icon_coord(self) -> Optional[Coord]:
         return self.icon.get_center()
 
     def reset(self):
         _wave = uData.setting['wave']
-        self.ch_id = 3
+        self.ch_id = 'right'
         self.__myTurn_count = 0
         if not self.auto:
             self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []  # noqa: E501
@@ -140,7 +141,7 @@ class Wave:
 
 # Test
 if __name__ == '__main__':
-    wave = Wave(1, 5)
+    wave = Wave(3, 3)
     print(wave.chars_sp_order)
     print(len(wave.orbs))
     print(wave.orbs)

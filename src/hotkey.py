@@ -56,9 +56,9 @@ class Hotkey:
     def __cmd_l(self):
         uData.reload()
         kirafan.reload()
-        logging.info('kirafan region = {}'.format(list(kirafan.region)))
+        logging.info(f'kirafan region = {list(kirafan.region)}')
         logging.info('reload setting.json finish')
-        logging.info('kirafan quest setting = \x1b[41m{}\x1b[0m'.format(kirafan.quest_name))
+        logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     def __cmd_m(self):
         if not self.monitor_job.is_alive():
@@ -83,7 +83,7 @@ class Hotkey:
         if tuple_files:
             print('miss icon files:')
             for i, tuple_file in enumerate(tuple_files):
-                print('  {}.{}'.format(i, tuple_file[0]))
+                print(f'  {i}.{tuple_file[0]}')
 
             sleep(0.1)
             if self.kb.kbhit():
@@ -100,7 +100,7 @@ class Hotkey:
 
     def __cmd_o(self):
         kirafan.stop_once = not kirafan.stop_once
-        logging.info('(%5s) kirafan-bot stop after current battle is completed' % str(kirafan.stop_once))
+        logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def __cmd_x(self):
         if self.square_job.is_alive():
@@ -123,10 +123,10 @@ class Hotkey:
         """
         tuple_f = (fname, fpath)
         """
-        print('Missing %s picture' % tuple_f[0])
-        print('move mouse to the %s top left corner, then press hotkey "z+3"' % tuple_f[0])
+        print(f'Missing {tuple_f[0]} picture')
+        print(f'move mouse to the {tuple_f[0]} top left corner, then press hotkey "z+3"')
         keyboard.wait('z+3')
-        print('move mouse to the %s bottom right corner, then press hotkey "z+4"' % tuple_f[0])
+        print(f'move mouse to the {tuple_f[0]} bottom right corner, then press hotkey "z+4"')
         keyboard.wait('z+4')
         Shot(tuple_f[0], tuple_f[1], self.positions[2].coord, self.positions[3].coord).screenshot()
 
@@ -147,4 +147,4 @@ class Hotkey:
         sleep(0.1)
         while self.kb.kbhit():
             self.kb.getch()
-        print("goodbye!")
+        print('goodbye!')

@@ -129,14 +129,14 @@ class BOT:
     def objects_found_all_print(self):
         print("objects found:")
         for object in Load_Objects('all').values():
-            print("  {:16s} {}".format(object.name, object.found()))
+            print(f'  {object.name:16} {object.found()}')
 
     def icons_found_all_print(self):
         print("icons found:")
         for icon in self.icons.values():
-            print("  {:16s} {}".format(icon.name, icon.get_center()))
+            print(f'  {icon.name:16} {icon.get_center()}')
         for wave in self.waves.values():
-            print("  {:16s} {}".format(wave.name, wave.get_icon_coord()))
+            print(f'  {wave.name:16} {wave.get_icon_coord()}')
 
     def detect_crashes(self) -> bool:
         self.__ck_crash_count += 1

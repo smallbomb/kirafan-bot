@@ -8,14 +8,14 @@ def check_basic_information(hotkey):
     if uData.region_is_init():
         uData.setting['game_region'] = hotkey.tutorial_region()
         kirafan.reload()
-    logging.info('kirafan region = {}'.format(list(kirafan.region)))
-    logging.info('kirafan quest setting = \x1b[41m{}\x1b[0m'.format(kirafan.quest_name))
+    logging.info(f'kirafan region = {list(kirafan.region)}'.format())
+    logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     tuple_files = kirafan.miss_icon_files()
     if tuple_files:
         print('miss icon files:')
         for tuple_file in tuple_files:
-            print('  {}'.format(tuple_file[1]))
+            print(f'  {tuple_file[1]}')
         print('you can press hotkey "z+c" to add a miss icon file')
 
 

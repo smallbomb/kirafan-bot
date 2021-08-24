@@ -104,7 +104,7 @@ ex:
         "use": false,                    // 是否使用?
         "wave_N": 1,                     // 第幾個wave使用
         "myturn": 0,                     // 我方的第幾回合? (從0開始)
-        "replace": "character_2"         // 取代我方的哪一個角色
+        "replace": "character_middle"    // 取代我方的哪一個角色
       },
 
       "stamina": {                       // 回復道具 (option.)
@@ -130,15 +130,15 @@ ex:
         "2,3": {                      // wave2、wave3的戰鬥模式 (可用','連接)
           "auto": false,          
           "sp_weight_enable": true,   // 是否依照sp的權重(sp_weight)來分配sp使用。若否，則有sp時直接使用且不保留sp能量。
-          "character_1": {            // 角色1
+          "character_left": {         // 角色(左)
             "skill_priority": ["sp", "normal_atk"], // 技能施放優先順序 sp > normal_atk
             "sp_weight": 9                          // 權重越高，代表sp使用比例越高 (相對於另外2隻角色)
           },
-          "character_2": {            // 角色2
+          "character_middle": {       // 角色(中)
             "skill_priority": ["sp", "weapon_sk", "sk2", "sk1", "normal_atk"], // 技能施放優先順序 sp > weapon_sk > sk2 > sk1 > normal_atk
             "sp_weight": 2
           },
-          "character_3": {            // 角色3
+          "character_right": {        // 角色(右)
             "skill_priority": ["sk2"] // 技能施放優先順序 sk2 > auto_button。 **如果沒有normal_atk則會使用auto_button**
           }
         }
@@ -174,13 +174,13 @@ ex:
         "total": 3,
         "1,2,3": {
           "auto": false,
-          "character_1": {
+          "character_left": {
             "skill_priority": ["sp", "weapon_sk", "sk2", "sk1"]
           },
-          "character_2": {
+          "character_middle": {
             "skill_priority": ["weapon_sk", "normal_atk"]
           },
-          "character_3": {
+          "character_right": {
             "skill_priority": ["weapon_sk", "sk1", "sp", "sk2", "normal_atk"]
           }
         }
@@ -192,13 +192,13 @@ ex:
       "total": 3,
       "1,2,3": {
         "auto": false,
-        "character_1": {
+        "character_left": {
           "skill_priority": []
         },
-        "character_2": {
+        "character_middle": {
           "skill_priority": []
         },
-        "character_3": {
+        "character_right": {
           "skill_priority": []
         }
       }
@@ -207,9 +207,9 @@ ex:
   "ratio": { // 主要用於開發者or需要更換比率的使用者
     "16:9": { // 模擬器16:9解析度
       // x,y 是座標在模擬器中的相對位置 (可用快捷建z+m或z+1~9偵測或紀錄)
-      "focus_ch1": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
-      "focus_ch2": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
-      "focus_ch3": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
+      "focus_ch_left": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
+      "focus_ch_middle": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
+      "focus_ch_right": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
       "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
@@ -233,9 +233,9 @@ ex:
       "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
       "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]},
       "friend": {"x":0.11695, "y":0.79109, "color": "ivory", "owner": ["wave"]},
-      "friend_replace1": {"x":0.61146, "y":0.44847, "color": "None", "owner": ["wave"]},
-      "friend_replace2": {"x":0.74568, "y":0.52786, "color": "None", "owner": ["wave"]},
-      "friend_replace3": {"x":0.87912, "y":0.44847, "color": "None", "owner": ["wave"]},
+      "friend_replace_left": {"x":0.61146, "y":0.44847, "color": "None", "owner": ["wave"]},
+      "friend_replace_middle": {"x":0.74568, "y":0.52786, "color": "None", "owner": ["wave"]},
+      "friend_replace_right": {"x":0.87912, "y":0.44847, "color": "None", "owner": ["wave"]},
       "friend_ok": {"x":0.84929, "y":0.93315, "color": "ivory", "owner": ["wave"]},
       "orb_entrypoint": {"x":0.88854, "y":0.83008, "color": "None", "owner": ["orb"]},
       "orb_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["orb"]},

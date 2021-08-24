@@ -1,11 +1,11 @@
 import logging
-from defined import List
+from defined import List, CharaID
 from data import uData
 from object import Load_Objects
 
 
 class Character:
-    def __init__(self, character_id: int, wave_id: int):
+    def __init__(self, character_id: CharaID, wave_id: int):
         _character = uData.setting['wave'][str(wave_id)]['character_{}'.format(character_id)]
         self.id = character_id
         self.wave_id = wave_id
@@ -19,16 +19,16 @@ class Character:
         return str(self.__class__) + ": " + str(self.__dict__)
 
     def current(self):
-        return self.objects['focus_ch{}'.format(self.id)].found()
+        return self.objects['focus_ch_{}'.format(self.id)].found()
 
-    def action(self, chars_sp_order: List) -> str:
+    def action(self, chars_sp_order: List[CharaID]) -> str:
         '''@return skillname which skill be used?
         '''
         ck_animate_cd = True
         sp_id = chars_sp_order[0] if chars_sp_order else self.id
 
         for sk in self.sk_priority:
-            logging.debug('character action: %s is checked now' % sk)
+            logging.debug(f'character action: {sk} is checked now')
             if self.__skill_is_ready(sk):
                 if sk == 'auto_button':
                     self.__action_auto_button()
@@ -44,12 +44,12 @@ class Character:
                     self.objects[sk].click(4)
                     if sk == 'weapon_sk' and self.current():
                         continue  # has no weapons
-                logging.debug('character action: %s finsih' % sk)
+                logging.debug(f'character action: {sk} finsih')
                 return sk
             elif ck_animate_cd and sk in ['sk1', 'sk2', 'weapon_sk']:
                 ck_animate_cd = False
                 if self.__action_cd_skill(sk):
-                    logging.debug('character action: %s finsih' % sk)
+                    logging.debug(f'character action: {sk} finsih')
                     return sk
 
     def __skill_is_ready(self, sk: str) -> bool:
@@ -61,7 +61,7 @@ class Character:
         # success: True, Failed: False
         if not self.objects['{}_cd'.format(sk)].found():
             return False
-        logging.debug('character action: try to click {} 0.5 sec (skill cd now?)'.format(sk))
+        logging.debug(f'character action: try to click {sk} 0.5 sec (skill cd now?)')
         self.objects[sk].click_sec(0.6, 0.13)
         if self.current():
             return False

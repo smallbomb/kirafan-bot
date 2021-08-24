@@ -14,7 +14,7 @@ def square():
         print('os not supported')
         return
     if uData.region_is_init():
-        print('seting.json[game_region]: invaild value')
+        print('bot_seting.json[game_region]: invaild value')
         return
     game_region = uData.setting['game_region']
     os.environ['SDL_VIDEO_WINDOW_POS'] = str(game_region[0]) + "," + str(game_region[1])

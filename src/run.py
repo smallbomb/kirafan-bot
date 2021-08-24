@@ -11,13 +11,13 @@ kirafan = BOT()
 def run():
     bot = threading.currentThread()
     logging.info('kirafan start...')
-    logging.info('loop_count = {} now'.format(kirafan.loop_count))
+    logging.info(f'loop_count = {kirafan.loop_count} now')
     while bot.is_running():
         if _is_battle_now():
             if kirafan.ck_timer_pause():
                 continue
             if kirafan.wave_change_flag:
-                logging.info('wave({}/{}) now...'.format(kirafan.wave_id, kirafan.wave_total))
+                logging.info(f'wave({kirafan.wave_id}/{kirafan.wave_total}) now...')
             _handle_battle_flows()
         else:
             # is not battle (maybe transitions, loading, sp animation, crash ... etc)
@@ -27,7 +27,7 @@ def run():
             elif _is_last_wave():
                 _handle_award_flows(bot)
             else:
-                logging.debug('transitions now...({}/{})'.format(kirafan.wave_id, kirafan.wave_total))
+                logging.debug(f'transitions now...({kirafan.wave_id}/{kirafan.wave_total})')
                 sleep(kirafan.sleep['wave_transitions'])
     logging.info('kirafan stop...')
 
@@ -49,11 +49,11 @@ def _handle_battle_flows():
         if wave.update_characterID():
             if wave.friend_action() or wave.orb_action():
                 return
-            logging.debug('character(%02d) action start' % wave.ch_id)
+            logging.debug(f'character({wave.ch_id:<6}) action start')
             wave.charater_action()
-            logging.debug('character(%02d) action finish' % wave.ch_id)
+            logging.debug(f'character({wave.ch_id:<6}) action finish')
         else:
-            logging.error('wave-{}/{}: character not found'.format(wave.id, wave.total))
+            logging.error(f'wave-{wave.id}/{wave.total}: character not found')
     else:
         kirafan.objects['center'].click_sec(1)
 
@@ -72,7 +72,7 @@ def _handle_award_flows(bot):
     if kirafan.icons['kirara_face'].scan(2):
         kirafan.wave_id = kirafan.wave_total + 1  # for wave reset.
         kirafan.loop_count -= 1
-        logging.debug("try to move next new battle")
+        logging.debug('try to move next new battle')
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click():
         _handle_ok_button(bot)
@@ -86,7 +86,7 @@ def _try_to_move_next_new_battle(bot):
     while bot.is_running():
         if _ck_move_to_next_battle(bot):
             logging.debug('player is moving to next battle...')
-            logging.info('loop_count = {} now'.format(kirafan.loop_count))
+            logging.info(f'loop_count = {kirafan.loop_count} now')
             sleep(kirafan.sleep['loading'])
             break
         elif not bot.is_running():
@@ -114,7 +114,7 @@ def _skip_award_result(bot):
         kirafan.stop_once = False
         bot.stop()
     elif kirafan.loop_count <= 0:
-        logging.info('loop_count(%d) less than or equal to 0' % kirafan.loop_count)
+        logging.info(f'loop_count({kirafan.loop_count}) less than or equal to 0')
         bot.stop()
 
     ct = 12
