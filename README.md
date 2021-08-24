@@ -21,13 +21,13 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 
 # Feature
 1. 針對性練技(芳文跳、武器...等)
-2. 刷簡易關卡 (手順不會變化)
+2. 刷簡易關卡 (手順不會變化的關卡)
 3. 自動續關
 4. 自動使用回體道具
 5. 可設定當天暫停時間(如:AM:03:50-04:01暫停bot)
 6. 偵測session clear
 7. 偵測作品珠任務
-8. 偵測遊戲crash，並嘗試回到戰鬥中 (**Note: 如果戰鬥結束發生，則無法回復**)
+8. 偵測遊戲crash，並嘗試回到戰鬥中 (**Note: 如果戰鬥結束時發生時，則無法回復**)
 
 # Installation
 windows 使用者可以[**點擊這裡**](https://github.com/smallbomb/kirafan-bot/releases)下載exe檔案來使用  
@@ -57,12 +57,12 @@ windows使用者可以用`z+x`叫出一個綠色框矩陣，接著將遊戲視�
 ex:
 !["z+x_example"](./tutorial_img/z+x_example.jpg)
 **又或者**  
-先將settion.json的game_region設為[0, 0, 1, 1]  
+先將bot_settion.json的game_region設為[0, 0, 1, 1]  
 再開啟exe程式，透過內建的互動式教學來設定game region  
 ex:
 !["resize"](./tutorial_img/resize.jpg)
 ## step2
-建議遊戲內的option設定如下
+建議遊戲內的戰鬥設定如下
 !["option"](./tutorial_img/option.jpg)
 ## step3
 根據個人需求編輯[bot_setting.json](#bot_settingjson-description)
@@ -72,8 +72,8 @@ ex:
 
 # bot_setting.json description
 一般使用者需要會改的設定
-* (一開始) game_region 的值 
-* (主要)   questList的內容(follow json format)，提供了範例('example', '8-26', 'event')，可供參考
+* (一開始) game_region 的值
+* (主要)   questList的內容，提供了範本('example', '8-26', 'event')，可供參考
 
 ```js
 {
@@ -113,11 +113,11 @@ ex:
         "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
       },
 
-      "orb": {                           // orb or kirara skills (option.)
+      "orb": {                           // orb skills (option.)
         "orb_name": "ゆゆ式",             // 名稱 (使用者紀錄用的，可以隨便取名)
         "1": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"}, // wave_N: 哪一個wave使用
         "2": {"use": true, "wave_N": 1, "myturn": 0, "target": "N"}, // myturn: 我方的第幾回合? (從0開始)
-        "3": {"use": false, "wave_N": 1, "myturn": 0, "target": "N"} // target: 施放對象'A', 'B', 'C' or 'N'(no target) 可忽略大小寫
+        "3": {"use": false, "wave_N": 1, "myturn": 0, "target": "N"} // target: 施放對象'A', 'B', 'C' or 'N'(no target)
       },
 
       "wave": {
