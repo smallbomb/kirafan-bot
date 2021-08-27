@@ -71,7 +71,7 @@ class BOT:
         if self.loop_count > 0:
             images += ['again.png']
         if self.data['crash_detection']:
-            images += ['kirara_game_icon.png', 'start_screen.png']
+            images += ['kirafan_app_icon.png', 'start_screen.png']
         icons = [Icon(image, self.data['common_confidence']) for image in images]
         return {icon.name: icon for icon in icons}
 
@@ -149,7 +149,7 @@ class BOT:
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:
                 self.objects['center_left'].click()
-                return self.icons['kirara_game_icon'].click() or self.icons['start_screen'].found()
+                return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
         return False
 
     def ck_timer_pause(self) -> bool:

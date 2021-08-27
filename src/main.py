@@ -24,8 +24,8 @@ def main():
         hotkey = Hotkey('rslmptcox')
         logging.info("hotkey setting finish...")
         check_basic_information(hotkey)
-        print('please press \'q\' button to exit...')
-        hotkey.wait('q')
+        print('please press \'f3\' button to exit...')
+        hotkey.wait('f3')
         hotkey.safe_exit()
     except KeyboardInterrupt:
         hotkey.safe_exit()
