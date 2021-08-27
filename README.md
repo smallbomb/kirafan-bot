@@ -8,16 +8,6 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 
 [kirarafantasia遊戲](https://kirarafantasia.com/)機器人。可自動練技能，類似按鍵精靈。
 
-**個人常用關卡**
-* [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502) (**recommend**👍)
-* [ゆゆ式 (作家クエスト)](https://wiki.kirafan.moe/#/quest/5004290)
-* [New Game (作家クエスト)](https://wiki.kirafan.moe/#/quest/5001270)
-* [外傳14-15節](https://wiki.kirafan.moe/#/quest/1108640)
-* [6-31](https://wiki.kirafan.moe/#/quest/1106310)
-* [8-26(rank up)](https://wiki.kirafan.moe/#/quest/1108261)
-* [チノ專武關卡](https://wiki.kirafan.moe/#/quest/43001200)
-
-可參考[おすすめスキル上げ](https://wikiwiki.jp/kirarafan/%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E3%82%B9%E3%82%AD%E3%83%AB%E4%B8%8A%E3%81%92)說明
 
 # Feature
 1. 針對性練技(芳文跳、武器...等)
@@ -28,6 +18,19 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 6. 偵測session clear
 7. 偵測作品珠任務
 8. 偵測遊戲crash，並嘗試回到戰鬥中 (**Note: 如果戰鬥結束時發生時，則無法回復**)
+
+
+# Frequently used quest
+* [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502) (**recommend**👍)
+* [ゆゆ式 (作家クエスト)](https://wiki.kirafan.moe/#/quest/5004290)
+* [New Game (作家クエスト)](https://wiki.kirafan.moe/#/quest/5001270)
+* [外傳14-15節](https://wiki.kirafan.moe/#/quest/1108640)
+* [6-31](https://wiki.kirafan.moe/#/quest/1106310)
+* [8-26(rank up)](https://wiki.kirafan.moe/#/quest/1108261)
+* [チノ專武關卡](https://wiki.kirafan.moe/#/quest/43001200)
+
+可參考[おすすめスキル上げ](https://wikiwiki.jp/kirarafan/%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E3%82%B9%E3%82%AD%E3%83%AB%E4%B8%8A%E3%81%92)說明
+
 
 # Installation
 windows 使用者可以[**點擊這裡**](https://github.com/smallbomb/kirafan-bot/releases)下載exe檔案來使用  
