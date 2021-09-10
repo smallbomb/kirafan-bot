@@ -14,10 +14,10 @@ def run():
     logging.info(f'loop_count = {kirafan.loop_count} now')
     while bot.is_running():
         if _is_battle_now():
-            if kirafan.ck_timer_pause():
-                continue
             if kirafan.wave_change_flag:
                 logging.info(f'wave({kirafan.wave_id}/{kirafan.wave_total}) now...')
+            if kirafan.ck_timer_pause():
+                continue
             _handle_battle_flows()
         else:
             # is not battle (maybe transitions, loading, sp animation, crash ... etc)

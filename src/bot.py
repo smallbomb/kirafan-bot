@@ -1,6 +1,6 @@
 import logging
 from typeguard import typechecked
-from defined import Optional, Tuple, Dict
+from defined import Tuple, Dict
 from data import uData
 from wave import Wave, gen_circle_list
 from icon import Icon
@@ -103,7 +103,7 @@ class BOT:
                 return True
         return False
 
-    def get_current_wave(self) -> Optional[Wave]:
+    def get_current_wave(self) -> Wave:
         return self.waves[str(self.wave_id)]
 
     def use_stamina(self) -> bool:
@@ -165,8 +165,10 @@ class BOT:
             end_time = datetime.strptime(str(datetime.now().date()) + "T" + end_clock, "%Y-%m-%dT%H:%M:%S")
             now_time = datetime.now()
             if time_in_range(start_time, end_time, datetime.now()):
-                self.objects['center'].click(3)  # advoid auto mode
-                wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1))
+                if self.get_current_wave().is_myTurn():
+                    wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1))
+                else:
+                    self.objects['center'].click(3)  # advoid auto mode
                 return True
         return False
 
