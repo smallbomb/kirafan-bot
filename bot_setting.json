@@ -28,8 +28,7 @@
       },
       "stamina": {
         "use": true,
-        "count": 1,
-        "priority": ["Cu", "Ag", "Au"]
+        "priority": ["Cu:7", "Ag", "Au"]
       },
       "orb": {
         "orb_name": "ゆゆ式",
@@ -66,7 +65,6 @@
       "crea_stop": true,
       "stamina": {
         "use": true,
-        "count": 1,
         "priority": ["Au"]
       },
       "wave": {

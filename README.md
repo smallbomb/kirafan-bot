@@ -112,8 +112,7 @@ ex:
 
       "stamina": {                       // 回復道具 (option.)
         "use": true,                     // 是否使用?
-        "count": 1,                      // 一次使用的數量
-        "priority": ["Cu", "Ag", "Au"]   // 銅:Cu, 銀:Ag, 金:Au (可以只填一種 如: ["Ag"])
+        "priority": ["Cu:7", "Ag", "Au"] // 銅:Cu, 銀:Ag, 金:Au。 Cu:7表示一次使用7個銅錶，用':'符號來區隔數量。(預設數量1個) **一次只使用一種類型的錶，當優先度高的用完才會換優先度低的錶
       },
 
       "orb": {                           // orb skills (option.)
@@ -152,7 +151,6 @@ ex:
       "crea_stop": true,
       "stamina": {
         "use": true,
-        "count": 1,
         "priority": ["Au"]
       },
       "wave": {
