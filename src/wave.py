@@ -124,6 +124,8 @@ class Wave:
             self.__auto_button_multi_check = 0
 
     def is_myTurn(self) -> bool:
+        if self.auto:
+            return self.objects['setting_button'].found()
         return self.objects['setting_button'].found() and self.characters[self.ch_id].objects['normal_atk'].found()
 
     def get_icon_coord(self) -> Optional[Coord]:
