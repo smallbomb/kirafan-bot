@@ -107,11 +107,12 @@ class BOT:
         return self.waves[str(self.wave_id)]
 
     def use_stamina(self) -> bool:
-        for s in self.stamina['priority']:
-            if self.objects['stamina_{}'.format(s)].found():
-                self.objects['stamina_{}'.format(s)].click(2, 0.5)
-                if self.stamina['count'] > 1:
-                    self.objects['stamina_add'].click(self.stamina['count'] - 1)
+        for item_count in self.stamina['priority']:
+            item, count = (item_count.split(":") + ['1'])[:2]
+            if self.objects[f'stamina_{item}'].found() and int(count) > 0:
+                self.objects[f'stamina_{item}'].click(2, 0.5)
+                if int(count) > 1:
+                    self.objects['stamina_add'].click(int(count) - 1)
                 self.objects['stamina_hai'].click(8)
                 return True
         return False
