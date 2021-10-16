@@ -20,7 +20,7 @@ class Hotkey:
         self.monitor_job = Job(target=monitor_mode)
         self.kb = KBHit()
         self.positions = [Position(_id) for _id in range(1, 10)]
-        self.keys = ['z+{}'.format(i) for i in (list(range(1, 10)) + list(keys))]
+        self.keys = [f'z+{i}' for i in (list(range(1, 10)) + list(keys))]
         for key in self.keys:
             keyboard.add_hotkey(key, self.__user_command, args=[key[-1]])
 

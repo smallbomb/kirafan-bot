@@ -61,7 +61,7 @@ class BOT:
                 for value in self.__dict__[item].values():
                     string += item + str(value) + "\n"
             else:
-                string += "{} = {}\n\n".format(item, self.__dict__[item])
+                string += f"{item} = {self.__dict__[item]}\n\n"
         return string
 
     def __load_icons(self) -> Dict:

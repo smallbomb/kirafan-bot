@@ -6,7 +6,7 @@ from object import Load_Objects
 
 class Character:
     def __init__(self, character_id: CharaID, wave_id: int):
-        _character = uData.setting['wave'][str(wave_id)]['character_{}'.format(character_id)]
+        _character = uData.setting['wave'][str(wave_id)][f'character_{character_id}']
         self.id = character_id
         self.wave_id = wave_id
         self.objects = Load_Objects("character")
@@ -19,7 +19,7 @@ class Character:
         return str(self.__class__) + ": " + str(self.__dict__)
 
     def current(self):
-        return self.objects['focus_ch_{}'.format(self.id)].found()
+        return self.objects[f'focus_ch_{self.id}'].found()
 
     def action(self, chars_sp_order: List[CharaID]) -> str:
         '''@return skillname which skill be used?
@@ -59,7 +59,7 @@ class Character:
 
     def __action_cd_skill(self, sk: str) -> bool:
         # success: True, Failed: False
-        if not self.objects['{}_cd'.format(sk)].found():
+        if not self.objects[f'{sk}_cd'].found():
             return False
         logging.debug(f'character action: try to click {sk} 0.5 sec (skill cd now?)')
         self.objects[sk].click_sec(0.6, 0.13)
