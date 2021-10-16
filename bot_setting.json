@@ -5,6 +5,13 @@
   "aspect_ratio": "16:9",
   "common_confidence": 0.8,
   "crash_detection": false,
+  "adb": {
+    "use": false,
+    "path": "C:\\Users\\user\\Desktop\\platform-tools\\adb.exe",
+    "serial": "emulator-5554",
+    "resolution": [1280, 720],
+    "emulator_in_background": true
+  },
   "set_timer": {
     "use": false,
     "pause_range": "02:50:00-03:01:00"

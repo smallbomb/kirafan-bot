@@ -23,7 +23,7 @@ class _UserData():
         with open('bot_setting.json', encoding="utf-8") as f:
             data = json.load(f)
         data['ratio'] = data['ratio'][data['aspect_ratio']]
-        data['game_region'] = tuple(data['game_region'])
+        data['game_region'] = tuple(data['game_region'][:2] + data['adb']['resolution']) if data['adb']['use'] else tuple(data['game_region'])  # noqa: E501
         data['quest_selector'] = data['questList']['quest_selector']
         quest = data['questList'][data['quest_selector']]
         data['loop_count'] = quest['loop_count']

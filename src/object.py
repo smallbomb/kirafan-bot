@@ -3,6 +3,7 @@ from time import time, sleep
 from typeguard import typechecked
 from defined import Coord, RGB, Ratio, Owner, Dict
 from data import uData
+from adb import adb
 
 
 @typechecked
@@ -18,6 +19,10 @@ class Object():
         self.rgb_kname = rgb_kname
         self.rgb = rgb
         self.__tolerance = tolerance
+        adb_use = uData.setting['adb']['use']
+        emulator_in_background = uData.setting['adb']['emulator_in_background']
+        self.__click = adb.click if adb_use else pyautogui.click
+        self.__pixelMatchesColor = adb.pixelMatchesColor if adb_use and emulator_in_background else pyautogui.pixelMatchesColor
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
@@ -25,7 +30,7 @@ class Object():
     def found(self) -> bool:
         while True:
             try:
-                return pyautogui.pixelMatchesColor(*self.coord, self.rgb, tolerance=self.__tolerance)
+                return self.__pixelMatchesColor(*self.coord, self.rgb, tolerance=self.__tolerance)
             except WindowsError:
                 sleep(0.2)
 
@@ -35,7 +40,7 @@ class Object():
         return (int(round(x0 + ratioX * width)), int(round(y0 + ratioY * height)))
 
     def click(self, times: int = 1, interval: float = uData.setting['sleep']['click']):
-        pyautogui.click(*self.coord, times, interval)
+        self.__click(*self.coord, times, interval)
         sleep(interval)
 
     def click_sec(self, sec: float = 0.0, interval: float = 1.0):
@@ -44,13 +49,13 @@ class Object():
         duration = 0.0
         t0 = round(time(), 1)
         while duration < sec:
-            pyautogui.click(*self.coord)
+            self.__click(*self.coord)
             if sec - duration >= interval:
                 sleep(interval)
             else:
                 sleep(sec - duration)
             duration = round(time(), 1) - t0
-        pyautogui.click(*self.coord)
+        self.__click(*self.coord)
 
 
 @typechecked

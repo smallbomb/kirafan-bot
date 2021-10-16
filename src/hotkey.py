@@ -4,6 +4,7 @@ from time import sleep
 from typeguard import typechecked
 from defined import Region, Tuple
 from data import uData
+from adb import adb
 from thread import Job
 from kbhit import KBHit
 from window import square
@@ -55,6 +56,7 @@ class Hotkey:
 
     def __cmd_l(self):
         uData.reload()
+        adb.reload()
         kirafan.reload()
         logging.info(f'kirafan region = {list(kirafan.region)}')
         logging.info('reload setting.json finish')
