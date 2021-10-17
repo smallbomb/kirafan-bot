@@ -21,6 +21,8 @@ class _Adb():
         self.__tap_cmd = f'{adb_path} {adb_option} shell input tap'
         self.__sreencap_cmd = f'{adb_path} {adb_option} shell screencap'
         self.__swipe_cmd = f'{adb_path} {adb_option} shell input swipe'
+        self.__stop_app = f'{adb_path} {adb_option} shell am force-stop com.aniplex.kirarafantasia'
+        self.__start_app = f'{adb_path} {adb_option} shell monkey -p com.aniplex.kirarafantasia -c android.intent.category.LAUNCHER 1'  # noqa: E501
         self.__pixelformat = None
         self.__offsetXY = uData.setting['game_region'][:2]
 
@@ -97,6 +99,11 @@ class _Adb():
         _x1, _y1 = x1 - self.__offsetXY[0], y1 - self.__offsetXY[1]
         pipe = _shell_command(f'{self.__swipe_cmd} {_x0} {_y0} {_x1} {_y1} {duration * 1000}')
         pipe.wait()
+
+    def restart_app(self) -> bool:
+        _shell_command(self.__stop_app).wait()
+        _shell_command(self.__start_app).wait()
+        return True
 
     def reload(self):
         self.__init__()

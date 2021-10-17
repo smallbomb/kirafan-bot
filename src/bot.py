@@ -2,6 +2,7 @@ import logging
 from typeguard import typechecked
 from defined import Tuple, Dict
 from data import uData
+from adb import adb
 from wave import Wave, gen_circle_list
 from icon import Icon
 from object import Load_Objects
@@ -53,6 +54,7 @@ class BOT:
         self.waves = self.__load_waves()
         self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
+        self.__adb_use = self.data['adb']['use']
 
     def __str__(self) -> str:
         string = str(self.__class__) + ":\n"
@@ -149,8 +151,11 @@ class BOT:
             if self.__ck_crash_count > 100:  # try to move mouse and then click.
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:
-                self.objects['center_left'].click()
-                return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
+                if self.__adb_use:
+                    return adb.restart_app()
+                else:
+                    self.objects['center_left'].click()
+                    return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
         return False
 
     def ck_timer_pause(self) -> bool:
