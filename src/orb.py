@@ -62,13 +62,11 @@ class Orb:
         self.objects['target_cancel'].click(1, 1.5)
 
     def __slide_out_orb_list(self):
+        destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
+        destY = self.objects['entrypoint'].coord[1]
         if uData.setting['adb']['use']:
-            destX = uData.setting['adb']['resolution'][0]
-            destY = self.objects['entrypoint'].coord[1]
             adb.swipe(*self.objects['entrypoint'].coord, destX, destY, 1)
         else:
-            destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
-            destY = self.objects['entrypoint'].coord[1]
             pyautogui.moveTo(*self.objects['entrypoint'].coord)
             pyautogui.dragTo(destX, destY, 1, button='left')
 
