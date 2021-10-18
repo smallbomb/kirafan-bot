@@ -77,7 +77,7 @@ ex:
 一般使用者需要會改的設定
 * (一開始) game_region 的值
 * (主要)   questList的內容，提供了範本('example', '8-26', 'event')，可供參考
-* (進階)   支援adb工具，關於adb可參考[這裡](#support-adb)
+* (進階)   支援adb工具，關於adb可參考[這裡](#support-adb-tool)
 ```js
 {
   "loglevel": "info",                  // 可以設定loglevel: debug, info, warning, error, critical。**更改設定時需要重新啟動bot程式才會生效**
