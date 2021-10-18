@@ -7,7 +7,7 @@
   "crash_detection": false,
   "adb": {
     "use": false,
-    "path": "C:\\Users\\user\\Desktop\\platform-tools\\adb.exe",
+    "path": "C:\\path\\adb.exe",
     "serial": "emulator-5554",
     "resolution": [1280, 720],
     "emulator_in_background": true
