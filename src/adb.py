@@ -10,7 +10,7 @@ from data import uData
 
 @typechecked
 def _shell_command(cmd: str):
-    return Popen(cmd, stdin=PIPE, stdout=PIPE)
+    return Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
 
 @typechecked
@@ -29,7 +29,10 @@ class _Adb():
     def _screenshot(self, grayscale: bool = False):
         img_bytes = None
         if self.__pixelformat is None:
-            img_bytes = _shell_command(self.__sreencap_cmd).stdout.read().replace(b'\r\n', b'\n')
+            out, err = _shell_command(self.__sreencap_cmd).communicate()
+            if err:
+                raise Exception(err.decode('utf8'))
+            img_bytes = out.replace(b'\r\n', b'\n')
             self.__width = int.from_bytes(img_bytes[:4], byteorder='little')
             self.__height = int.from_bytes(img_bytes[4:8], byteorder='little')
             self.__pixelformat = int.from_bytes(img_bytes[8:12], byteorder='little')
