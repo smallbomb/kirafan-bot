@@ -18,6 +18,7 @@ class _Adb():
     def __init__(self):
         adb_path = path.normpath(uData.setting["adb"]["path"])
         adb_option = f'-s {uData.setting["adb"]["serial"]}' if len(uData.setting["adb"]["serial"]) > 0 else ''
+        self.__devices_cmd = f'{adb_path} {adb_option} devices'  # init device connection
         self.__tap_cmd = f'{adb_path} {adb_option} shell input tap'
         self.__sreencap_cmd = f'{adb_path} {adb_option} shell screencap'
         self.__swipe_cmd = f'{adb_path} {adb_option} shell input swipe'
@@ -29,6 +30,7 @@ class _Adb():
     def _screenshot(self, grayscale: bool = False):
         img_bytes = None
         if self.__pixelformat is None:
+            _shell_command(self.__devices_cmd).communicate()
             out, err = _shell_command(self.__sreencap_cmd).communicate()
             if err:
                 raise Exception(err.decode('utf8'))
