@@ -55,7 +55,6 @@ class BOT:
         self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
 
-
     def __str__(self) -> str:
         string = str(self.__class__) + ":\n"
         for item in self.__dict__:
