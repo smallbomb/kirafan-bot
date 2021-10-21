@@ -72,7 +72,7 @@ class BOT:
             images += ['stamina_Au.png']
         if self.loop_count > 0:
             images += ['again.png']
-        if self.data['crash_detection']:
+        if self.data['crash_detection'] and not self.__adb_use:
             images += ['kirafan_app_icon.png', 'start_screen.png']
         icons = [Icon(image, self.data['common_confidence']) for image in images]
         return {icon.name: icon for icon in icons}
