@@ -11,9 +11,8 @@ from adb import adb
 @typechecked
 class Icon:
     def __init__(self, fname: str, confidence: float, grayscale: bool = False):
-        self.path = path.join(uData.setting['img_dir'], fname)
         self.name = fname[0:-4]
-        # self.path has two type for adb feature performance
+        self.path = path.join(uData.setting['img_dir'], fname)
         self.__confidence = confidence
         self.__grayscale = grayscale
         self.__region = uData.setting['game_region']

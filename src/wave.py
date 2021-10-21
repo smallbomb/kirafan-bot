@@ -108,7 +108,7 @@ class Wave:
         if self.objects['friend_ok'].found(True):  # found it because player's character maybe less than 3.
             target = self.__friend['replace'].lower().replace('character', 'friend_replace')
             self.objects[target].click(3)
-            self.objects['friend_ok'].click(2, 2.5)  # sleep 2*2.5 = 5s
+        self.objects['friend_ok'].click(2, 2.5)  # for sleep 2*2.5 = 5s
         return True
 
     def charater_action(self):
@@ -119,7 +119,7 @@ class Wave:
 
     def auto_click(self):
         if self.objects['auto_button'].found(False):  # auto_button is blue
-            self.__auto_button_multi_check += 0
+            self.__auto_button_multi_check = 0
         else:
             self.__auto_button_multi_check += 1
 

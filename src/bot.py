@@ -54,7 +54,7 @@ class BOT:
         self.waves = self.__load_waves()
         self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
-        self.__adb_use = self.data['adb']['use']
+
 
     def __str__(self) -> str:
         string = str(self.__class__) + ":\n"
@@ -72,7 +72,7 @@ class BOT:
             images += ['stamina_Au.png']
         if self.loop_count > 0:
             images += ['again.png']
-        if self.data['crash_detection'] and not self.__adb_use:
+        if self.data['crash_detection'] and not self.data['adb']['use']:
             images += ['kirafan_app_icon.png', 'start_screen.png']
         icons = [Icon(image, self.data['common_confidence']) for image in images]
         return {icon.name: icon for icon in icons}
@@ -152,7 +152,7 @@ class BOT:
             if self.__ck_crash_count > 100:  # try to move mouse and then click.
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:
-                if self.__adb_use:
+                if self.data['adb']['use']:
                     return adb.restart_app()
                 else:
                     self.objects['center_left'].click()
@@ -196,7 +196,6 @@ class BOT:
         self.waves = self.__load_waves()
         self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
-        self.__adb_use = self.data['adb']['use']
 
 
 # Test
