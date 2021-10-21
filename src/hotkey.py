@@ -36,7 +36,7 @@ class Hotkey:
             self.__call(key)
 
     def __call(self, key: str):
-        method_name = '_Hotkey__cmd_%s' % key
+        method_name = f'_Hotkey__cmd_{key}'
         getattr(self, method_name)()
 
     def __cmd_r(self):
@@ -75,6 +75,7 @@ class Hotkey:
 
     def __cmd_t(self):
         print('')
+        adb.set_update_cv2_IM_cache_flag()
         kirafan.objects_found_all_print()
         kirafan.icons_found_all_print()
         print('')

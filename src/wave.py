@@ -82,13 +82,13 @@ class Wave:
                 lst.append(Orb(str(i)))
         return lst
 
-    def current(self) -> bool:
-        return True if self.icon.found() else False
+    def current(self, adb_update_cache: bool) -> bool:
+        return True if self.icon.found(adb_update_cache) else False
 
-    def update_characterID(self) -> bool:
+    def character_found(self) -> bool:
         for c in gen_circle_list(self.__chara_list.index(self.ch_id) + 1, len(self.__chara_list), self.__chara_list):
-            if self.characters[c].current():
-                self.ch_id = c
+            if self.characters[c].ready(False):
+                self.ch_id = c  # update current character ID
                 return True
         return False
 
@@ -101,14 +101,14 @@ class Wave:
     def friend_action(self) -> bool:
         if self.__friend is None or ('use' in self.__friend and not self.__friend['use']) or self.__myTurn_count != self.__friend['myturn']:  # noqa: E501
             return False
-        elif not self.objects['friend'].found():
+        elif not self.objects['friend'].found(False):
             return False
 
         self.objects['friend'].click(3)
-        if self.objects['friend_ok'].found():
+        if self.objects['friend_ok'].found(True):  # found it because player's character maybe less than 3.
             target = self.__friend['replace'].lower().replace('character', 'friend_replace')
             self.objects[target].click(3)
-            self.objects['friend_ok'].click(3)
+            self.objects['friend_ok'].click(2, 2.5)  # sleep 2*2.5 = 5s
         return True
 
     def charater_action(self):
@@ -118,18 +118,23 @@ class Wave:
         self.__myTurn_count += 1
 
     def auto_click(self):
-        self.__auto_button_multi_check = (self.__auto_button_multi_check + 1) if not self.objects['auto_button'].found() else 0
+        if self.objects['auto_button'].found(False):  # auto_button is blue
+            self.__auto_button_multi_check += 0
+        else:
+            self.__auto_button_multi_check += 1
+
         if self.__auto_button_multi_check > 2:
             self.objects['auto_button'].click()
             self.__auto_button_multi_check = 0
 
     def is_myTurn(self) -> bool:
         if self.auto:
-            return self.objects['setting_button'].found()
-        return self.objects['setting_button'].found() and self.characters[self.ch_id].objects['normal_atk'].found()
+            return self.objects['setting_button'].found(False)
+        return (self.objects['setting_button'].found(False) and
+                self.characters[self.ch_id].objects['normal_atk'].found(False))
 
-    def get_icon_coord(self) -> Optional[Coord]:
-        return self.icon.get_center()
+    def icon_coord(self, adb_update_cache: bool) -> Optional[Coord]:
+        return self.icon.get_center(adb_update_cache)
 
     def reset(self):
         _wave = uData.setting['wave']

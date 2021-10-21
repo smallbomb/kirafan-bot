@@ -27,7 +27,9 @@ class Object():
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def found(self) -> bool:
+    def found(self, adb_update_cache: bool = True) -> bool:
+        if adb_update_cache:
+            adb.set_update_cv2_IM_cache_flag()
         while True:
             try:
                 return self.__pixelMatchesColor(*self.coord, self.rgb, tolerance=self.__tolerance)

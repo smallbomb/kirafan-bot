@@ -34,10 +34,7 @@ def run():
 
 @typechecked
 def _is_battle_now() -> bool:
-    if kirafan.update_waveID():
-        return True
-    else:
-        return False
+    return kirafan.wave_icon_found()
 
 
 def _handle_battle_flows():
@@ -46,7 +43,7 @@ def _handle_battle_flows():
     if wave.auto:
         wave.auto_click()
     elif wave.is_myTurn():
-        if wave.update_characterID():
+        if wave.character_found():
             if wave.friend_action() or wave.orb_action():
                 return
             logging.debug(f'character({wave.ch_id:<6}) action start')
@@ -74,7 +71,7 @@ def _handle_award_flows(bot):
         kirafan.loop_count -= 1
         logging.debug('try to move next new battle')
         _try_to_move_next_new_battle(bot)
-    elif kirafan.icons['ok'].click():
+    elif kirafan.icons['ok'].click(False):
         _handle_ok_button(bot)
     else:
         logging.debug('still loading now...')
@@ -92,10 +89,11 @@ def _try_to_move_next_new_battle(bot):
         elif not bot.is_running():
             # insufficient stamina items.
             break
-        elif kirafan.icons['ok'].click():
+        elif kirafan.icons['ok'].click(False):
             # if event is session clear, bot will not resume battle. because of batttle finish.
+            # if event is poor internet connection, just click it.
             logging.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
-        elif kirafan.stamina['use'] and kirafan.icons['tojiru'].click():
+        elif kirafan.stamina['use'] and kirafan.icons['tojiru'].click(False):
             # disconnection after using stamina
             sleep(0.5)
             kirafan.icons['again'].click()
@@ -122,11 +120,11 @@ def _skip_award_result(bot):
         kirafan.objects['center_left'].click(ct)
         if kirafan.icons['again'].click():
             break
-        elif kirafan.crea_stop and kirafan.objects['center_left'].found() and kirafan.icons['tojiru'].found():
+        elif kirafan.crea_stop and kirafan.objects['center_left'].found(False) and kirafan.icons['tojiru'].found(False):
             logging.info('crea_stop: appear crea mission')
             bot.stop()
-        elif kirafan.icons['tojiru'].click():
-            logging.debug('icon: tojiru icon found')
+        elif kirafan.icons['tojiru'].click(False):
+            logging.debug('icon: tojiru icon found. (Is character\'s crea mission?)')
             ct = 8
         else:
             logging.error('icon: again.png not found...')

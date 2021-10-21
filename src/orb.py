@@ -48,7 +48,7 @@ class Orb:
             self.objects['option'].click(2)
             self.__click_target()
         if self.objects['cancel'].found():
-            self.objects['cancel'].click(3)
+            self.objects['cancel'].click(2)
             return False
         else:
             return True
@@ -57,9 +57,9 @@ class Orb:
         self.objects['option_submit'].click(1, 0.5)
         try:
             self.objects['target'].click(3)
-        except KeyError:
+        except KeyError:  # target is 'N'
             pass
-        self.objects['target_cancel'].click(1, 1.5)
+        self.objects['target_cancel'].click(1, 1)
 
     def __slide_out_orb_list(self):
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1

@@ -28,7 +28,7 @@ def wait_until(time: datetime):
         if wait_s < 0:
             break
         if (now_time - log_t).total_seconds() > 60:
-            s = '倒數: {:02d}時 {:02d}分 {:02d}秒, 現在時間: {:s} 結束暫停時間: {:s}'
+            s = 'Countdown: {:02d}H {:02d}M {:02d}S, Now: {:s}, End of pause: {:s}'
             logging.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
                                   now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
             log_t = now_time
@@ -81,7 +81,7 @@ class BOT:
         return {str(wave_id): Wave(wave_id, self.wave_total)
                 for wave_id in range(1, self.wave_total + 1)}
 
-    def __update_value(self, new_waveid: int):
+    def __update_waveID(self, new_waveid: int):
         '''wave id was found and then update some value.
         '''
         if self.wave_id != new_waveid:
@@ -98,10 +98,11 @@ class BOT:
         self.__ck_crash_count = 0
         self.wave_id = new_waveid
 
-    def update_waveID(self) -> bool:
+    def wave_icon_found(self) -> bool:
+        adb.set_update_cv2_IM_cache_flag()
         for new_wid in gen_circle_list(self.wave_id, self.wave_total):
-            if self.waves[str(new_wid)].current():
-                self.__update_value(new_wid)
+            if self.waves[str(new_wid)].current(False):
+                self.__update_waveID(new_wid)
                 return True
         return False
 
@@ -111,7 +112,7 @@ class BOT:
     def use_stamina(self) -> bool:
         for item_count in self.stamina['priority']:
             item, count = (item_count.split(":") + ['1'])[:2]
-            if self.objects[f'stamina_{item}'].found() and int(count) > 0:
+            if self.objects[f'stamina_{item}'].found(False) and int(count) > 0:
                 self.objects[f'stamina_{item}'].click(2, 0.5)
                 if int(count) > 1:
                     self.objects['stamina_add'].click(int(count) - 1)
@@ -132,14 +133,14 @@ class BOT:
     def objects_found_all_print(self):
         print("objects found:")
         for object in Load_Objects('all').values():
-            print(f'  {object.name:16} {object.found()}')
+            print(f'  {object.name:22} {object.found(False)}')
 
     def icons_found_all_print(self):
         print("icons found:")
         for icon in self.icons.values():
-            print(f'  {icon.name:16} {icon.get_center()}')
+            print(f'  {icon.name:22} {icon.get_center(False)}')
         for wave in self.waves.values():
-            print(f'  {wave.name:16} {wave.get_icon_coord()}')
+            print(f'  {wave.name:22} {wave.icon_coord(False)}')
 
     def detect_crashes(self) -> bool:
         self.__ck_crash_count += 1
@@ -195,6 +196,7 @@ class BOT:
         self.waves = self.__load_waves()
         self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
+        self.__adb_use = self.data['adb']['use']
 
 
 # Test

@@ -18,8 +18,8 @@ class Character:
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def current(self):
-        return self.objects[f'focus_ch_{self.id}'].found()
+    def ready(self, adb_update_cache: bool):
+        return self.objects[f'focus_ch_{self.id}'].found(adb_update_cache)
 
     def action(self, chars_sp_order: List[CharaID]) -> str:
         '''@return skillname which skill be used?
@@ -35,14 +35,14 @@ class Character:
                 elif sk == 'sp':
                     if self.id == sp_id:
                         self.__action_sp()
-                    elif self.objects['sp_charge2'].found():
+                    elif self.objects['sp_charge2'].found(False):
                         self.__action_sp()
                         sk += '2'
                     else:
                         continue
                 else:
                     self.objects[sk].click(4)
-                    if sk == 'weapon_sk' and self.current():
+                    if sk == 'weapon_sk' and self.ready(True):
                         continue  # has no weapons
                 logging.debug(f'character action: {sk} finsih')
                 return sk
@@ -55,28 +55,28 @@ class Character:
     def __skill_is_ready(self, sk: str) -> bool:
         if sk in ['normal_atk', 'auto_button']:
             return True
-        return self.objects[sk].found()
+        return self.objects[sk].found(False)
 
     def __action_cd_skill(self, sk: str) -> bool:
         # success: True, Failed: False
-        if not self.objects[f'{sk}_cd'].found():
+        if not self.objects[f'{sk}_cd'].found(False):
             return False
-        logging.debug(f'character action: try to click {sk} 0.5 sec (skill cd now?)')
+        logging.debug(f'character action: try to click {sk} 0.6 sec (skill cd now?)')
         self.objects[sk].click_sec(0.6, 0.13)
-        if self.current():
+        if self.ready(True):
             return False
         return True
 
     def __action_auto_button(self):
-        while not self.objects['auto_button'].found():
+        adb_update_cache = False
+        while not self.objects['auto_button'].found(adb_update_cache):
             self.objects['auto_button'].click()
+            adb_update_cache = True
         self.objects['center'].click(2)
 
     def __action_sp(self):
-        self.objects['sp'].click(2)
-        while not self.objects['sp_cancel'].found():
-            self.objects['sp'].click(2)
-        while not self.objects['sp_ch1_set'].found():
-            self.objects['sp_ch1'].click()
-        self.objects['sp_submit'].click(3)
+        self.objects['sp'].click(1, 0.5)
+        self.objects['sp_ch1'].click(1, 0.5)
+        self.objects['sp_submit'].click(2)
+        self.objects['sp_cancel'].click()  # play safe
         self.objects['center'].click_sec(self.sp_sleep, 0.5)

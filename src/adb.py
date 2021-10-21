@@ -18,6 +18,7 @@ class _Adb():
     def __init__(self):
         adb_path = path.normpath(uData.setting["adb"]["path"])
         adb_option = f'-s {uData.setting["adb"]["serial"]}' if len(uData.setting["adb"]["serial"]) > 0 else ''
+        self.__offsetXY = uData.setting['game_region'][:2]
         self.__devices_cmd = f'{adb_path} {adb_option} devices'  # init device connection
         self.__tap_cmd = f'{adb_path} {adb_option} shell input tap'
         self.__sreencap_cmd = f'{adb_path} {adb_option} shell screencap'
@@ -25,9 +26,17 @@ class _Adb():
         self.__stop_app = f'{adb_path} {adb_option} shell am force-stop com.aniplex.kirarafantasia'
         self.__start_app = f'{adb_path} {adb_option} shell monkey -p com.aniplex.kirarafantasia -c android.intent.category.LAUNCHER 1'  # noqa: E501
         self.__pixelformat = None
-        self.__offsetXY = uData.setting['game_region'][:2]
+        self.__has_screenshot_IM = None
+        self.__cv2_IM_COLOR_cache = None
+        self.__cv2_IM_GRAY_cache = None
 
     def _screenshot(self, grayscale: bool = False):
+        if self.__has_screenshot_IM:
+            if grayscale:
+                return self.__cv2_IM_GRAY_cache
+            else:
+                return self.__cv2_IM_COLOR_cache
+
         img_bytes = None
         if self.__pixelformat is None:
             _shell_command(self.__devices_cmd).communicate()
@@ -41,19 +50,22 @@ class _Adb():
 
         if self.__pixelformat == 1:  # RGBA
             img_bytes = img_bytes or _shell_command(self.__sreencap_cmd).stdout.read().replace(b'\r\n', b'\n')
-            img_bytes = img_bytes[12:]
-            npbuffer = np.frombuffer(img_bytes, dtype=np.uint8)
-            npbuffer = npbuffer.reshape(self.__height, self.__width, 4)
-            if grayscale:
-                return cv2.cvtColor(npbuffer, cv2.COLOR_RGBA2GRAY)
-            else:
-                return cv2.cvtColor(npbuffer, cv2.COLOR_RGBA2BGR)
+            npbuffer = np.frombuffer(img_bytes[12:], dtype=np.uint8).reshape(self.__height, self.__width, 4)
+            self.__cv2_IM_COLOR_cache = cv2.cvtColor(npbuffer, cv2.COLOR_RGBA2BGR)
+            self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
         else:
             img_bytes = _shell_command(f'{self.__sreencap_cmd} -p').stdout.read().replace(b'\r\n', b'\n')
-            if grayscale:
-                return cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_GRAYSCALE)
-            else:
-                return cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
+            self.__cv2_IM_COLOR_cache = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
+            self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
+
+        self.__has_screenshot_IM = True
+        if grayscale:
+            return self.__cv2_IM_GRAY_cache
+        else:
+            return self.__cv2_IM_COLOR_cache
+
+    def set_update_cv2_IM_cache_flag(self):
+        self.__has_screenshot_IM = False
 
     def click(self, x: int, y: int, clicks: int = 1, interval: float = 0.0):
         tap_cmd = f'{self.__tap_cmd} {x-self.__offsetXY[0]} {y-self.__offsetXY[1]}'
@@ -66,21 +78,23 @@ class _Adb():
         for p in pipes:
             p.wait()
 
-    def locateCenterOnScreen(self, path: str, region, grayscale: bool = False, confidence: float = 0.999) -> Optional[Coord]:
+    def locateCenterOnScreen(self, needleIm: np.ndarray,
+                             region,  # Do not use. just need this variable name.
+                             grayscale: bool = False,
+                             confidence: float = 0.999) -> Optional[Coord]:
         screenshotIm = self._screenshot(grayscale)
-        needleIm = cv2.imread(path, cv2.IMREAD_COLOR if grayscale is False else cv2.IMREAD_GRAYSCALE)
         needleIm_Height, needleIm_Width = needleIm.shape[:2]
-        result = cv2.matchTemplate(needleIm, screenshotIm, cv2.TM_CCOEFF_NORMED)
+        result = cv2.matchTemplate(screenshotIm, needleIm, cv2.TM_CCOEFF_NORMED)
         match_indices = np.arange(result.size)[(result > confidence).flatten()]
         matches = np.unravel_index(match_indices[:10000], result.shape)
         if len(matches[0]) == 0:
             return None
 
-        # use a generator for API consistency:
         matchx, matchy = matches[1], matches[0]
         points = []
         for x, y in zip(matchx, matchy):
             points.append((x, y, needleIm_Width, needleIm_Height))
+            break
 
         if len(points) > 0:
             coord = points[0]
