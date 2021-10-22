@@ -73,7 +73,7 @@ class BOT:
             images += ['again.png']
         if self.data['crash_detection'] and not self.data['adb']['use']:
             images += ['kirafan_app_icon.png', 'start_screen.png']
-        icons = [Icon(image, self.data['common_confidence']) for image in images]
+        icons = [Icon(image, self.data['confidence']) for image in images]
         return {icon.name: icon for icon in icons}
 
     def __load_waves(self) -> Dict:

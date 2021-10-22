@@ -44,7 +44,7 @@ class Wave:
         self.auto = _wave[str(self.id)]['auto']
         self.name = f'wave_{self.id}-{self.total}'
         self.objects = Load_Objects("wave")
-        self.icon = Icon(f'{self.name}.png', _wave['confidence'], _wave['grayscale'])
+        self.icon = Icon(f'{self.name}.png', uData.setting['confidence'])
         if not self.auto:
             self.characters = {c: Character(c, self.id) for c in self.__chara_list}
             self.chars_sp_order = self.__sp_order_init() if 'sp_weight_enable' in _wave[str(self.id)] and _wave[str(self.id)]['sp_weight_enable'] else []  # noqa: E501

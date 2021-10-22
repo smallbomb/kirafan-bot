@@ -10,15 +10,14 @@ from adb import adb
 
 @typechecked
 class Icon:
-    def __init__(self, fname: str, confidence: float, grayscale: bool = False):
+    def __init__(self, fname: str, confidence: float):
         self.name = fname[0:-4]
         self.path = path.join(uData.setting['img_dir'], fname)
         self.__confidence = confidence
-        self.__grayscale = grayscale
         self.__region = uData.setting['game_region']
         self.__adb_use = uData.setting['adb']['use']
         if self.__adb_use:
-            self.__IM_cache = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE if grayscale else cv2.IMREAD_COLOR)
+            self.__IM_cache = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
         self.__click = adb.click if self.__adb_use else pyautogui.click
         self.__locateCenterOnScreen = adb.locateCenterOnScreen if self.__adb_use else pyautogui.locateCenterOnScreen
 
@@ -40,7 +39,7 @@ class Icon:
 
         center = self.__locateCenterOnScreen(self.__IM_cache if self.__adb_use else self.path,
                                              region=self.__region,
-                                             grayscale=self.__grayscale,
+                                             grayscale=True,
                                              confidence=self.__confidence)
         if center:
             x, y = center

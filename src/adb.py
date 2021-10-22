@@ -19,7 +19,8 @@ class _Adb():
         adb_path = path.normpath(uData.setting["adb"]["path"])
         adb_option = f'-s {uData.setting["adb"]["serial"]}' if len(uData.setting["adb"]["serial"]) > 0 else ''
         self.__offsetXY = uData.setting['game_region'][:2]
-        self.__devices_cmd = f'{adb_path} {adb_option} devices'  # init device connection
+        self.__killserver_cmd = f'{adb_path} kill-server'
+        self.__devices_cmd = f'{adb_path} {adb_option} devices'  # test adb daemon
         self.__tap_cmd = f'{adb_path} {adb_option} shell input tap'
         self.__sreencap_cmd = f'{adb_path} {adb_option} shell screencap'
         self.__swipe_cmd = f'{adb_path} {adb_option} shell input swipe'
@@ -32,17 +33,19 @@ class _Adb():
 
     def _screenshot(self, grayscale: bool = False):
         if self.__has_screenshot_IM:
-            if grayscale:
-                return self.__cv2_IM_GRAY_cache
-            else:
-                return self.__cv2_IM_COLOR_cache
+            return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
 
         img_bytes = None
         if self.__pixelformat is None:
-            _shell_command(self.__devices_cmd).communicate()
-            out, err = _shell_command(self.__sreencap_cmd).communicate()
-            if err:
-                raise Exception(err.decode('utf8'))
+            for i in range(2):
+                _shell_command(self.__devices_cmd).communicate()
+                out, err = _shell_command(self.__sreencap_cmd).communicate()
+                if out:
+                    break
+                elif i == 0:
+                    _shell_command(self.__killserver_cmd).communicate()
+                else:
+                    raise Exception(err.decode('utf8'))
             img_bytes = out.replace(b'\r\n', b'\n')
             self.__width = int.from_bytes(img_bytes[:4], byteorder='little')
             self.__height = int.from_bytes(img_bytes[4:8], byteorder='little')
@@ -59,10 +62,7 @@ class _Adb():
             self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
 
         self.__has_screenshot_IM = True
-        if grayscale:
-            return self.__cv2_IM_GRAY_cache
-        else:
-            return self.__cv2_IM_COLOR_cache
+        return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
 
     def set_update_cv2_IM_cache_flag(self):
         self.__has_screenshot_IM = False
@@ -76,7 +76,7 @@ class _Adb():
             sleep(interval)
 
         for p in pipes:
-            p.wait()
+            p.communicate()
 
     def locateCenterOnScreen(self, needleIm: np.ndarray,
                              region,  # Do not use. just need this variable name.
