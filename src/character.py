@@ -28,7 +28,7 @@ class Character:
         sp_id = chars_sp_order[0] if chars_sp_order else self.id
 
         for sk in self.sk_priority:
-            logging.debug(f'character action: {sk} is checked now')
+            logging.debug(f'character action: {sk:<11} is checked now')
             if self.__skill_is_ready(sk):
                 if sk == 'auto_button':
                     self.__action_auto_button()
@@ -44,12 +44,12 @@ class Character:
                     self.objects[sk].click(4)
                     if sk == 'weapon_sk' and self.ready(True):
                         continue  # has no weapons
-                logging.debug(f'character action: {sk} finsih')
+                logging.debug(f'character action: use \x1b[32m{sk}\x1b[0m')
                 return sk
             elif ck_animate_cd and sk in ['sk1', 'sk2', 'weapon_sk']:
                 ck_animate_cd = False
                 if self.__action_cd_skill(sk):
-                    logging.debug(f'character action: {sk} finsih')
+                    logging.debug(f'character action: use \x1b[32m{sk}\x1b[0m')
                     return sk
 
     def __skill_is_ready(self, sk: str) -> bool:
