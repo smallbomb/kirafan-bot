@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from os import path
+from shutil import which
 from subprocess import Popen, PIPE
 from typeguard import typechecked
 from time import sleep
@@ -30,6 +31,8 @@ class _Adb():
         self.__has_screenshot_IM = None
         self.__cv2_IM_COLOR_cache = None
         self.__cv2_IM_GRAY_cache = None
+        if which(adb_path) is None and uData.setting["adb"]["use"]:
+            raise FileNotFoundError(adb_path)
 
     def _screenshot(self, grayscale: bool = False):
         if self.__has_screenshot_IM:
@@ -128,7 +131,9 @@ adb = _Adb()
 
 # Test
 if __name__ == '__main__':
-    # coord = adb.locateCenterOnScreen('img_1274x718/start.png', False, 0.8)
+    if which(uData.setting["adb"]["path"]) is None:
+        raise FileNotFoundError(uData.setting["adb"]["path"])
+    # coord = adb.locateCenterOnScreen(cv2.imread('img_1274x718/start_screen.png', cv2.IMREAD_GRAYSCALE), None, False, 0.8)
     # print(f'coord={coord}')
     # adb.click(*coord, 5, 0.2)
     adb.click(500, 500, 5, 0.2)

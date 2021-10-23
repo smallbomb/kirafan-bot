@@ -70,7 +70,7 @@ class Character:
     def __action_auto_button(self):
         adb_update_cache = False
         while not self.objects['auto_button'].found(adb_update_cache):
-            self.objects['auto_button'].click()
+            self.objects['auto_button'].click(1, 0.5)
             adb_update_cache = True
         self.objects['center'].click(2)
 
