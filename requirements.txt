@@ -1,4 +1,4 @@
-opencv-python>=4.5.1.48
+opencv-python==4.5.3.56
 keyboard>=0.13.5
 PyAutoGUI>=0.9.52
 typeguard>=2.10.0
