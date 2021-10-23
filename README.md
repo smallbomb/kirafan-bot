@@ -53,6 +53,7 @@ py src
 * z+p (print position01~09)
 * z+c (check/add icon file)
 * z+x (open/close game region checking) --for windows system
+* z+k (switch adb/pyautogui mode)
 
 # How to use?
 ## step1
@@ -85,17 +86,14 @@ ex:
   "game_region": [0, 41, 1274, 718],   // 設定遊戲區域，不滿意可以設定[0,0,1,1]後重新調整(執行kirafan-bot有互動教學)
                                        // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行kirafan-bot有互動教學(z+c))
   "aspect_ratio": "16:9",              // 模擬器視窗比例
-  "common_confidence": 0.8,            // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
-  "crash_detection": false,            // 是否偵測遊戲 crash? 若是，則嘗試回到戰鬥中 (需要app icon，設true請按z+c(hotkey)抓取。抓取範例大小可參考img_1274x718)
+  "confidence": 0.94,                  // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
+  "crash_detection": false,            // 是否偵測遊戲 crash? 若是，則嘗試回到戰鬥中 (可能需要app icon，設true請按z+c(hotkey)抓取。抓取範例大小可參考img_1274x718)
   "adb": {
     "use": false,                      // 使用adb?
     "path": "C:\\path\\adb.exe",       // adb.exe的路徑 
     "serial": "emulator-5554",         // use device with given serial
-    "resolution": [1280, 720],         // 模擬器的解析度 (因為素材圖片關係，比較適用於1280x720)
-    "emulator_in_background": true     // 是否可以完全縮小模擬器視窗? 
-                                       //   True : 可縮小模擬器視窗，但判斷速度可能會非常慢。 (因windows有api可以快速取得畫面上的pixel)
-                                       //   False: 仍需要將模擬器放在畫面上的固定區域供判斷，但可以操控滑鼠。
-  },
+    "emulator_resolution": [1280, 720] // 模擬器的解析度，請查看自身使用的模擬器解系度 (目前img_1274x718內的素材適用於1280x720)
+  }
   "set_timer": {                       // 定時器
     "use": false,                      // 是否用定時器?
     "pause_range": "02:50:00-03:01:00" // bot暫停運作區間
@@ -132,8 +130,6 @@ ex:
       },
 
       "wave": {
-        "grayscale": true,            // 灰階模式。可參考opencv document
-        "confidence": 0.94,           // 相似度。可參考opencv document
         "total": 3,                   // 此關有幾個wave
         "1": {                        // wave1的戰鬥模式
           "auto": true                // 是否全自動?
@@ -163,8 +159,6 @@ ex:
         "priority": ["Au"]
       },
       "wave": {
-        "grayscale": true,
-        "confidence": 0.94,
         "total": 1,
         "1": {
           "auto": true
@@ -179,8 +173,6 @@ ex:
         "3": {"use": true, "wave_N": 2, "myturn": 0, "target": "C"}
       },
       "wave": {
-        "grayscale": true,
-        "confidence": 0.94,
         "total": 3,
         "1,2,3": {
           "auto": false,
@@ -197,8 +189,6 @@ ex:
       }
     },
     "user_defined": {                // you can try to add and modify it
-      "grayscale": true,
-      "confidence": 0.94,
       "total": 3,
       "1,2,3": {
         "auto": false,
