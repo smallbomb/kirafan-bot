@@ -22,8 +22,10 @@ class _UserData():
     def __load(self) -> Dict:
         with open('bot_setting.json', encoding="utf-8") as f:
             data = json.load(f)
+        self.__adb_region = tuple(data['game_region'][:2] + data['adb']['emulator_resolution'])
+        self.__pyautogui_region = tuple(data['game_region'])
         data['ratio'] = data['ratio'][data['aspect_ratio']]
-        data['game_region'] = tuple(data['game_region'][:2] + data['adb']['emulator_resolution']) if data['adb']['use'] else tuple(data['game_region'])  # noqa: E501
+        data['game_region'] = self.__adb_region if data['adb']['use'] else self.__pyautogui_region
         data['quest_selector'] = data['questList']['quest_selector']
         quest = data['questList'][data['quest_selector']]
         data['loop_count'] = quest['loop_count']
@@ -43,7 +45,7 @@ class _UserData():
 
     def adb_mode_switch(self):
         self.setting['adb']['use'] = not self.setting['adb']['use']
-        self.setting['game_region'] = tuple(list(self.setting['game_region'][:2]) + self.setting['adb']['emulator_resolution']) if self.setting['adb']['use'] else tuple(self.setting['game_region'])  # noqa: E501
+        self.setting['game_region'] = self.__adb_region if self.setting['adb']['use'] else self.__pyautogui_region
 
     def region_is_init(self) -> bool:
         return all(x <= y for x, y in zip(self.setting['game_region'], (0, 0, 1, 1)))
