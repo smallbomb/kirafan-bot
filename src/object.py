@@ -20,9 +20,8 @@ class Object():
         self.rgb = rgb
         self.__tolerance = tolerance
         adb_use = uData.setting['adb']['use']
-        emulator_in_background = uData.setting['adb']['emulator_in_background']
         self.__click = adb.click if adb_use else pyautogui.click
-        self.__pixelMatchesColor = adb.pixelMatchesColor if adb_use and emulator_in_background else pyautogui.pixelMatchesColor
+        self.__pixelMatchesColor = adb.pixelMatchesColor if adb_use else pyautogui.pixelMatchesColor
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)

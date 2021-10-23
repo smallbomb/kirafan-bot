@@ -108,7 +108,7 @@ class Wave:
         if self.objects['friend_ok'].found(True):  # found it because player's character maybe less than 3.
             target = self.__friend['replace'].lower().replace('character', 'friend_replace')
             self.objects[target].click(3)
-        self.objects['friend_ok'].click(2, 2.5)  # for sleep 2*2.5 = 5s
+        self.objects['friend_ok'].click(2, 2.3)  # for sleep 2*2.3 = 4.6s
         return True
 
     def charater_action(self):

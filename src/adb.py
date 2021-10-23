@@ -20,7 +20,7 @@ class _Adb():
         adb_option = f'-s {uData.setting["adb"]["serial"]}' if len(uData.setting["adb"]["serial"]) > 0 else ''
         self.__offsetXY = uData.setting['game_region'][:2]
         self.__killserver_cmd = f'{adb_path} kill-server'
-        self.__devices_cmd = f'{adb_path} {adb_option} devices'  # test adb daemon
+        self.__devices_cmd = f'{adb_path} devices'  # test adb daemon
         self.__tap_cmd = f'{adb_path} {adb_option} shell input tap'
         self.__sreencap_cmd = f'{adb_path} {adb_option} shell screencap'
         self.__swipe_cmd = f'{adb_path} {adb_option} shell input swipe'
@@ -67,16 +67,11 @@ class _Adb():
     def set_update_cv2_IM_cache_flag(self):
         self.__has_screenshot_IM = False
 
-    def click(self, x: int, y: int, clicks: int = 1, interval: float = 0.0):
+    def click(self, x: int, y: int, clicks: int = 1, interval: float = 0.1):
         tap_cmd = f'{self.__tap_cmd} {x-self.__offsetXY[0]} {y-self.__offsetXY[1]}'
-        pipes = []
         for _ in range(clicks):
-            pipe = _shell_command(tap_cmd)
-            pipes.append(pipe)
+            _shell_command(tap_cmd)
             sleep(interval)
-
-        for p in pipes:
-            p.communicate()
 
     def locateCenterOnScreen(self, needleIm: np.ndarray,
                              region,  # Do not use. just need this variable name.

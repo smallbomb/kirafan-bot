@@ -9,8 +9,7 @@
     "use": false,
     "path": "C:\\path\\adb.exe",
     "serial": "emulator-5554",
-    "resolution": [1280, 720],
-    "emulator_in_background": true
+    "emulator_resolution": [1280, 720]
   },
   "set_timer": {
     "use": false,

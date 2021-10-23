@@ -9,8 +9,7 @@ def check_basic_information(hotkey):
         uData.setting['game_region'] = hotkey.tutorial_region()
         kirafan.reload()
     logging.info(f'kirafan region = {list(kirafan.region)}')
-    logging.info('kirafan adb setting = ' +
-                 f'{{use: {uData.setting["adb"]["use"]}, background: {uData.setting["adb"]["emulator_in_background"]}}}')
+    logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
     logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     tuple_files = kirafan.miss_icon_files()
