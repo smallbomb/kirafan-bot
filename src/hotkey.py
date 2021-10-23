@@ -63,6 +63,19 @@ class Hotkey:
         logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
         logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
+    def __cmd_k(self):
+        uData.adb_mode_switch()
+        adb.reload()
+        kirafan.adb_mode_switch()
+        logging.info(f'kirafan region = {list(kirafan.region)}')
+        logging.info(f'kirafan adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
+        tuple_files = kirafan.miss_icon_files()
+        if tuple_files:
+            print('miss icon files:')
+            for tuple_file in tuple_files:
+                print(f'  {tuple_file[1]}')
+            print('you can press hotkey "z+c" to add a miss icon file')
+
     def __cmd_m(self):
         if not self.monitor_job.is_alive():
             self.monitor_job = Job(target=monitor_mode)

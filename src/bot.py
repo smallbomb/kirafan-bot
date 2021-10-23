@@ -196,6 +196,14 @@ class BOT:
         self.__timer = self.data['set_timer']['pause_range'] if self.data['set_timer']['use'] else None
         self.__ck_crash_count = 0
 
+    def adb_mode_switch(self):
+        self.data = uData.setting
+        self.region = uData.setting['game_region']
+        self.objects = Load_Objects("bot")
+        self.icons = self.__load_icons()
+        for wave_id in range(1, self.wave_total + 1):
+            self.waves[str(wave_id)].adb_mode_switch()
+
 
 # Test
 if __name__ == '__main__':

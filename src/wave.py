@@ -145,6 +145,15 @@ class Wave:
             self.orbs = self.__orb_init()
         self.__auto_button_multi_check = 0
 
+    def adb_mode_switch(self):
+        self.objects = Load_Objects("wave")
+        self.icon = Icon(f'{self.name}.png', uData.setting['confidence'])
+        if not self.auto:
+            for c in self.__chara_list:
+                self.characters[c].adb_mode_switch()
+            for orb in self.orbs:
+                orb.adb_mode_switch()
+
 
 # Test
 if __name__ == '__main__':

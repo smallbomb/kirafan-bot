@@ -15,6 +15,6 @@ def test_data_format():
 
 def test_hotkey_and_mainfunc():
     if os.name == 'nt':
-        hotkey = Hotkey('rslmptcox')
+        hotkey = Hotkey('rslmptcoxk')
         assert hotkey.safe_exit() is None
         assert check_basic_information(hotkey) is None

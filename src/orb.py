@@ -70,6 +70,9 @@ class Orb:
             pyautogui.moveTo(*self.objects['entrypoint'].coord)
             pyautogui.dragTo(destX, destY, 1, button='left')
 
+    def adb_mode_switch(self):
+        self.objects = self.__object_init()
+
 
 # Test
 if __name__ == '__main__':

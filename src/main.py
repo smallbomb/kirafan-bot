@@ -22,7 +22,7 @@ def check_basic_information(hotkey):
 
 def main():
     try:
-        hotkey = Hotkey('rslmptcox')
+        hotkey = Hotkey('rslmptcoxk')
         logging.info("hotkey setting finish...")
         check_basic_information(hotkey)
         print('please press \'f3\' button to exit...')

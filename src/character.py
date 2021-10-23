@@ -80,3 +80,6 @@ class Character:
         self.objects['sp_submit'].click(2)
         self.objects['sp_cancel'].click()  # play safe
         self.objects['center'].click_sec(self.sp_sleep, 0.5)
+
+    def adb_mode_switch(self):
+        self.objects = Load_Objects("character")

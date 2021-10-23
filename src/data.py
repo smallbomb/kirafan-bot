@@ -41,6 +41,10 @@ class _UserData():
         if self.region_is_init():
             self.setting['game_region'] = old_region
 
+    def adb_mode_switch(self):
+        self.setting['adb']['use'] = not self.setting['adb']['use']
+        self.setting['game_region'] = tuple(list(self.setting['game_region'][:2]) + self.setting['adb']['emulator_resolution']) if self.setting['adb']['use'] else tuple(self.setting['game_region'])  # noqa: E501
+
     def region_is_init(self) -> bool:
         return all(x <= y for x, y in zip(self.setting['game_region'], (0, 0, 1, 1)))
 
