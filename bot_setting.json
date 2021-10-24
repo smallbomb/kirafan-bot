@@ -3,7 +3,7 @@
   "img_dir": "img_1274x718",
   "game_region": [0, 41, 1274, 718],
   "aspect_ratio": "16:9",
-  "confidence": 0.94,
+  "confidence": 0.92,
   "crash_detection": false,
   "adb": {
     "use": false,
