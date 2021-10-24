@@ -93,9 +93,11 @@ class BOT:
         else:
             self.wave_change_flag = False
 
-        # crash count reset
-        self.__ck_crash_count = 0
+        self.reset_crash_detection()
         self.wave_id = new_waveid
+
+    def reset_crash_detection(self):
+        self.__ck_crash_count = 0
 
     def wave_icon_found(self) -> bool:
         adb.set_update_cv2_IM_cache_flag()
