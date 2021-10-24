@@ -146,10 +146,12 @@ def _ck_move_to_next_battle(bot) -> bool:
 
 def _battle_resume(bot):
     logging.warning('try to resume battle...')
-    kirafan.objects['center'].click_sec(75)
+    kirafan.objects['center'].click_sec(100)
     if kirafan.icons['hai'].click():
         logging.info('resume battle')
+        kirafan.reset_crash_detection()
         kirafan.wave_id -= 1
+
     else:
         logging.error('resume battle failed')
         bot.stop()
