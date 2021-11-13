@@ -172,7 +172,7 @@ class BOT:
             start_time = datetime.strptime(str(datetime.now().date()) + "T" + start_clock, "%Y-%m-%dT%H:%M:%S")
             end_time = datetime.strptime(str(datetime.now().date()) + "T" + end_clock, "%Y-%m-%dT%H:%M:%S")
             now_time = datetime.now()
-            if time_in_range(start_time, end_time, datetime.now()):
+            if time_in_range(start_time, end_time, now_time):
                 if self.get_current_wave().is_myTurn():
                     wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1))
                 else:
