@@ -46,7 +46,7 @@ class Orb:
         return True
 
     def __use_orb(self) -> bool:
-        if self.objects['option'].found():
+        if self.objects['option'].found(False):
             self.objects['option'].click(2)
             self.__click_target()
         if self.objects['cancel'].found():
