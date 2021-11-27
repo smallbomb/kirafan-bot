@@ -150,11 +150,8 @@ def _ck_move_to_next_battle(bot) -> bool:
 def _battle_resume(bot):
     logging.warning('try to resume battle...')
     kirafan.objects['center'].click_sec(100)
-    while True:
-        if kirafan.icons['ok'].click():
-            sleep(2)
-            continue
-        break
+    while kirafan.icons['ok'].click():
+        sleep(2)
     if kirafan.icons['hai'].click():
         logging.info('resume battle')
         kirafan.reset_crash_detection()
