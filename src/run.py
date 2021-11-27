@@ -115,7 +115,7 @@ def _skip_award_result(bot):
         logging.info(f'loop_count({kirafan.loop_count}) less than or equal to 0')
         bot.stop()
 
-    ct = 12
+    ct, retry = 12, True
     while bot.is_running():
         kirafan.objects['center_left'].click(ct)
         if kirafan.icons['again'].click():
@@ -126,6 +126,9 @@ def _skip_award_result(bot):
         elif kirafan.icons['tojiru'].click(adb_update_cache=False):
             logging.debug('icon: tojiru icon found. (Is character\'s crea mission?)')
             ct = 8
+        elif retry:
+            logging.debug('try a again because again.png not found')
+            retry = False
         else:
             logging.error('icon: again.png not found...')
             bot.stop()
@@ -146,9 +149,15 @@ def _ck_move_to_next_battle(bot) -> bool:
 
 def _battle_resume(bot):
     logging.warning('try to resume battle...')
-    kirafan.objects['center'].click_sec(75)
+    kirafan.objects['center'].click_sec(100)
+    while True:
+        if kirafan.icons['ok'].click():
+            sleep(2)
+            continue
+        break
     if kirafan.icons['hai'].click():
         logging.info('resume battle')
+        kirafan.reset_crash_detection()
         kirafan.wave_id -= 1
     else:
         logging.error('resume battle failed')

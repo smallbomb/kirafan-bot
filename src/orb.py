@@ -35,7 +35,9 @@ class Orb:
         if not self.use:
             return False
 
-        self.__slide_out_orb_list()
+        while not self.__slide_out_orb_list():
+            logging.info('slide out orb list failed')
+
         if self.__use_orb():
             logging.info(f'orb action: use orb0{self.option} success')
         else:
@@ -44,7 +46,7 @@ class Orb:
         return True
 
     def __use_orb(self) -> bool:
-        if self.objects['option'].found():
+        if self.objects['option'].found(False):
             self.objects['option'].click(2)
             self.__click_target()
         if self.objects['cancel'].found():
@@ -61,7 +63,7 @@ class Orb:
             pass
         self.objects['target_cancel'].click(1, 1)
 
-    def __slide_out_orb_list(self):
+    def __slide_out_orb_list(self) -> bool:
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
         destY = self.objects['entrypoint'].coord[1]
         if uData.setting['adb']['use']:
@@ -69,6 +71,7 @@ class Orb:
         else:
             pyautogui.moveTo(*self.objects['entrypoint'].coord)
             pyautogui.dragTo(destX, destY, 1, button='left')
+        return self.objects['cancel'].found()
 
     def adb_mode_switch(self):
         self.objects = self.__object_init()

@@ -3,7 +3,7 @@
   "img_dir": "img_1274x718",
   "game_region": [0, 41, 1274, 718],
   "aspect_ratio": "16:9",
-  "confidence": 0.94,
+  "confidence": 0.92,
   "crash_detection": false,
   "adb": {
     "use": false,
@@ -123,7 +123,7 @@
       "focus_ch_middle": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
       "focus_ch_right": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
-      "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
+      "normal_atk": {"x":0.73906, "y":0.89722, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1_cd": {"x":0.64634, "y":0.78623, "color":"flash_green", "owner": ["character"]},
       "sk2": {"x":0.54065, "y":0.78623, "color":"ivory", "owner": ["character"]},
