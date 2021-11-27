@@ -86,7 +86,7 @@ ex:
   "game_region": [0, 41, 1274, 718],   // 設定遊戲區域，不滿意可以設定[0,0,1,1]後重新調整(執行kirafan-bot有互動教學)
                                        // 若重新啟動，1274x718的圖片可能不適用，需換一個img_dir，並重新shotscreen(執行kirafan-bot有互動教學(z+c))
   "aspect_ratio": "16:9",              // 模擬器視窗比例
-  "confidence": 0.94,                  // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
+  "confidence": 0.92,                  // 圖片的相似度調整(0.0~1.0)越高代表判斷門檻越高，可參考opencv document
   "crash_detection": false,            // 是否偵測遊戲 crash? 若是，則嘗試回到戰鬥中 (可能需要app icon，設true請按z+c(hotkey)抓取。抓取範例大小可參考img_1274x718)
   "adb": {
     "use": false,                      // 使用adb?
@@ -211,7 +211,7 @@ ex:
       "focus_ch_middle": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
       "focus_ch_right": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
-      "normal_atk": {"x":0.75000, "y":0.78623, "color":"ivory", "owner": ["character"]},
+      "normal_atk": {"x":0.73906, "y":0.89722, "color":"ivory", "owner": ["character"]},
       "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
       "sk1_cd": {"x":0.64634, "y":0.78623, "color":"flash_green", "owner": ["character"]},
       "sk2": {"x":0.54065, "y":0.78623, "color":"ivory", "owner": ["character"]},
