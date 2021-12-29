@@ -125,6 +125,7 @@ def _skip_award_result(bot):
             bot.stop()
         elif kirafan.icons['tojiru'].click(adb_update_cache=False):
             logging.debug('icon: tojiru icon found. (Is character\'s crea mission?)')
+            retry = True
             ct = 8
         elif retry:
             logging.debug('try a again because again.png not found')
@@ -136,7 +137,7 @@ def _skip_award_result(bot):
 
 def _ck_move_to_next_battle(bot) -> bool:
     # check stamina_Au first. wait for loading time even if user has enough stamina.
-    if kirafan.stamina['use'] and kirafan.icons['stamina_Au'].scan(1.5):
+    if kirafan.stamina['use'] and kirafan.icons['stamina_Au'].scan(2.5):
         if not kirafan.use_stamina():
             logging.info('insufficient stamina items.')
             bot.stop()
