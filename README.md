@@ -189,17 +189,21 @@ ex:
       }
     },
     "user_defined": {                // you can try to add and modify it
-      "total": 3,
-      "1,2,3": {
-        "auto": false,
-        "character_left": {
-          "skill_priority": []
-        },
-        "character_middle": {
-          "skill_priority": []
-        },
-        "character_right": {
-          "skill_priority": []
+      "loop_count": 5,
+      "crea_stop": false,
+      "wave": {
+        "total": 3,
+        "1,2,3": {
+          "auto": false,
+          "character_left": {
+            "skill_priority": []
+          },
+          "character_middle": {
+            "skill_priority": []
+          },
+          "character_right": {
+            "skill_priority": []
+          }
         }
       }
     }
