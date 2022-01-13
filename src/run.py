@@ -8,14 +8,17 @@ from bot import BOT
 kirafan = BOT()
 
 
-def run():
+def run(window):
     bot = threading.currentThread()
+    bot.send_event = window.write_event_value
     logging.info('kirafan start...')
     logging.info(f'loop_count = {kirafan.loop_count} now')
     while bot.is_running():
         if _is_battle_now():
             if kirafan.wave_change_flag:
                 logging.info(f'wave({kirafan.wave_id}/{kirafan.wave_total}) now...')
+                bot.send_event('_update_wave_id_', kirafan.wave_id)
+                bot.send_event('_update_stop_once_', None)
             if kirafan.ck_timer_pause():
                 continue
             _handle_battle_flows()
@@ -30,6 +33,8 @@ def run():
                 logging.debug(f'transitions now...({kirafan.wave_id}/{kirafan.wave_total})')
                 sleep(kirafan.sleep['wave_transitions'])
     logging.info('kirafan stop...')
+    if bot.is_not_gui_button_stop():
+        bot.send_event('_update_button_start_', 'Start')
 
 
 @typechecked
@@ -69,6 +74,7 @@ def _handle_award_flows(bot):
     if kirafan.icons['kirara_face'].scan(2):
         kirafan.wave_id = kirafan.wave_total + 1  # for wave reset.
         kirafan.loop_count -= 1
+        bot.send_event('_update_loop_count_', kirafan.loop_count)
         logging.debug('try to move next new battle')
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click(adb_update_cache=False):
@@ -100,6 +106,7 @@ def _try_to_move_next_new_battle(bot):
             logging.debug('_try_to_move_next_new_battle(): click tojiru button (stamina page was not closed)')
         else:
             logging.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
+            bot.send_event('_update_button_start_', 'Start')
             bot.pause()
             bot.wait()
             break
@@ -110,6 +117,7 @@ def _skip_award_result(bot):
     if kirafan.stop_once:
         logging.debug('kirafan-bot.stop_once be setup. (z+o)')
         kirafan.stop_once = False
+        bot.send_event('_update_stop_once_', None)
         bot.stop()
     elif kirafan.loop_count <= 0:
         logging.info(f'loop_count({kirafan.loop_count}) less than or equal to 0')

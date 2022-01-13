@@ -10,12 +10,16 @@ class Job(threading.Thread):
         self.__running.set()
         self.__not_Pause = threading.Event()
         self.__not_Pause.set()
+        self.__gui_button_stop = threading.Event()
 
     def is_running(self):
         return self.__running.is_set()
 
     def is_pausing(self):
         return not self.__not_Pause.is_set()
+
+    def is_not_gui_button_stop(self):
+        return not self.__gui_button_stop.is_set()
 
     def wait(self):
         return self.__not_Pause.wait()
@@ -32,3 +36,10 @@ class Job(threading.Thread):
     def stop(self):
         self.__not_Pause.set()
         self.__running.clear()
+
+    def gui_button_stop(self):
+        self.stop()
+        self.__gui_button_stop.set()
+
+    def gui_button_stop_finish(self):
+        self.__gui_button_stop.clear()

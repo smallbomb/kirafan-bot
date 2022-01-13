@@ -5,6 +5,7 @@ typeguard>=2.10.0
 pygame>=2.0.1
 Pillow>=8.1.0
 colorama>=0.4.4
+PySimpleGUI>=4.56.0
 flake8
 pytest
 pywin32>=300; platform_system=='Windows'

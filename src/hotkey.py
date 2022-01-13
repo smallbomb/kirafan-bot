@@ -12,6 +12,11 @@ from run import run, kirafan
 from position import Position, Shot, calc_region, monitor_mode
 
 
+class fake_window:
+    def write_event_value(self, *args, **kwargs):
+        pass
+
+
 @typechecked
 class Hotkey:
     def __init__(self, keys: str):
@@ -42,7 +47,7 @@ class Hotkey:
     def __cmd_r(self):
         if not self.run_job.is_alive():
             logging.info('press start now!')
-            self.run_job = Job(target=run)
+            self.run_job = Job(target=run, args=(fake_window,))
             self.run_job.start()
         elif self.run_job.is_pausing():
             logging.info('press resume now!')
