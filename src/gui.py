@@ -4,7 +4,6 @@ Note:
     friend support
     adb frame
     set_timer frame
-    priority 左邊上下鍵, 多選, etc
     tab add
 '''
 from log import logging
@@ -195,7 +194,7 @@ class Tab_Frame():
     def rename_title(self, window, exclude: List):
         new_title = window[f'{self.__prefix_key}_title_'].get()
         if new_title in exclude:
-            sg.Popup('name already exists! please use another name', title='Warning')
+            sg.popup('name already exists! please use another name', title='Warning')
             return None
         else:
             window[self.id].Update(title=new_title)
@@ -204,7 +203,6 @@ class Tab_Frame():
 
     def is_modified(self) -> bool:
         compare = json.dumps(self.quest, sort_keys=True) != json.dumps(self.__original_quest, sort_keys=True)
-        print('is_modified', compare)
         return compare
 
     def update_original_quest(self):
@@ -436,14 +434,15 @@ class priority_GUI():
     def create_layout(self, text: str) -> List:
         return [
             [sg.Text(text)],
-            [sg.Text('current priority', size=28, pad=((5, 5), (5, 0))), sg.Text('available list', pad=((5, 5), (5, 0)))],
+            [sg.Text('current priority', size=25, pad=((40, 5), (5, 0))), sg.Text('available list', pad=((12, 5), (5, 0)))],
             [
+                sg.Column([[sg.Button("↑", size=(1, 2), key="_↑_")], [sg.Button("↓", size=(1, 2), key="_↓_")]]),
                 sg.Listbox(values=self.current_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_current_list_"),
-                sg.Column([[sg.Button(">>", size=5, key="_>>_")], [sg.Button("<<", size=5, key="_<<_")]]),
+                sg.Column([[sg.Button("→", size=(3, 1), key="_→_")], [sg.Button("←", size=(3, 1), key="_←_")]]),
                 sg.Listbox(values=self.available_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_available_list_")
             ],
             self.__stamina_extend(),
-            [sg.Submit('Submit'), sg.Cancel('Cancel')]
+            [sg.Submit('Submit', pad=((170, 5), 5)), sg.Cancel('Cancel')]
         ]
 
     def __stamina_extend(self):
@@ -472,22 +471,41 @@ class priority_GUI():
                 elif self.type == 'skill':
                     return_value = self.window["_current_list_"].get_list_values()
                 break
-            elif event == '_<<_' and len(self.window['_available_list_'].get_indexes()) > 0:
-                index = self.window['_available_list_'].get_indexes()[0]
-                self.current_list.append(self.available_list.pop(index))
-                self.update_list_box()
-                self.update_stamina_spin()
-            elif event == '_>>_' and len(self.window['_current_list_'].get_indexes()) > 0:
-                index = self.window['_current_list_'].get_indexes()[0]
-                self.available_list.append(self.current_list.pop(index))
-                self.update_list_box()
-                self.update_stamina_spin()
+            elif event == '_↑_' and len(self.window['_current_list_'].get_indexes()) > 0:
+                self.button_up_arrow()
+            elif event == '_↓_' and len(self.window['_current_list_'].get_indexes()) > 0:
+                self.button_down_arrow()
+            elif event == '_←_' and len(self.window['_available_list_'].get_indexes()) > 0:
+                self.button_left_arrow()
+            elif event == '_→_' and len(self.window['_current_list_'].get_indexes()) > 0:
+                self.button_right_arrow()
+
         self.window.close()
         return return_value
 
-    def update_list_box(self):
+    def button_up_arrow(self):
+        i = self.window['_current_list_'].get_indexes()[0]
+        self.current_list.insert(i-1 if i else len(self.current_list)+1, self.current_list.pop(i))
+        self.window['_current_list_'].Update(self.current_list, set_to_index=(i-1 if i else len(self.current_list)-1))
+
+    def button_down_arrow(self):
+        i = self.window['_current_list_'].get_indexes()[0]
+        self.current_list.insert(0 if i == len(self.current_list)-1 else i+1, self.current_list.pop(i))
+        self.window['_current_list_'].Update(self.current_list, set_to_index=(0 if i == len(self.current_list)-1 else i+1))
+
+    def button_left_arrow(self):
+        i = self.window['_available_list_'].get_indexes()[0]
+        self.current_list.append(self.available_list.pop(i))
         self.window['_current_list_'].Update(self.current_list)
+        self.window['_available_list_'].Update(self.available_list, set_to_index=i if len(self.available_list) > i else i-1)
+        self.update_stamina_spin()
+
+    def button_right_arrow(self):
+        i = self.window['_current_list_'].get_indexes()[0]
+        self.available_list.append(self.current_list.pop(i))
+        self.window['_current_list_'].Update(self.current_list, set_to_index=i if len(self.current_list) > i else i-1)
         self.window['_available_list_'].Update(self.available_list)
+        self.update_stamina_spin()
 
     def update_stamina_spin(self):
         if self.type == 'stamina':
