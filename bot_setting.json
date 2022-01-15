@@ -1,10 +1,5 @@
 {
   "loglevel": "info",
-  "img_dir": "img_1274x718",
-  "game_region": [0, 41, 1274, 718],
-  "aspect_ratio": "16:9",
-  "confidence": 0.92,
-  "crash_detection": false,
   "adb": {
     "use": false,
     "path": "C:\\path\\adb.exe",
@@ -14,12 +9,6 @@
   "set_timer": {
     "use": false,
     "pause_range": "02:50:00-03:01:00"
-  },
-  "sleep": {
-    "click": 0.2,
-    "sp": 7,
-    "loading": 9,
-    "wave_transitions": 2
   },
   "questList": {
     "quest_selector": "example",
@@ -119,92 +108,6 @@
           }
         }
       }
-    }
-  },
-  "ratio": {
-    "16:9": {
-      "focus_ch_left": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
-      "focus_ch_middle": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
-      "focus_ch_right": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
-      "auto_button": {"x":0.93279, "y":0.03636, "color":"blue", "owner": ["wave", "character"]},
-      "normal_atk": {"x":0.73906, "y":0.89722, "color":"ivory", "owner": ["character"]},
-      "sk1": {"x":0.64634, "y":0.78623, "color":"ivory", "owner": ["character"]},
-      "sk1_cd": {"x":0.64634, "y":0.78623, "color":"flash_green", "owner": ["character"]},
-      "sk2": {"x":0.54065, "y":0.78623, "color":"ivory", "owner": ["character"]},
-      "sk2_cd": {"x":0.54065, "y":0.78623, "color":"flash_green", "owner": ["character"]},
-      "weapon_sk": {"x":0.46824, "y":0.78457, "color":"ivory", "owner": ["character"]},
-      "weapon_sk_cd": {"x":0.46824, "y":0.78457, "color":"flash_green", "owner": ["character"]},
-      "sp": {"x":0.33536, "y":0.84782, "color":"ivory", "owner": ["character"]},
-      "sp_ch1": {"x":0.78986, "y":0.20257, "color":"None", "owner": ["character"]},
-      "sp_ch1_set": {"x":0.51177, "y":0.13510, "color":"light_green", "owner": ["character"]},
-      "sp_submit":{"x":0.83333, "y":0.90354, "color":"None", "owner": ["character"]},
-      "sp_cancel":{"x":0.17668, "y":0.94968, "color":"ivory", "owner": ["character"]},
-      "sp_charge2":{"x":0.31476, "y":0.87465, "color":"zinc_yellow", "owner": ["character"]},
-      "setting_button": {"x":0.81455, "y":0.05161, "color":"ivory", "owner": ["wave"]},
-      "stamina_Au": {"x":0.26545, "y":0.38835, "color":"light_khaki", "owner": ["bot"]},
-      "stamina_Ag": {"x":0.26727, "y":0.54693, "color":"light_khaki", "owner": ["bot"]},
-      "stamina_Cu": {"x":0.26364, "y":0.70874, "color":"light_khaki", "owner": ["bot"]},
-      "stamina_add": {"x":0.63091, "y":0.41100, "color":"spring_green", "owner": ["bot"]},
-      "stamina_hai": {"x":0.54069, "y":0.89068, "color":"ivory", "owner": ["bot"]},
-      "center": {"x":0.5, "y":0.5, "color":"None", "owner": ["bot", "character"]},
-      "center_left": {"x":0.03, "y":0.6, "color":"grey", "owner": ["bot"]},
-      "friend": {"x":0.11695, "y":0.79109, "color": "ivory", "owner": ["wave"]},
-      "friend_replace_left": {"x":0.61146, "y":0.44847, "color": "None", "owner": ["wave"]},
-      "friend_replace_middle": {"x":0.74568, "y":0.52786, "color": "None", "owner": ["wave"]},
-      "friend_replace_right": {"x":0.87912, "y":0.44847, "color": "None", "owner": ["wave"]},
-      "friend_ok": {"x":0.84929, "y":0.93315, "color": "ivory", "owner": ["wave"]},
-      "orb_entrypoint": {"x":0.88854, "y":0.83008, "color": "None", "owner": ["orb"]},
-      "orb_cancel": {"x":0.17739, "y":0.94708, "color": "ivory", "owner": ["orb"]},
-      "orb_option1": {"x":0.71272, "y":0.45125, "color": "ivory", "owner": ["orb"]},
-      "orb_option2": {"x":0.71272, "y":0.66017, "color": "ivory", "owner": ["orb"]},
-      "orb_option3": {"x":0.71272, "y":0.86908, "color": "ivory", "owner": ["orb"]},
-      "orb_option_submit": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]},
-      "orb_targetA": {"x":0.38148, "y":0.45125, "color": "None", "owner": ["orb"]},
-      "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
-      "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
-      "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]},
-      "home_page": {"x":0.19074, "y":-0.02228, "color": "None", "owner": ["bot"]}
-    },
-    "4:3": {
-      "focus_ch_left": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}
-    }
-  },
-  "color": {
-    "ivory": {
-      "rgb": [250, 250, 235],
-      "tolerance": 25
-    },
-    "flash_green": {
-      "rgb": [129, 225, 117],
-      "tolerance": 35
-    },
-    "blue": {
-      "rgb": [77, 141, 225],
-      "tolerance": 30
-    },
-    "light_khaki": {
-      "rgb": [255, 229, 185],
-      "tolerance": 25
-    },
-    "spring_green": {
-      "rgb": [1, 206, 120],
-      "tolerance": 25
-    },
-    "bronze": {
-      "rgb": [182, 133, 88],
-      "tolerance": 15
-    },
-    "grey": {
-      "rgb": [127, 127, 127],
-      "tolerance": 15
-    },
-    "light_green": {
-      "rgb": [6, 227, 209],
-      "tolerance": 20
-    },
-    "zinc_yellow": {
-      "rgb": [255, 204, 0],
-      "tolerance": 25
     }
   },
   "version": "3.0.0"

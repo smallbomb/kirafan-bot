@@ -24,7 +24,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: bash ./script/install-dependencies.sh
+      run: bash ./scripts/install-dependencies.sh
     - name: Lint with flake8
       run: flake8 . --count
     - name: Test with pytest
@@ -51,9 +51,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: bash ./script/install-dependencies.sh
+      run: bash ./scripts/install-dependencies.sh
     - name: Pyinstaller
-      run: bash ./script/build_install.sh
+      run: bash ./scripts/build_install.sh
     - name: Set installer name
       id: installer
       run: echo ::set-output name=fname::kirafan-bot-$(echo ${{ github.ref }} | sed 's/.*v//')-$(echo ${{ matrix.os }} | sed 's/-.*//; s/ubuntu/linux/')
