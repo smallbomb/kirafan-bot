@@ -1,5 +1,5 @@
-import json
 import copy
+import commentjson as json
 from typeguard import typechecked
 from defined import Dict
 
@@ -7,15 +7,29 @@ from defined import Dict
 @typechecked
 class _UserData():
     def __init__(self):
-        with open('bot_setting.json', encoding="utf-8") as f:
-            self.__raw = self.__padding(json.load(f))
+        self.__raw = self.__open_basic_setting()
         self.setting = self.__load()
 
+    def __open_basic_setting(self) -> Dict:
+        with open('bot_setting.json', encoding="utf-8") as f:
+            d = self.__padding(json.load(f))
+        return d
+
+    def __open_adv_setting(self) -> Dict:
+        with open('advanced_setting.jsonc', encoding="utf-8") as f:
+            d = json.load(f)
+        return d
+
     def __load(self) -> Dict:
+        self.adv_setting = self.__open_adv_setting()
+        if self.adv_setting['mode'] == 'hotkey':
+            self.__raw = self.__open_basic_setting()
         data = copy.deepcopy(self.__raw)
+        for k in list(filter(lambda s: s != 'ratio', self.adv_setting.keys())):
+            data[k] = self.adv_setting[k]
+        data['ratio'] = self.adv_setting['ratio'][self.adv_setting['aspect_ratio']]
         self.__adb_region = tuple(data['game_region'][:2] + data['adb']['emulator_resolution'])
         self.__pyautogui_region = tuple(data['game_region'])
-        data['ratio'] = data['ratio'][data['aspect_ratio']]
         data['game_region'] = self.__adb_region if data['adb']['use'] else self.__pyautogui_region
         data['quest_selector'] = data['questList']['quest_selector']
         quest = data['questList'][data['quest_selector']]
@@ -46,6 +60,9 @@ class _UserData():
 
     def __padding(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']
+        if len(questlist) == 1:
+            questlist['default'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1, '1': {"auto": True}}}
+            questlist['quest_selector'] = 'default'
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
             self.__padding_friend_support(questlist[q])
             self.__padding_stamina(questlist[q])

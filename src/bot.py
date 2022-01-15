@@ -68,7 +68,7 @@ class BOT:
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png']
         if self.stamina['use']:
-            images += ['stamina_Au.png']
+            images += ['stamina_title.png']
         if self.loop_count > 0:
             images += ['again.png']
         if self.data['crash_detection'] and not self.data['adb']['use']:

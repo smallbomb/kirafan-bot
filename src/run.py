@@ -99,7 +99,8 @@ def _try_to_move_next_new_battle(bot):
             # if event is session clear, bot will not resume battle. because of batttle finish.
             # if event is poor internet connection, just click it.
             logging.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
-        elif kirafan.stamina['use'] and kirafan.icons['stamina_Au'].found() and kirafan.icons['tojiru'].click(adb_update_cache=False):
+        elif kirafan.stamina['use'] and (kirafan.icons['stamina_title'].found(False) and
+                                         kirafan.icons['tojiru'].click(adb_update_cache=False)):
             # disconnection after using stamina
             sleep(0.5)
             kirafan.icons['again'].click()
@@ -145,7 +146,7 @@ def _skip_award_result(bot):
 
 def _ck_move_to_next_battle(bot) -> bool:
     # check stamina_Au first. wait for loading time even if user has enough stamina.
-    if kirafan.stamina['use'] and kirafan.icons['stamina_Au'].scan(2.5):
+    if kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
         if not kirafan.use_stamina():
             logging.info('insufficient stamina items.')
             bot.stop()

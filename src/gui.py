@@ -4,6 +4,8 @@ Note:
     friend support
     adb frame
     set_timer frame
+    priority 左邊上下鍵, 多選, etc
+    tab remove, add
 '''
 from log import logging
 from typeguard import typechecked
@@ -11,22 +13,25 @@ import PySimpleGUI as sg
 from thread import Job
 from data import uData
 from run import run, kirafan
-from defined import List, Optional
+from defined import List, Optional, Dict
 import json
 import copy
+# from adb import adb
 
 
 class Tab_Frame():
-    def __init__(self, index, name, quest):
+    def __init__(self, id: str, name: str, quest: Dict):
+        self.id = id
         self.quest = quest
         self.name = name
         self.loop_count_status = self.quest['loop_count']
         self.wave_status = 1
-        self.__prefix_key = f'_{index}_{name}'
+        self.__prefix_key = f'_{id}_{name}'
         self.update_original_quest()
 
     def create_layout(self):
         return [
+            self.__info_modify(),
             self.__crea_stop(),
             self.__loop_count(),
             self.__stamina_area(),
@@ -34,17 +39,24 @@ class Tab_Frame():
             self.__wave_area()
         ]
 
-    def __loop_count(self):
-        k = [f'{self.__prefix_key}_loop_count_status_', f'{self.__prefix_key}_loop_count_setting_']
+    def __info_modify(self):
         return [
-            sg.Text(f'loop_count = {self.loop_count_status} of', key=k[0]),
-            sg.Input(self.quest['loop_count'], key=k[1], size=(3, 1), pad=0, enable_events=True)
+            sg.Input(self.name, key=f'{self.__prefix_key}_title_', size=20),
+            sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=6),
+            sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=6)
         ]
 
     def __crea_stop(self):
         k = [f'{self.__prefix_key}_crea_stop_']
         return [
             sg.Checkbox('crea_stop', key=k[0], default=self.quest['crea_stop'], enable_events=True)
+        ]
+
+    def __loop_count(self):
+        k = [f'{self.__prefix_key}_loop_count_status_', f'{self.__prefix_key}_loop_count_setting_']
+        return [
+            sg.Text(f'loop_count = {self.loop_count_status} of', key=k[0]),
+            sg.Input(self.quest['loop_count'], key=k[1], size=(3, 1), pad=0, enable_events=True)
         ]
 
     def __stamina_area(self):
@@ -75,7 +87,7 @@ class Tab_Frame():
         k = [f'{self.__prefix_key}_wave_status_', f'{self.__prefix_key}_wave_setting_']
         frame_layout = [[
             sg.Text(f'wave = {self.wave_status} /', key=k[0], pad=((5, 2), 5)),
-            sg.InputCombo((1, 3, 5), key=k[1], pad=0, default_value=w['total'], enable_events=True)
+            sg.InputCombo((1, 2, 3, 5), key=k[1], pad=0, default_value=w['total'], enable_events=True)
         ]]
         for N in map(str, range(1, w['total'] + 1)):
             k = [f'{self.__prefix_key}_wave{N}_auto_', f'{self.__prefix_key}_wave{N}_sp_weight_enable_']
@@ -116,7 +128,7 @@ class Tab_Frame():
         key = event[len(self.__prefix_key):]
         if key == '_loop_count_setting_':
             self.handle_loop_count_event(values[event])
-        elif key .startswith('_stamina_'):
+        elif key.startswith('_stamina_'):
             self.handle_stamina_event(window, key, values[event])
         elif key.startswith('_wave'):
             self.handle_wave_event(window, key, values[event])
@@ -180,6 +192,16 @@ class Tab_Frame():
     def update_loop_count_status(self, window, new_status):
         window[f'{self.__prefix_key}_loop_count_status_'].Update(f'loop_count = {new_status} of')
 
+    def rename_title(self, window, exclude: List):
+        new_title = window[f'{self.__prefix_key}_title_'].get()
+        if new_title in exclude:
+            sg.popup('Warning: name has existed')
+            return None
+        else:
+            window[self.id].Update(title=new_title)
+            self.name = new_title
+            return new_title
+
     def is_modified(self) -> bool:
         compare = json.dumps(self.quest, sort_keys=True) != json.dumps(self.__original_quest, sort_keys=True)
         print('is_modified', compare)
@@ -200,10 +222,9 @@ class kirafanbot_GUI():
         sg.theme('GreenTan')
         self.data = uData.raw()
         self.questlist = self.data['questList']
-        self.questlist_names = tuple(filter(lambda x: x != 'quest_selector', self.questlist.keys()))
         self.layout = self.create_layout()
         self.window = sg.Window(f'kirafan-bot  v{self.data["version"]}', self.layout, finalize=True)
-        self.update_tab_selected(self.questlist['quest_selector'])
+        self.update_tab_selected(self.find_tab_by_name(self.questlist['quest_selector']).id)
         self.update_tabs_bind()
         self.run_job = Job(target=run)
 
@@ -214,13 +235,10 @@ class kirafanbot_GUI():
                 self.__save()
                 self.stop_safe()
                 break
-
             tab = self.find_tab_by_key(event)
             print(tab is None or tab.name, event)
             if tab:
-                tab.handle(self.window, event, values)
-            elif event.startswith('_sleep_'):
-                self.handle_sleep_event(event, values[event])
+                self.handle_tab_event(tab, event, values)
             elif event.startswith('_button_'):
                 self.handle_button_event(event)
             elif event.startswith('_update_'):
@@ -228,14 +246,17 @@ class kirafanbot_GUI():
         self.window.close()
 
     def find_tab_by_key(self, key):
-        i = key[key.index('_')+1:key.index('_', 1)]
-        return self.tabs[i] if i.isdigit() else None
-
-    def find_tab_by_name(self, name):
         try:
-            return self.tabs[str(self.questlist_names.index(name))]
+            i = key[key.index('_')+1:key.index('_', 1)]
+            return self.tabs[i] if i.isdigit() else None
         except ValueError:
             return None
+
+    def find_tab_by_name(self, name):
+        for _, tab in self.tabs.items():
+            if tab.name == name:
+                return tab
+        return None
 
     def update_tab_selected(self, tab):
         self.window[tab].select()
@@ -245,22 +266,39 @@ class kirafanbot_GUI():
             tab.update_all_bind(self.window)
 
     def check_configure_and_status(self):
-        if (self.questlist['quest_selector'] != self.window['_tab_group_'].get() or
-           self.find_tab_by_name(self.window['_tab_group_'].get()).is_modified()):
-            self.questlist['quest_selector'] = self.window['_tab_group_'].get()
+        if (self.questlist['quest_selector'] != self.tabs[self.window['_tab_group_'].get()].name or
+           self.tabs[self.window['_tab_group_'].get()].is_modified()):
+            self.questlist['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
         logging.info(f'kirafan region = {list(kirafan.region)}')
         logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
         logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
-    def handle_sleep_event(self, key, value):
-        if value.isdigit():
-            value = int(value)
-        elif value.replace('.', '', 1).isdigit():
-            value = float(value)
-        elif value.strip(' ') == '':
-            value = 0
-        self.data['sleep'][key[7:-1]] = value
+    def handle_tab_event(self, tab, event, values):
+        if event.endswith('_rename_'):
+            old_name = tab.name
+            exclude = [t.name for _, t in self.tabs.items()] + ['quest_selector']
+            new_name = tab.rename_title(self.window, exclude)
+            if new_name:
+                finded = False
+                for k in tuple(filter(lambda x: x != 'quest_selector', self.questlist.keys())):
+                    if finded:
+                        self.questlist[k] = self.questlist.pop(k)
+                    elif k == old_name:
+                        self.questlist[new_name] = self.questlist[old_name]
+                        del self.questlist[k]
+                        finded = True
+                self.questlist['quest_selector'] = new_name
+        elif event.endswith('_delete_'):
+            self.window['_tab_group_'].Widget.hide(int(tab.id))
+            del self.questlist[tab.name]
+            del self.tabs[tab.id]
+            self.questlist['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name if self.window['_tab_group_'].get() else ''  # noqa: E501
+        elif event.endswith('_add_'):
+            # TBD
+            pass
+        else:
+            tab.handle(self.window, event, values)
 
     def handle_button_event(self, key):
         bt = key[len('_button_'):-1]
@@ -285,7 +323,7 @@ class kirafanbot_GUI():
                 logging.info('press resume now!')
                 self.run_job.resume()
             self.window[key].Update('Stop')
-            self.window['_running_quest_status_'].Update(self.window['_tab_group_'].get())
+            self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name)
         elif bt_name == 'Stop':
             self.window[key].Update('Start', disabled=True)
             if self.run_job.is_alive():
@@ -299,9 +337,9 @@ class kirafanbot_GUI():
     def bt_reset_event(self):
         self.__save()
         self.update_stop_once_status()
-        self.find_tab_by_name(self.window['_tab_group_'].get()).reset(self.window)
-        logging.info(f'reset quest: {self.window["_tab_group_"].get()} finish')
-        if self.questlist['quest_selector'] == self.window['_tab_group_'].get():
+        self.tabs[self.window['_tab_group_'].get()].reset(self.window)
+        logging.info(f'reset quest: {self.tabs[self.window["_tab_group_"].get()].name} finish')
+        if self.questlist['quest_selector'] == self.tabs[self.window['_tab_group_'].get()].name:
             self.__reload()
 
     def bt_stop_once_event(self):
@@ -310,7 +348,12 @@ class kirafanbot_GUI():
         logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def bt_screenshot_event(self):
-        self.find_tab_by_name(self.window['_tab_group_'].get()).is_modified()
+        self.tabs[self.window['_tab_group_'].get()].is_modified()
+        # print('')
+        # adb.set_update_cv2_IM_cache_flag()
+        # kirafan.objects_found_all_print()
+        # kirafan.icons_found_all_print()
+        # print('')
 
     def handle_update_event(self, key, value):
         if key == '_update_wave_id_':
@@ -327,32 +370,24 @@ class kirafanbot_GUI():
 
     def update_button_start_status(self, status):
         self.window['_button_Start_'].Update(status)
-        self.window['_running_quest_status_'].Update(self.window['_tab_group_'].get() if status == 'Start' else '')
+        self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name if status == 'Start' else '')  # noqa: E501
 
     def create_layout(self):
         return [
             self.__run_quest_selector(),
             self.__tab_group_area(),
-            self.__sleep_area(),
             self.__button_area(),
         ]
 
     def __run_quest_selector(self):
         return [sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Arial', 11, 'bold'), key='_running_quest_status_')]
 
-    def __sleep_area(self):
-        sleep = self.data['sleep']
-        frame_layout = [
-            sum(((sg.Text(f'{k}:', p=((5, 0), 5)),
-                  sg.Input(sleep[k], size=3, p=((0, 5), 5), enable_events=True, key=f'_sleep_{k}_')) for k in sleep.keys()), ())
-        ]
-        return [sg.Frame('sleep', frame_layout)]
-
     def __tab_group_area(self):
-        self.tabs = {str(i): Tab_Frame(i, name, self.questlist[name]) for i, name in enumerate(self.questlist_names)}
+        self.tabs = {str(i): Tab_Frame(str(i), name, self.questlist[name])
+                     for i, name in enumerate(filter(lambda x: x != 'quest_selector', self.questlist.keys()))}
         return [
             [sg.TabGroup([[
-                *[sg.Tab(tab.name, tab.create_layout(), key=tab.name) for _, tab in self.tabs.items()]
+                *[sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()]
             ]], key='_tab_group_', selected_title_color='red')]
         ]
 
@@ -371,9 +406,8 @@ class kirafanbot_GUI():
 
     def __save(self):
         uData.save()
-        tab = self.find_tab_by_name(self.window['_tab_group_'].get())
-        if tab:
-            tab.update_original_quest()
+        if self.window['_tab_group_'].get():  # is None if event == sg.exit
+            self.tabs[self.window['_tab_group_'].get()].update_original_quest()
 
     def __reload(self):
         uData.reload()
