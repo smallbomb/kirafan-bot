@@ -5,6 +5,9 @@ Note:
     adb frame
     set_timer frame
     tab add
+    item exchange shop
+    delete altert
+    visit friend
 '''
 from log import logging
 from typeguard import typechecked
@@ -16,6 +19,7 @@ from defined import List, Optional, Dict
 import json
 import copy
 # from adb import adb
+from visit_friend_room import run as visit_friend_room
 
 
 class Tab_Frame():
@@ -225,13 +229,14 @@ class kirafanbot_GUI():
         self.update_tab_selected(self.find_tab_by_name(self.questlist['quest_selector']).id)
         self.update_tabs_bind()
         self.run_job = Job(target=run)
+        self.visit_room_job = Job(target=visit_friend_room)
 
     def start(self):
         while True:
             event, values = self.window.read()
             if event in (sg.WIN_CLOSED, '_button_Exit_'):
                 self.__save()
-                self.stop_safe()
+                self.stop_all_safe()
                 break
             tab = self.find_tab_by_key(event)
             print(tab is None or tab.name, event)
@@ -308,6 +313,8 @@ class kirafanbot_GUI():
             self.bt_stop_once_event()
         elif bt == 'ScreenShot':
             self.bt_screenshot_event()
+        elif bt == 'Visit Room':
+            self.bt_visit_room_event(key)
 
     def bt_start_event(self, key):
         bt_name = self.window[key].GetText()
@@ -320,6 +327,7 @@ class kirafanbot_GUI():
             elif self.run_job.is_pausing():
                 logging.info('press resume now!')
                 self.run_job.resume()
+            self.change_other_buttons(bt_name)
             self.window[key].Update('Stop')
             self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name)
         elif bt_name == 'Stop':
@@ -327,8 +335,9 @@ class kirafanbot_GUI():
             if self.run_job.is_alive():
                 self.window['_stop_status_'].Update('Please wait for a while')
                 self.window.Refresh()
-                self.stop_safe()
+                self.stop_safe(self.run_job)
                 self.window['_stop_status_'].Update('')
+            self.change_other_buttons(bt_name)
             self.window[key].Update(disabled=False)
             self.window['_running_quest_status_'].Update('')
 
@@ -353,6 +362,26 @@ class kirafanbot_GUI():
         # kirafan.icons_found_all_print()
         # print('')
 
+    def bt_visit_room_event(self, key):
+        bt_name = self.window[key].GetText()
+        if bt_name == 'Visit Room':
+            if not self.visit_room_job.is_alive():
+                self.visit_room_job = Job(target=visit_friend_room, args=(self.window,))
+                self.visit_room_job.start()
+            elif self.visit_room_job.is_pausing():
+                self.visit_room_job.resume()
+            self.change_other_buttons(bt_name)
+            self.window[key].Update('Stop Visit')
+        elif bt_name == 'Stop Visit':
+            self.window[key].Update('Visit Room', disabled=True)
+            if self.visit_room_job.is_alive():
+                self.window['_stop_status_'].Update('Please wait for a while')
+                self.window.Refresh()
+                self.stop_safe(self.visit_room_job)
+                self.window['_stop_status_'].Update('')
+            self.change_other_buttons(bt_name)
+            self.window[key].Update(disabled=False)
+
     def handle_update_event(self, key, value):
         if key == '_update_wave_id_':
             self.find_tab_by_name(self.questlist['quest_selector']).update_wave_id_status(self.window, value)
@@ -362,6 +391,8 @@ class kirafanbot_GUI():
             self.update_stop_once_status()
         elif key == '_update_button_start_':
             self.update_button_start_status(value)
+        elif key == '_update_button_friend_start_':
+            self.window['_button_Visit Room_'].Update(value)
 
     def update_stop_once_status(self):
         self.window['_button_Stop once_'].Update('Cancel' if kirafan.stop_once else 'Stop once')
@@ -369,6 +400,18 @@ class kirafanbot_GUI():
     def update_button_start_status(self, status):
         self.window['_button_Start_'].Update(status)
         self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name if status == 'Start' else '')  # noqa: E501
+
+    def change_other_buttons(self, current_button):
+        if current_button == 'Visit Room':
+            self.window['_button_Start_'].Update(disabled=True)
+            self.window['_button_Stop once_'].Update(disabled=True)
+        elif current_button == 'Stop Visit':
+            self.window['_button_Start_'].Update(disabled=False)
+            self.window['_button_Stop once_'].Update(disabled=False)
+        elif current_button == 'Start':
+            self.window['_button_Visit Room_'].Update(disabled=True)
+        elif current_button == 'Stop':
+            self.window['_button_Visit Room_'].Update(disabled=False)
 
     def create_layout(self):
         return [
@@ -390,17 +433,21 @@ class kirafanbot_GUI():
         ]
 
     def __button_area(self):
-        button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Exit']
+        button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Exit']
         return [
             *[sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=(10)) for bt in button_list],
             sg.Text('', key='_stop_status_')
         ]
 
-    def stop_safe(self):
-        if self.run_job.is_alive():
-            self.run_job.gui_button_stop()
-            self.run_job.join()
-            self.run_job.gui_button_stop_finish()
+    def stop_all_safe(self):
+        self.stop_safe(self.run_job)
+        self.stop_safe(self.visit_room_job)
+
+    def stop_safe(self, job):
+        if job.is_alive():
+            job.gui_button_stop()
+            job.join()
+            job.gui_button_stop_finish()
 
     def __save(self):
         uData.save()
