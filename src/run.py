@@ -93,7 +93,7 @@ def _try_to_move_next_new_battle(bot):
             # if event is session clear, bot will not resume battle. because of batttle finish.
             # if event is poor internet connection, just click it.
             logging.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
-        elif kirafan.stamina['use'] and kirafan.icons['tojiru'].click(adb_update_cache=False):
+        elif kirafan.stamina['use'] and kirafan.icons['stamina_Au'].found() and kirafan.icons['tojiru'].click(adb_update_cache=False):
             # disconnection after using stamina
             sleep(0.5)
             kirafan.icons['again'].click()
