@@ -6,8 +6,8 @@ Note:
     set_timer frame
     tab add
     item exchange shop
-    delete altert
-    visit friend
+    tab delete altert
+    version info move to data.py
 '''
 from log import logging
 from typeguard import typechecked
@@ -239,7 +239,8 @@ class kirafanbot_GUI():
                 self.stop_all_safe()
                 break
             tab = self.find_tab_by_key(event)
-            print(tab is None or tab.name, event)
+            print(f'tab = {tab is None and "None" or tab.name}, '
+                  f'event = {event}, value = {event in values and values[event] or "None"}')
             if tab:
                 self.handle_tab_event(tab, event, values)
             elif event.startswith('_button_'):
@@ -392,14 +393,16 @@ class kirafanbot_GUI():
         elif key == '_update_button_start_':
             self.update_button_start_status(value)
         elif key == '_update_button_friend_start_':
+            self.change_other_buttons(self.window['_button_Visit Room_'].GetText())
             self.window['_button_Visit Room_'].Update(value)
 
     def update_stop_once_status(self):
         self.window['_button_Stop once_'].Update('Cancel' if kirafan.stop_once else 'Stop once')
 
-    def update_button_start_status(self, status):
-        self.window['_button_Start_'].Update(status)
-        self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name if status == 'Start' else '')  # noqa: E501
+    def update_button_start_status(self, new_button_status):
+        self.change_other_buttons(self.window['_button_Start_'].GetText())
+        self.window['_button_Start_'].Update(new_button_status)
+        self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name if new_button_status == 'Start' else '')  # noqa: E501
 
     def change_other_buttons(self, current_button):
         if current_button == 'Visit Room':

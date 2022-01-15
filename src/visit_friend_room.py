@@ -1,10 +1,8 @@
 import logging
 import threading
+from typeguard import typechecked
 from time import sleep
-from bot import BOT
-
-
-kirafan = BOT()
+from run import kirafan
 
 
 def run(window):
@@ -15,17 +13,20 @@ def run(window):
     while bot.is_running():
         if tries == 3:
             bot.stop()
+
         _handle_friend_icon(bot, tries)
-        if _handle_visit_room(bot):
+        if _handle_visit_room(bot, tries):
             tries += 1
             logging.info(f'visit_friend time = {tries} success')
             sleep(kirafan.sleep['loading'])
 
-    logging.info('kirafan stop(visit_room)...')
+    logging.info('kirafan stop(visit_friend_room)...')
     if bot.is_not_gui_button_stop():
         bot.send_event('_update_button_friend_start_', 'Visit Room')
 
-def _handle_friend_icon(bot, tries):
+
+@typechecked
+def _handle_friend_icon(bot, tries: int):
     sec = 2 if tries == 0 else 5
     friend_icon_retry = True
     while bot.is_running():
@@ -39,10 +40,13 @@ def _handle_friend_icon(bot, tries):
         else:
             break
 
-def _handle_visit_room(bot) -> bool: 
+
+@typechecked
+def _handle_visit_room(bot, tries: int) -> bool:
+    sec = 2 if tries == 0 else 5
     visit_room_retry = True
     while bot.is_running():
-        if kirafan.icons['visit_room'].scan(5):
+        if kirafan.icons['visit_room'].scan(sec):
             kirafan.icons['visit_room'].click(adb_update_cache=False)
             return True
         elif kirafan.icons['tojiru'].click(adb_update_cache=False):
@@ -52,6 +56,6 @@ def _handle_visit_room(bot) -> bool:
             logging.debug('try a again because visit_room.png not found')
             visit_room_retry = False
         else:
-            logging.error('unknown error...')
+            logging.error('please move to room!')
             bot.stop()
     return False
