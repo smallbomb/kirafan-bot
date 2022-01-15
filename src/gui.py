@@ -5,7 +5,7 @@ Note:
     adb frame
     set_timer frame
     priority 左邊上下鍵, 多選, etc
-    tab remove, add
+    tab add
 '''
 from log import logging
 from typeguard import typechecked
@@ -195,7 +195,7 @@ class Tab_Frame():
     def rename_title(self, window, exclude: List):
         new_title = window[f'{self.__prefix_key}_title_'].get()
         if new_title in exclude:
-            sg.popup('Warning: name has existed')
+            sg.Popup('name already exists! please use another name', title='Warning')
             return None
         else:
             window[self.id].Update(title=new_title)
