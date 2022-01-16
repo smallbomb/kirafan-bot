@@ -13,8 +13,7 @@ def run(window):
     while bot.is_running():
         if tries == 3:
             bot.stop()
-
-        if _handle_visit_room(bot, tries, _handle_friend_icon(tries)):
+        elif _handle_visit_room(bot, tries, _handle_friend_icon(tries)):
             tries += 1
             logging.info(f'visit_friend time = {tries} success')
             sleep(kirafan.sleep['loading'])
