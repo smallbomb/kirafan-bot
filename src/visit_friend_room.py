@@ -33,6 +33,9 @@ def _handle_friend_icon(tries: int) -> bool:
             kirafan.icons['friend_icon'].click(2, adb_update_cache=False)
             sleep(2)
             return True
+        elif kirafan.icons['ok'].click(2, adb_update_cache=False):
+            logging.debug('_handle_friend_icon(): click ok button (poor internet connection)')
+            sleep(2)
         elif tries != 0 and friend_icon_retry:
             logging.debug('try a again because friend_icon.png not found')
             friend_icon_retry = False
@@ -47,6 +50,9 @@ def _handle_visit_room(bot, tries: int, found_friend_icon: bool) -> bool:
         if kirafan.icons['visit_room'].scan(sec):
             kirafan.icons['visit_room'].click(2, adb_update_cache=False)
             return True
+        elif kirafan.icons['ok'].click(2, adb_update_cache=False):
+            logging.debug('_handle_visit_room(): click ok button (poor internet connection)')
+            sleep(2)
         elif kirafan.icons['tojiru'].click(adb_update_cache=False):
             logging.error('No friend room....')
             bot.stop()
