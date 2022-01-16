@@ -1,13 +1,16 @@
 '''
 Note:
     set debug level 測試
-    friend support
-    adb frame
-    set_timer frame
-    tab add
+    friend support area (tab)
+    adb frame  (main)
+    set_timer frame (main)
     item exchange shop
+    list box set default index = 0
+    tab add
     tab delete altert
-    version info move to data.py
+    log window open/hide (main)
+    add same button in skill priority
+    wave hide/unhide
 '''
 from log import logging
 from typeguard import typechecked
@@ -78,8 +81,8 @@ class Tab_Frame():
         frame_layout = [
             [sg.Text('name:'), sg.Input(orb['orb_name'], key=k[0], pad=((2, 0), 5), size=(30, 1), enable_events=True)],
             *[(sg.Text(f'option {n}:'), sg.Checkbox('use', key=f'{self.__prefix_key}_orb{n}_use_', default=orb[n]['use'], enable_events=True),  # noqa: E501
-               sg.Text('wave_N:', pad=((5, 2), 5)), sg.InputCombo([i for i in range(1, 6)], key=f'{self.__prefix_key}_orb{n}_waveN_', default_value=orb[n]['wave_N'], pad=((0, 10), 5), disabled=(not orb[n]['use']), enable_events=True),  # noqa: E501
-               sg.Text('myTurn:', pad=((5, 2), 5)), sg.Spin([i for i in range(0, 100)], size=(2, 1), key=f'{self.__prefix_key}_orb{n}_myTurn_', initial_value=orb[n]['myturn'], pad=((0, 10), 5), disabled=(not orb[n]['use']), enable_events=True),  # noqa: E501
+               sg.Text('wave_N:', pad=((5, 2), 5)), sg.InputCombo([i for i in range(1, 6)], key=f'{self.__prefix_key}_orb{n}_wave_N_', default_value=orb[n]['wave_N'], pad=((0, 10), 5), disabled=(not orb[n]['use']), enable_events=True),  # noqa: E501
+               sg.Text('myTurn:', pad=((5, 2), 5)), sg.Spin([i for i in range(0, 100)], size=(2, 1), key=f'{self.__prefix_key}_orb{n}_myturn_', initial_value=orb[n]['myturn'], pad=((0, 10), 5), disabled=(not orb[n]['use']), enable_events=True),  # noqa: E501
                sg.Text('target:', pad=((5, 2), 5)), sg.InputCombo(('A', 'B', 'C', 'N'), key=f'{self.__prefix_key}_orb{n}_target_', default_value=orb[n]['target'], pad=((0, 10), 5), disabled=(not orb[n]['use']), enable_events=True)  # noqa: E501
                ) for n in map(str, range(1, 4))]
         ]
@@ -133,10 +136,10 @@ class Tab_Frame():
             self.handle_loop_count_event(values[event])
         elif key.startswith('_stamina_'):
             self.handle_stamina_event(window, key, values[event])
+        elif key.startswith('_orb'):
+            self.handle_orb_event(window, key, values[event])
         elif key.startswith('_wave'):
             self.handle_wave_event(window, key, values[event])
-        elif key.startswith('_orb'):
-            self.handle_orb_use_event(window, key, values[event])
 
     def handle_stamina_event(self, window, key, value):
         if '_use_' in key:
@@ -154,6 +157,20 @@ class Tab_Frame():
 
     def handle_loop_count_event(self, value: str):
         self.quest['loop_count'] = int(value) if value.isdigit() else value
+
+    def handle_orb_event(self, window, key, value):
+        n = key[4]
+        key = key[6:-1] if n.isdigit() else key[1:-1]
+        if key == 'orb_name':
+            self.quest['orb'][key] = value
+        elif key == 'use':
+            for k in [f'{self.__prefix_key}_orb{n}_myturn_',
+                      f'{self.__prefix_key}_orb{n}_wave_N_',
+                      f'{self.__prefix_key}_orb{n}_target_']:
+                window[k].Update(disabled=(not value))
+            self.quest['orb'][n][key] = value
+        else:
+            self.quest['orb'][n][key] = value
 
     def handle_wave_event(self, window, key, value):
         N = key[5]
@@ -181,13 +198,6 @@ class Tab_Frame():
             if currnet_list is not None:
                 self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = currnet_list
                 window[f'{self.__prefix_key}{key}'].Update(' '.join(currnet_list))
-
-    def handle_orb_use_event(self, window, key, checkbox):
-        n = key[4]
-        for k in [f'{self.__prefix_key}_orb{n}_myTurn_',
-                  f'{self.__prefix_key}_orb{n}_waveN_',
-                  f'{self.__prefix_key}_orb{n}_target_']:
-            window[k].Update(disabled=(not checkbox))
 
     def update_wave_id_status(self, window, w_id):
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')
@@ -222,10 +232,10 @@ class Tab_Frame():
 class kirafanbot_GUI():
     def __init__(self):
         sg.theme('GreenTan')
-        self.data = uData.raw()
+        self.data = uData.gui_setting()
         self.questlist = self.data['questList']
         self.layout = self.create_layout()
-        self.window = sg.Window(f'kirafan-bot  v{self.data["version"]}', self.layout, finalize=True)
+        self.window = sg.Window(f'kirafan-bot  v{uData.setting["version"]}', self.layout, finalize=True)
         self.update_tab_selected(self.find_tab_by_name(self.questlist['quest_selector']).id)
         self.update_tabs_bind()
         self.run_job = Job(target=run)
@@ -239,8 +249,8 @@ class kirafanbot_GUI():
                 self.stop_all_safe()
                 break
             tab = self.find_tab_by_key(event)
-            print(f'tab = {tab is None and "None" or tab.name}, '
-                  f'event = {event}, value = {event in values and values[event] or "None"}')
+            print(f'tab={"none" if tab is None else tab.name}, event={event}, '
+                  f'(value, type)={(values[event], type(values[event])) if event in values else ("none", "none_type")}')
             if tab:
                 self.handle_tab_event(tab, event, values)
             elif event.startswith('_button_'):
@@ -453,7 +463,7 @@ class kirafanbot_GUI():
             job.gui_button_stop_finish()
 
     def __save(self):
-        uData.save()
+        uData.save_gui_setting()
         if self.window['_tab_group_'].get():  # is None if event == sg.exit
             self.tabs[self.window['_tab_group_'].get()].update_original_quest()
 

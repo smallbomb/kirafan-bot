@@ -3,31 +3,29 @@ import commentjson as json
 from typeguard import typechecked
 from defined import Dict
 
+__VERSION__ = '3.0.0'
+
 
 @typechecked
 class _UserData():
     def __init__(self):
-        self.__raw = self.__open_basic_setting()
+        self.__basic_setting = self.__adv_setting = None
         self.setting = self.__load()
 
-    def __open_basic_setting(self) -> Dict:
-        with open('bot_setting.json', encoding="utf-8") as f:
-            d = self.__padding(json.load(f))
-        return d
-
-    def __open_adv_setting(self) -> Dict:
-        with open('advanced_setting.jsonc', encoding="utf-8") as f:
+    def __load_file(self, fname: str) -> Dict:
+        with open(fname, encoding="utf-8") as f:
             d = json.load(f)
         return d
 
     def __load(self) -> Dict:
-        self.adv_setting = self.__open_adv_setting()
-        if self.adv_setting['mode'] == 'hotkey':
-            self.__raw = self.__open_basic_setting()
-        data = copy.deepcopy(self.__raw)
-        for k in list(filter(lambda s: s != 'ratio', self.adv_setting.keys())):
-            data[k] = self.adv_setting[k]
-        data['ratio'] = self.adv_setting['ratio'][self.adv_setting['aspect_ratio']]
+        self.__adv_setting = self.__load_file('advanced_setting.jsonc')
+        if self.__basic_setting is None or self.__adv_setting['mode'] == 'hotkey':
+            self.__basic_setting = self.__padding(self.__load_file('bot_setting.json'))
+
+        data = copy.deepcopy(self.__basic_setting)
+        for k in list(filter(lambda s: s != 'ratio', self.__adv_setting.keys())):
+            data[k] = self.__adv_setting[k]
+        data['ratio'] = self.__adv_setting['ratio'][self.__adv_setting['aspect_ratio']]
         self.__adb_region = tuple(data['game_region'][:2] + data['adb']['emulator_resolution'])
         self.__pyautogui_region = tuple(data['game_region'])
         data['game_region'] = self.__adb_region if data['adb']['use'] else self.__pyautogui_region
@@ -39,11 +37,9 @@ class _UserData():
         data['friend_support'] = quest['friend_support']
         data['orb'] = quest['orb']
         data['wave'] = quest['wave']
+        data['version'] = __VERSION__
         del data['questList']
         return data
-
-    def raw(self):
-        return self.__raw
 
     def reload(self):
         old_region = self.setting['game_region']
@@ -104,9 +100,12 @@ class _UserData():
                 del wave[key]
         return wave
 
-    def save(self):
+    def gui_setting(self):
+        return self.__basic_setting
+
+    def save_gui_setting(self):
         with open('bot_setting.json', 'w', encoding="utf-8") as f:
-            json.dump(self.__raw, f, ensure_ascii=False)
+            json.dump(self.__basic_setting, f, ensure_ascii=False)
 
 
 uData = _UserData()
