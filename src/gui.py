@@ -208,7 +208,7 @@ class Tab_Frame():
     def rename_title(self, window, exclude: List):
         new_title = window[f'{self.__prefix_key}_title_'].get()
         if new_title in exclude:
-            sg.popup('name already exists! please use another name', title='Warning')
+            sg.popup(f"'{new_title}' already exists! please use another name", title='Warning')
             return None
         else:
             window[self.id].Update(title=new_title)
@@ -233,10 +233,9 @@ class kirafanbot_GUI():
     def __init__(self):
         sg.theme('GreenTan')
         self.data = uData.gui_setting()
-        self.questlist = self.data['questList']
         self.layout = self.create_layout()
         self.window = sg.Window(f'kirafan-bot  v{uData.setting["version"]}', self.layout, finalize=True)
-        self.update_tab_selected(self.find_tab_by_name(self.questlist['quest_selector']).id)
+        self.update_tab_selected(self.find_tab_by_name(self.data['questList']['quest_selector']).id)
         self.update_tabs_bind()
         self.run_job = Job(target=run)
         self.visit_room_job = Job(target=visit_friend_room)
@@ -280,9 +279,9 @@ class kirafanbot_GUI():
             tab.update_all_bind(self.window)
 
     def check_configure_and_status(self):
-        if (self.questlist['quest_selector'] != self.tabs[self.window['_tab_group_'].get()].name or
+        if (self.data['questList']['quest_selector'] != self.tabs[self.window['_tab_group_'].get()].name or
            self.tabs[self.window['_tab_group_'].get()].is_modified()):
-            self.questlist['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
+            self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
         logging.info(f'kirafan region = {list(kirafan.region)}')
         logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
@@ -294,20 +293,15 @@ class kirafanbot_GUI():
             exclude = [t.name for _, t in self.tabs.items()] + ['quest_selector']
             new_name = tab.rename_title(self.window, exclude)
             if new_name:
-                finded = False
-                for k in tuple(filter(lambda x: x != 'quest_selector', self.questlist.keys())):
-                    if finded:
-                        self.questlist[k] = self.questlist.pop(k)
-                    elif k == old_name:
-                        self.questlist[new_name] = self.questlist[old_name]
-                        del self.questlist[k]
-                        finded = True
-                self.questlist['quest_selector'] = new_name
+                self.data['questList'] = {new_name if k == old_name else k: v for k, v in self.data['questList'].items()}
+                self.data['questList']['quest_selector'] = new_name
         elif event.endswith('_delete_'):
-            self.window['_tab_group_'].Widget.hide(int(tab.id))
-            del self.questlist[tab.name]
-            del self.tabs[tab.id]
-            self.questlist['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name if self.window['_tab_group_'].get() else ''  # noqa: E501
+            return_button = sg.popup_ok_cancel(f"Are you sure you want to delete '{tab.name}' tab?", title='Confirm delete')
+            if return_button == "OK":
+                self.window['_tab_group_'].Widget.hide(int(tab.id))
+                del self.data['questList'][tab.name]
+                del self.tabs[tab.id]
+                self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name if self.window['_tab_group_'].get() else ''  # noqa: E501
         elif event.endswith('_add_'):
             # TBD
             pass
@@ -357,7 +351,7 @@ class kirafanbot_GUI():
         self.update_stop_once_status()
         self.tabs[self.window['_tab_group_'].get()].reset(self.window)
         logging.info(f'reset quest: {self.tabs[self.window["_tab_group_"].get()].name} finish')
-        if self.questlist['quest_selector'] == self.tabs[self.window['_tab_group_'].get()].name:
+        if self.data['questList']['quest_selector'] == self.tabs[self.window['_tab_group_'].get()].name:
             self.__reload()
 
     def bt_stop_once_event(self):
@@ -395,9 +389,9 @@ class kirafanbot_GUI():
 
     def handle_update_event(self, key, value):
         if key == '_update_wave_id_':
-            self.find_tab_by_name(self.questlist['quest_selector']).update_wave_id_status(self.window, value)
+            self.find_tab_by_name(self.data['questList']['quest_selector']).update_wave_id_status(self.window, value)
         elif key == '_update_loop_count_':
-            self.find_tab_by_name(self.questlist['quest_selector']).update_loop_count_status(self.window, value)
+            self.find_tab_by_name(self.data['questList']['quest_selector']).update_loop_count_status(self.window, value)
         elif key == '_update_stop_once_':
             self.update_stop_once_status()
         elif key == '_update_button_start_':
@@ -437,8 +431,8 @@ class kirafanbot_GUI():
         return [sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Arial', 11, 'bold'), key='_running_quest_status_')]
 
     def __tab_group_area(self):
-        self.tabs = {str(i): Tab_Frame(str(i), name, self.questlist[name])
-                     for i, name in enumerate(filter(lambda x: x != 'quest_selector', self.questlist.keys()))}
+        self.tabs = {str(i): Tab_Frame(str(i), name, self.data['questList'][name])
+                     for i, name in enumerate(filter(lambda x: x != 'quest_selector', self.data['questList'].keys()))}
         return [
             [sg.TabGroup([[
                 *[sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()]
