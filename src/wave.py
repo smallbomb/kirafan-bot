@@ -131,7 +131,7 @@ class Wave:
         if self.auto:
             return self.objects['setting_button'].found(False)
         return (self.objects['setting_button'].found(False) and
-                self.characters[self.ch_id].objects['normal_atk'].found(False))
+                self.characters[self.ch_id].objects['atk'].found(False))
 
     def icon_coord(self, adb_update_cache: bool) -> Optional[Coord]:
         return self.icon.get_center(adb_update_cache)

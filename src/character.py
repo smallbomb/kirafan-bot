@@ -42,18 +42,18 @@ class Character:
                         continue
                 else:
                     self.objects[sk].click(4)
-                    if sk == 'weapon_sk' and self.ready(True):
+                    if sk == 'wpn_sk' and self.ready(True):
                         continue  # has no weapons
                 logging.debug(f'character action: use \x1b[32m{sk}\x1b[0m')
                 return sk
-            elif ck_animate_cd and sk in ['sk1', 'sk2', 'weapon_sk']:
+            elif ck_animate_cd and sk in ['wpn_sk', 'L_sk', 'R_sk']:
                 ck_animate_cd = False
                 if self.__action_cd_skill(sk):
                     logging.debug(f'character action: use \x1b[32m{sk}\x1b[0m')
                     return sk
 
     def __skill_is_ready(self, sk: str) -> bool:
-        if sk in ['normal_atk', 'auto_button']:
+        if sk in ['atk', 'auto_button']:
             return True
         return self.objects[sk].found(False)
 

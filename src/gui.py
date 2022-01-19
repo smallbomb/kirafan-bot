@@ -148,12 +148,12 @@ class Tab_Frame():
             self.update_stamina_bind(window)
         elif '_stamina_priority_' in key:
             default = ['Au', 'Ag', 'Cu']
-            currnet_list = list(filter(lambda e: e != '', value.split(' ')))
-            available_list = list(set(default) - set([c[:2] for c in currnet_list]))
-            currnet_list = priority_GUI('stamina', key.replace('_', ' ').strip(), currnet_list, available_list, ).open()
-            if currnet_list is not None:
-                self.quest['stamina']['priority'] = currnet_list
-                window[f'{self.__prefix_key}{key}'].Update(' '.join(currnet_list))
+            current_list = list(filter(lambda e: e != '', value.split(' ')))
+            available_list = [x for x in default if x not in [c[:2] for c in current_list]]
+            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default).open()
+            if current_list is not None:
+                self.quest['stamina']['priority'] = current_list
+                window[f'{self.__prefix_key}{key}'].Update(' '.join(current_list))
 
     def handle_loop_count_event(self, value: str):
         self.quest['loop_count'] = int(value) if value.isdigit() else value
@@ -191,13 +191,13 @@ class Tab_Frame():
             for k in [f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_' for p in pos]:
                 window[k].Update(disabled=(not value))
         elif '_skill_priority_' in key:
-            default = ['sp', 'sk1', 'sk2', 'weapon_sk', 'normal_atk']
-            currnet_list = list(filter(lambda e: e != '', value.split(' ')))
-            available_list = list(set(default) - set(currnet_list))
-            currnet_list = priority_GUI('skill', key.replace('_', ' ').strip(), currnet_list, available_list).open()
-            if currnet_list is not None:
-                self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = currnet_list
-                window[f'{self.__prefix_key}{key}'].Update(' '.join(currnet_list))
+            default = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
+            current_list = list(filter(lambda e: e != '', value.split(' ')))
+            available_list = [x for x in default if x not in current_list]
+            current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, default).open()
+            if current_list is not None:
+                self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = current_list
+                window[f'{self.__prefix_key}{key}'].Update(' '.join(current_list))
 
     def update_wave_id_status(self, window, w_id):
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')
@@ -240,7 +240,7 @@ class kirafanbot_GUI():
         self.run_job = Job(target=run)
         self.visit_room_job = Job(target=visit_friend_room)
 
-    def start(self):
+    def open(self):
         while True:
             event, values = self.window.read()
             if event in (sg.WIN_CLOSED, '_button_Exit_'):
@@ -470,10 +470,11 @@ class kirafanbot_GUI():
 
 @typechecked
 class priority_GUI():
-    def __init__(self, priority_type: str, text: str, current_list: List, available_list: List):
+    def __init__(self, priority_type: str, text: str, current_list: List, available_list: List, default_list: List):
         self.type = priority_type
         self.current_list = current_list
         self.available_list = available_list
+        self.default_list = default_list
         self.stamina = self.__create_stamina_count_dict()
         self.layout = self.create_layout(text)
         self.window = sg.Window('kirafan-bot priority', self.layout, modal=True)
@@ -491,7 +492,8 @@ class priority_GUI():
             [sg.Text('current priority', size=25, pad=((40, 5), (5, 0))), sg.Text('available list', pad=((12, 5), (5, 0)))],
             [
                 sg.Column([[sg.Button("↑", size=(1, 2), key="_↑_")], [sg.Button("↓", size=(1, 2), key="_↓_")]]),
-                sg.Listbox(values=self.current_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_current_list_"),
+                sg.Listbox(values=self.current_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_current_list_",
+                           default_values=self.current_list[0] if self.current_list else None),
                 sg.Column([[sg.Button("→", size=(3, 1), key="_→_")], [sg.Button("←", size=(3, 1), key="_←_")]]),
                 sg.Listbox(values=self.available_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_available_list_")
             ],
@@ -557,6 +559,7 @@ class priority_GUI():
     def button_right_arrow(self):
         i = self.window['_current_list_'].get_indexes()[0]
         self.available_list.append(self.current_list.pop(i))
+        self.available_list = [x for x in self.default_list if x in self.available_list]
         self.window['_current_list_'].Update(self.current_list, set_to_index=i if len(self.current_list) > i else i-1)
         self.window['_available_list_'].Update(self.available_list)
         self.update_stamina_spin()
