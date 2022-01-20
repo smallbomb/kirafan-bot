@@ -1,16 +1,13 @@
 '''
 Note:
     set debug level 測試
+    log window open/hide (main)
     friend support area (tab)
     adb frame  (main)
     set_timer frame (main)
-    item exchange shop
-    list box set default index = 0
-    tab add
-    tab delete altert
-    log window open/hide (main)
-    add same button in skill priority
     wave hide/unhide
+    item exchange shop
+    tab add
 '''
 from log import logging
 from typeguard import typechecked
@@ -178,9 +175,9 @@ class Tab_Frame():
         if '_auto_' in key:
             self.quest['wave'][N]['auto'] = value
             self.update_waveN_bind(window, N)
-            for k in [f'{self.__prefix_key}_wave{N}_sp_weight_enable_',
-                      *[f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_' for p in pos],
-                      *[f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_' for p in pos]]:
+            for k in ([f'{self.__prefix_key}_wave{N}_sp_weight_enable_'] +
+                      [f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_' for p in pos] +
+                      [f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_' for p in pos]):
                 if k.endswith('_sp_weight_enable_'):
                     window[k].Update(disabled=value)
                 elif k.endswith('_skill_priority_'):
@@ -256,6 +253,8 @@ class kirafanbot_GUI():
                 self.handle_button_event(event)
             elif event.startswith('_update_'):
                 self.handle_update_event(event, values[event])
+            # else:
+            #     self.window['_tab_group_'].add_tab(sg.Tab('aaaa', [], element_justification='left'))
         self.window.close()
 
     def find_tab_by_key(self, key):
@@ -297,7 +296,7 @@ class kirafanbot_GUI():
                 self.data['questList']['quest_selector'] = new_name
         elif event.endswith('_delete_'):
             return_button = sg.popup_ok_cancel(f"Are you sure you want to delete '{tab.name}' tab?", title='Confirm delete')
-            if return_button == "OK":
+            if return_button == 'OK':
                 self.window['_tab_group_'].Widget.hide(int(tab.id))
                 del self.data['questList'][tab.name]
                 del self.tabs[tab.id]
@@ -386,17 +385,15 @@ class kirafanbot_GUI():
             self.window[key].Update(disabled=False)
 
     def handle_update_event(self, key, value):
-        if key == '_update_wave_id_':
-            self.find_tab_by_name(self.data['questList']['quest_selector']).update_wave_id_status(self.window, value)
-        elif key == '_update_loop_count_':
-            self.find_tab_by_name(self.data['questList']['quest_selector']).update_loop_count_status(self.window, value)
-        elif key == '_update_stop_once_':
-            self.update_stop_once_status()
-        elif key == '_update_button_start_':
-            self.update_button_start_status(value)
-        elif key == '_update_button_friend_start_':
-            self.change_other_buttons(self.window['_button_Visit Room_'].GetText())
-            self.window['_button_Visit Room_'].Update(value)
+        update_event_map = {
+            '_update_wave_id_': lambda v: self.find_tab_by_name(self.data['questList']['quest_selector']).update_wave_id_status(self.window, v),  # noqa: E501
+            '_update_loop_count_': lambda v: self.find_tab_by_name(self.data['questList']['quest_selector']).update_loop_count_status(self.window, v),  # noqa: E501
+            '_update_stop_once_': lambda v: self.update_stop_once_status(),
+            '_update_button_start_': lambda v: self.update_button_start_status(v),
+            '_update_button_friend_start_': lambda v: (self.change_other_buttons(self.window['_button_Visit Room_'].GetText()),
+                                                       self.window['_button_Visit Room_'].Update(v))
+        }
+        update_event_map[key](value)
 
     def update_stop_once_status(self):
         self.window['_button_Stop once_'].Update('Cancel' if kirafan.stop_once else 'Stop once')
@@ -404,40 +401,41 @@ class kirafanbot_GUI():
     def update_button_start_status(self, new_button_status):
         self.change_other_buttons(self.window['_button_Start_'].GetText())
         self.window['_button_Start_'].Update(new_button_status)
-        self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name if new_button_status == 'Start' else '')  # noqa: E501
+        self.window['_running_quest_status_'].Update('' if new_button_status == 'Start' else self.tabs[self.window['_tab_group_'].get()].name)  # noqa: E501
 
     def change_other_buttons(self, current_button):
-        if current_button == 'Visit Room':
-            self.window['_button_Start_'].Update(disabled=True)
-            self.window['_button_Stop once_'].Update(disabled=True)
-        elif current_button == 'Stop Visit':
-            self.window['_button_Start_'].Update(disabled=False)
-            self.window['_button_Stop once_'].Update(disabled=False)
-        elif current_button == 'Start':
-            self.window['_button_Visit Room_'].Update(disabled=True)
-        elif current_button == 'Stop':
-            self.window['_button_Visit Room_'].Update(disabled=False)
+        change_other_buttons_map = {
+            'Visit Room': lambda: (self.window['_button_Start_'].Update(disabled=True),
+                                   self.window['_button_Stop once_'].Update(disabled=True)),
+            'Stop Visit': lambda: (self.window['_button_Start_'].Update(disabled=False),
+                                   self.window['_button_Stop once_'].Update(disabled=False)),
+            'Start': lambda: (self.window['_button_Visit Room_'].Update(disabled=True)),
+            'Stop': lambda: (self.window['_button_Visit Room_'].Update(disabled=False)),
+        }
+        change_other_buttons_map[current_button]()
 
-    def create_layout(self):
+    def create_layout(self) -> List:
         return [
             self.__run_quest_selector(),
             self.__tab_group_area(),
             self.__button_area(),
         ]
 
-    def __run_quest_selector(self):
+    def __run_quest_selector(self) -> List:
         return [sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Arial', 11, 'bold'), key='_running_quest_status_')]
 
-    def __tab_group_area(self):
+    def __tab_group_area(self) -> List:
         self.tabs = {str(i): Tab_Frame(str(i), name, self.data['questList'][name])
                      for i, name in enumerate(filter(lambda x: x != 'quest_selector', self.data['questList'].keys()))}
+        self.next_id = str(len(self.tabs))
         return [
             [sg.TabGroup([[
-                *[sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()]
-            ]], key='_tab_group_', selected_title_color='red')]
+                *[sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()],
+                sg.Tab("＋", [], key=self.next_id)
+            ]], key='_tab_group_', selected_title_color='red', enable_events=True)]
         ]
 
-    def __button_area(self):
+    def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Exit']
         return [
             *[sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=(10)) for bt in button_list],
@@ -477,7 +475,7 @@ class priority_GUI():
         self.layout = self.create_layout(text)
         self.window = sg.Window('kirafan-bot priority', self.layout, modal=True)
 
-    def __create_stamina_count_dict(self):
+    def __create_stamina_count_dict(self) -> Optional[Dict]:
         r = None
         if self.type == 'stamina':
             r = dict([(x.split(":") + ['1'])[:2] for x in self.current_list] + [(s, 1) for s in self.available_list])
@@ -497,10 +495,10 @@ class priority_GUI():
             ],
             self.__stamina_extend(),
             [sg.Submit('Submit', pad=((170, 5), 5)), sg.Cancel('Cancel')] +
-            self.__skill_hide_button(text),
+            self.__skill_extend_button(text),
         ]
 
-    def __stamina_extend(self):
+    def __stamina_extend(self) -> List:
         if self.type != 'stamina':
             return []
         layout = [sg.Text('count:')]
@@ -510,54 +508,49 @@ class priority_GUI():
             layout += [sg.Spin([i for i in range(1, 11)], initial_value=self.stamina[s], size=(2, 1), pad=_pad, key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]  # noqa: E501
         return layout
 
-    def __skill_hide_button(self, text: str) -> List:
+    def __skill_extend_button(self, text: str) -> List:
         if self.type == 'skill' and text[4] != '1':
             return [sg.Button('Same as Wave1', pad=((33, 0), 0))]
         return []
 
-    def __stamina_sumbit(self):
+    def __sumbit(self) -> Optional[List]:
         r = self.window["_current_list_"].get_list_values()
-        return list(map(lambda s: s + f':{self.window[f"_stamina_count_{s}_"].get()}', r))
+        if self.type == 'stamina':
+            return list(map(lambda s: s + f':{self.window[f"_stamina_count_{s}_"].get()}', r))
+        elif self.type == 'skill':
+            return r
 
     def open(self) -> Optional[List]:
         _map = {
-            '_↑_': self.button_up_arrow,
-            '_↓_': self.button_down_arrow,
-            '_←_': self.button_left_arrow,
-            '_→_': self.button_right_arrow,
-            'Submit': self.__stamina_sumbit if self.type == 'stamina' else self.window["_current_list_"].get_list_values,
+            '_↑_': lambda: len(self.window['_current_list_'].get_indexes()) > 0 and self.button_up_arrow(),
+            '_↓_': lambda: len(self.window['_current_list_'].get_indexes()) > 0 and self.button_down_arrow(),
+            '_←_': lambda: len(self.window['_available_list_'].get_indexes()) > 0 and self.button_left_arrow(),
+            '_→_': lambda: len(self.window['_current_list_'].get_indexes()) > 0 and self.button_right_arrow(),
+            'Submit': self.__sumbit,
             'Same as Wave1': lambda: ['Same as Wave1']
         }
-        return_value = None
         while True:
             event, _ = self.window.read()
             if event in (sg.WIN_CLOSED, 'Cancel'):
-                break
+                self.window.close()
+                return
             elif event in ('Same as Wave1', 'Submit'):
-                return_value = _map[event]()
-                break
+                self.window.close()
+                return _map[event]()
             else:
                 _map[event]()
-        self.window.close()
-        return return_value
 
     def button_up_arrow(self):
-        if len(self.window['_current_list_'].get_indexes()) <= 0:
-            return
         i = self.window['_current_list_'].get_indexes()[0]
         self.current_list.insert(i-1 if i else len(self.current_list)+1, self.current_list.pop(i))
         self.window['_current_list_'].Update(self.current_list, set_to_index=(i-1 if i else len(self.current_list)-1))
 
     def button_down_arrow(self):
-        if len(self.window['_current_list_'].get_indexes()) <= 0:
-            return
         i = self.window['_current_list_'].get_indexes()[0]
         self.current_list.insert(0 if i == len(self.current_list)-1 else i+1, self.current_list.pop(i))
         self.window['_current_list_'].Update(self.current_list, set_to_index=(0 if i == len(self.current_list)-1 else i+1))
 
     def button_left_arrow(self):
-        if len(self.window['_available_list_'].get_indexes()) <= 0:
-            return
         i = self.window['_available_list_'].get_indexes()[0]
         self.current_list.append(self.available_list.pop(i))
         self.window['_current_list_'].Update(self.current_list)
@@ -565,8 +558,6 @@ class priority_GUI():
         self.update_stamina_spin()
 
     def button_right_arrow(self):
-        if len(self.window['_current_list_'].get_indexes()) <= 0:
-            return
         i = self.window['_current_list_'].get_indexes()[0]
         self.available_list.append(self.current_list.pop(i))
         self.available_list = [x for x in self.default_list if x in self.available_list]
