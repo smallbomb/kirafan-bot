@@ -196,8 +196,8 @@ class Tab_Frame():
             available_list = [x for x in default if x not in current_list]
             current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, default).open()
             if current_list is not None:
-                self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = current_list
-                window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
+                self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = current_list if current_list != ['Same as Wave1'] else self.quest['wave']['1'][f'character_{key[17:key.index("_", 17)]}']['skill_priority']  # noqa: E501
+                window[f'{self.__prefix_key}{key}'].Update(' > '.join(self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority']))  # noqa: E501
 
     def update_wave_id_status(self, window, w_id):
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')
@@ -309,17 +309,15 @@ class kirafanbot_GUI():
             tab.handle(self.window, event, values)
 
     def handle_button_event(self, key):
-        bt = key[len('_button_'):-1]
-        if bt == 'Start':
-            self.bt_start_event(key)
-        elif bt == 'Reset':
-            self.bt_reset_event()
-        elif bt == 'Stop once':
-            self.bt_stop_once_event()
-        elif bt == 'ScreenShot':
-            self.bt_screenshot_event()
-        elif bt == 'Visit Room':
-            self.bt_visit_room_event(key)
+        button_event_map = {
+            'Start': lambda k: self.bt_start_event(k),
+            'Reset': lambda k: self.bt_reset_event(),
+            'Stop once': lambda k: self.bt_stop_once_event(),
+            'ScreenShot': lambda k: self.bt_screenshot_event(),
+            'Visit Room': lambda k: self.bt_visit_room_event(k)
+        }
+        button_str = key[len('_button_'):-1]
+        button_event_map[button_str](key)
 
     def bt_start_event(self, key):
         bt_name = self.window[key].GetText()
@@ -498,7 +496,8 @@ class priority_GUI():
                 sg.Listbox(values=self.available_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_available_list_")
             ],
             self.__stamina_extend(),
-            [sg.Submit('Submit', pad=((170, 5), 5)), sg.Cancel('Cancel')]
+            [sg.Submit('Submit', pad=((170, 5), 5)), sg.Cancel('Cancel')] +
+            self.__skill_hide_button(text),
         ]
 
     def __stamina_extend(self):
@@ -511,45 +510,54 @@ class priority_GUI():
             layout += [sg.Spin([i for i in range(1, 11)], initial_value=self.stamina[s], size=(2, 1), pad=_pad, key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]  # noqa: E501
         return layout
 
+    def __skill_hide_button(self, text: str) -> List:
+        if self.type == 'skill' and text[4] != '1':
+            return [sg.Button('Same as Wave1', pad=((33, 0), 0))]
+        return []
+
     def __stamina_sumbit(self):
         r = self.window["_current_list_"].get_list_values()
         return list(map(lambda s: s + f':{self.window[f"_stamina_count_{s}_"].get()}', r))
 
     def open(self) -> Optional[List]:
+        _map = {
+            '_↑_': self.button_up_arrow,
+            '_↓_': self.button_down_arrow,
+            '_←_': self.button_left_arrow,
+            '_→_': self.button_right_arrow,
+            'Submit': self.__stamina_sumbit if self.type == 'stamina' else self.window["_current_list_"].get_list_values,
+            'Same as Wave1': lambda: ['Same as Wave1']
+        }
         return_value = None
         while True:
             event, _ = self.window.read()
             if event in (sg.WIN_CLOSED, 'Cancel'):
                 break
-            elif event == 'Submit':
-                if self.type == 'stamina':
-                    return_value = self.__stamina_sumbit()
-                elif self.type == 'skill':
-                    return_value = self.window["_current_list_"].get_list_values()
+            elif event in ('Same as Wave1', 'Submit'):
+                return_value = _map[event]()
                 break
-            elif event == '_↑_' and len(self.window['_current_list_'].get_indexes()) > 0:
-                self.button_up_arrow()
-            elif event == '_↓_' and len(self.window['_current_list_'].get_indexes()) > 0:
-                self.button_down_arrow()
-            elif event == '_←_' and len(self.window['_available_list_'].get_indexes()) > 0:
-                self.button_left_arrow()
-            elif event == '_→_' and len(self.window['_current_list_'].get_indexes()) > 0:
-                self.button_right_arrow()
-
+            else:
+                _map[event]()
         self.window.close()
         return return_value
 
     def button_up_arrow(self):
+        if len(self.window['_current_list_'].get_indexes()) <= 0:
+            return
         i = self.window['_current_list_'].get_indexes()[0]
         self.current_list.insert(i-1 if i else len(self.current_list)+1, self.current_list.pop(i))
         self.window['_current_list_'].Update(self.current_list, set_to_index=(i-1 if i else len(self.current_list)-1))
 
     def button_down_arrow(self):
+        if len(self.window['_current_list_'].get_indexes()) <= 0:
+            return
         i = self.window['_current_list_'].get_indexes()[0]
         self.current_list.insert(0 if i == len(self.current_list)-1 else i+1, self.current_list.pop(i))
         self.window['_current_list_'].Update(self.current_list, set_to_index=(0 if i == len(self.current_list)-1 else i+1))
 
     def button_left_arrow(self):
+        if len(self.window['_available_list_'].get_indexes()) <= 0:
+            return
         i = self.window['_available_list_'].get_indexes()[0]
         self.current_list.append(self.available_list.pop(i))
         self.window['_current_list_'].Update(self.current_list)
@@ -557,6 +565,8 @@ class priority_GUI():
         self.update_stamina_spin()
 
     def button_right_arrow(self):
+        if len(self.window['_current_list_'].get_indexes()) <= 0:
+            return
         i = self.window['_current_list_'].get_indexes()[0]
         self.available_list.append(self.current_list.pop(i))
         self.available_list = [x for x in self.default_list if x in self.available_list]
