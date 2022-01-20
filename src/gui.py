@@ -71,7 +71,7 @@ class Tab_Frame():
         frame_layout = [[
             sg.Checkbox('use', key=k[0], default=stamina['use'], enable_events=True),
             sg.Text('priority:', pad=((5, 0), 5)),
-            sg.Input(' '.join(stamina['priority']), size=(15, 1), key=k[1], disabled_readonly_background_color=('white' if stamina['use'] else 'gray'), disabled=True)  # noqa: E501
+            sg.Input(' > '.join(stamina['priority']), size=20, key=k[1], disabled_readonly_background_color=('white' if stamina['use'] else 'gray'), disabled=True)  # noqa: E501
         ]]
         return [sg.Frame('stamina', frame_layout)]
 
@@ -105,7 +105,7 @@ class Tab_Frame():
                      f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_']
                 column += [
                   sg.Text(f'{p}:', pad=((5, 2), 5)),
-                  sg.Input(' '.join(w[N][f'character_{p}']['skill_priority']), pad=((0, 0), 5), size=(25), key=k[0], disabled_readonly_background_color=('gray' if w[N]['auto'] else 'white'), disabled=True),  # noqa: E501
+                  sg.Input(' > '.join(w[N][f'character_{p}']['skill_priority']), pad=((0, 0), 5), size=(29), key=k[0], disabled_readonly_background_color=('gray' if w[N]['auto'] else 'white'), disabled=True),  # noqa: E501
                   sg.Text('weight:', pad=((1, 2), 5)),
                   sg.Spin([i for i in range(1, 10)], pad=(((0, 5), 5) if p == 'right' else ((0, 10), 5)), key=k[1], disabled=(w[N]['auto'] or not w[N]['sp_weight_enable']), initial_value=(w[N][f'character_{p}']['sp_weight']), enable_events=True)  # noqa: E501
                 ]
@@ -148,12 +148,12 @@ class Tab_Frame():
             self.update_stamina_bind(window)
         elif '_stamina_priority_' in key:
             default = ['Au', 'Ag', 'Cu']
-            current_list = list(filter(lambda e: e != '', value.split(' ')))
+            current_list = list(filter(lambda e: e != '', value.split(' > ')))
             available_list = [x for x in default if x not in [c[:2] for c in current_list]]
             current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default).open()
             if current_list is not None:
                 self.quest['stamina']['priority'] = current_list
-                window[f'{self.__prefix_key}{key}'].Update(' '.join(current_list))
+                window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
 
     def handle_loop_count_event(self, value: str):
         self.quest['loop_count'] = int(value) if value.isdigit() else value
@@ -192,12 +192,12 @@ class Tab_Frame():
                 window[k].Update(disabled=(not value))
         elif '_skill_priority_' in key:
             default = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
-            current_list = list(filter(lambda e: e != '', value.split(' ')))
+            current_list = list(filter(lambda e: e != '', value.split(' > ')))
             available_list = [x for x in default if x not in current_list]
             current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, default).open()
             if current_list is not None:
                 self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = current_list
-                window[f'{self.__prefix_key}{key}'].Update(' '.join(current_list))
+                window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
 
     def update_wave_id_status(self, window, w_id):
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')

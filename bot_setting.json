@@ -40,15 +40,15 @@
           "auto": false,
           "sp_weight_enable": true,
           "character_left": {
-            "skill_priority": ["sp", "normal_atk"],
+            "skill_priority": ["sp", "atk"],
             "sp_weight": 9
           },
           "character_middle": {
-            "skill_priority": ["sp", "weapon_sk", "sk2", "sk1", "normal_atk"],
+            "skill_priority": ["sp", "wpn_sk", "L_sk", "R_sk", "atk"],
             "sp_weight": 2
           },
           "character_right": {
-            "skill_priority": ["sk2"]
+            "skill_priority": ["L_sk"]
           }
         }
       }
@@ -79,13 +79,13 @@
         "1,2,3": {
           "auto": false,
           "character_left": {
-            "skill_priority": ["sp", "weapon_sk", "sk2", "sk1"]
+            "skill_priority": ["sp", "wpn_sk", "L_sk", "R_sk"]
           },
           "character_middle": {
-            "skill_priority": ["weapon_sk", "normal_atk"]
+            "skill_priority": ["wpn_sk", "atk"]
           },
           "character_right": {
-            "skill_priority": ["weapon_sk", "sk1", "sp", "sk2", "normal_atk"]
+            "skill_priority": ["wpn_sk", "R_sk", "sp", "L_sk", "atk"]
           }
         }
       }
