@@ -56,7 +56,7 @@ class _UserData():
 
     def __padding(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']
-        if len(questlist) == 1:
+        if len(questlist) <= 1:
             questlist['default'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1, '1': {"auto": True}}}
             questlist['quest_selector'] = 'default'
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
@@ -99,6 +99,12 @@ class _UserData():
                         wave[sub_k] = copy.deepcopy(wave[key])
                 del wave[key]
         return wave
+
+    def create_default_quest(self) -> Dict:
+        q = dict()
+        q['questList'] = dict()
+        q = self.__padding(q)
+        return q['questList']['default']
 
     def gui_setting(self):
         return self.__basic_setting

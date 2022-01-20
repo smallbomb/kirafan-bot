@@ -207,8 +207,11 @@ class Tab_Frame():
         if new_title in exclude:
             sg.popup(f"'{new_title}' already exists! please use another name", title='Warning')
             return None
+        elif new_title == '':
+            sg.popup(f"'{new_title}' is empty! please use another name", title='Warning')
+            return None
         else:
-            window[self.id].Update(title=new_title)
+            window[self.id].update(title=new_title)
             self.name = new_title
             return new_title
 
@@ -250,16 +253,17 @@ class kirafanbot_GUI():
             if tab:
                 self.handle_tab_event(tab, event, values)
             elif event.startswith('_button_'):
-                self.handle_button_event(event)
+                self.handle_button_event(event, values)
             elif event.startswith('_update_'):
                 self.handle_update_event(event, values[event])
-            # else:
-            #     self.window['_tab_group_'].add_tab(sg.Tab('aaaa', [], element_justification='left'))
+            elif event == '_tab_group_':
+                self.handle_tab_group_event(values[event])
         self.window.close()
 
     def find_tab_by_key(self, key):
         try:
             i = key[key.index('_')+1:key.index('_', 1)]
+            # sssss
             return self.tabs[i] if i.isdigit() else None
         except ValueError:
             return None
@@ -286,28 +290,49 @@ class kirafanbot_GUI():
         logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
         logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
+    def handle_tab_group_event(self, tab_id: str):
+        def __gen_tab_name():
+            i = 1
+            while True:
+                n = f'new tab {i}'
+                if n not in [t.name for _, t in self.tabs.items()]:
+                    return n
+                i += 1
+        if int(tab_id) == int(self.next_id) - 1:
+            tab = self.find_tab_by_name('＋')
+            self.data['questList']['＋'] = tab.quest
+            new_name = __gen_tab_name()
+            self.window[f'_{tab.id}_{tab.name}_title_'].update(new_name)
+            self.handle_tab_event(tab, '_rename_', None)
+            self.window['_tab_group_'].add_tab(self.__tab_plus()[0])
+
     def handle_tab_event(self, tab, event, values):
         if event.endswith('_rename_'):
             old_name = tab.name
             exclude = [t.name for _, t in self.tabs.items()] + ['quest_selector']
+            o_key = self.window['_tab_group_'].get()
             new_name = tab.rename_title(self.window, exclude)
+            n_key = self.window['_tab_group_'].get()
+            self.tabs[n_key] = self.tabs.pop(o_key)
             if new_name:
                 self.data['questList'] = {new_name if k == old_name else k: v for k, v in self.data['questList'].items()}
-                self.data['questList']['quest_selector'] = new_name
+                if self.data['questList']['quest_selector'] == old_name:
+                    self.data['questList']['quest_selector'] = new_name
         elif event.endswith('_delete_'):
-            return_button = sg.popup_ok_cancel(f"Are you sure you want to delete '{tab.name}' tab?", title='Confirm delete')
+            # sg.popup_ok_cancel(f"Are you sure you want to delete '{tab.name}' tab?", title='Confirm delete')
+            return_button = 'OK'
             if return_button == 'OK':
                 self.window['_tab_group_'].Widget.hide(int(tab.id))
                 del self.data['questList'][tab.name]
                 del self.tabs[tab.id]
-                self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name if self.window['_tab_group_'].get() else ''  # noqa: E501
-        elif event.endswith('_add_'):
-            # TBD
-            pass
+                if self.data['questList']['quest_selector'] == tab.name:
+                    self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name if self.window['_tab_group_'].get() else ''  # noqa: E501
+                if self.window['_tab_group_'].get() == self.find_tab_by_name('＋').id and len(self.tabs) > 1:
+                    self.update_tab_selected([*self.tabs.keys()][-2])
         else:
             tab.handle(self.window, event, values)
 
-    def handle_button_event(self, key):
+    def handle_button_event(self, key, values):
         button_event_map = {
             'Start': lambda k: self.bt_start_event(k),
             'Reset': lambda k: self.bt_reset_event(),
@@ -316,6 +341,8 @@ class kirafanbot_GUI():
             'Visit Room': lambda k: self.bt_visit_room_event(k)
         }
         button_str = key[len('_button_'):-1]
+        if key == '_button_ScreenShot_':
+            print(values)
         button_event_map[button_str](key)
 
     def bt_start_event(self, key):
@@ -357,7 +384,9 @@ class kirafanbot_GUI():
         logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def bt_screenshot_event(self):
-        self.tabs[self.window['_tab_group_'].get()].is_modified()
+        print(self.tabs)
+        print()
+        # self.tabs[self.window['_tab_group_'].get()].is_modified()
         # print('')
         # adb.set_update_cv2_IM_cache_flag()
         # kirafan.objects_found_all_print()
@@ -429,11 +458,16 @@ class kirafanbot_GUI():
                      for i, name in enumerate(filter(lambda x: x != 'quest_selector', self.data['questList'].keys()))}
         self.next_id = str(len(self.tabs))
         return [
-            [sg.TabGroup([[
-                *[sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()],
-                sg.Tab("＋", [], key=self.next_id)
-            ]], key='_tab_group_', selected_title_color='red', enable_events=True)]
+            [sg.TabGroup([
+                [sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()],
+                self.__tab_plus()
+            ], key='_tab_group_', selected_title_color='red', enable_events=True)]
         ]
+
+    def __tab_plus(self) -> List:
+        tab = self.tabs[self.next_id] = Tab_Frame(self.next_id, '＋', uData.create_default_quest())
+        self.next_id = str(int(self.next_id) + 1)
+        return [sg.Tab(tab.name, tab.create_layout(), key=tab.id)]
 
     def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Exit']
