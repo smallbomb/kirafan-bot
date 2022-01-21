@@ -57,13 +57,13 @@ class _UserData():
     def __padding(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']
         if len(questlist) <= 1:
-            questlist['default'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1, '1': {"auto": True}}}
-            questlist['quest_selector'] = 'default'
+            questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1, '1': {"auto": True}}}
+            questlist['quest_selector'] = 'new tab 1'
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
             self.__padding_friend_support(questlist[q])
             self.__padding_stamina(questlist[q])
             self.__padding_orb(questlist[q])
-            self.__padding_wave(self.__wave_parse(questlist[q]['wave']))
+            self.padding_wave(self.__wave_parse(questlist[q]['wave']))
         return rawdata
 
     def __padding_friend_support(self, quest: Dict):
@@ -81,8 +81,10 @@ class _UserData():
             if opt not in quest['orb']:
                 quest['orb'][opt] = {"use": False, "wave_N": 1, "myturn": 0, "target": "N"}
 
-    def __padding_wave(self, wave: Dict):
+    def padding_wave(self, wave: Dict):
         for N in map(str, range(1, wave['total'] + 1)):
+            if N not in wave:
+                wave[N] = dict()
             if 'sp_weight_enable' not in wave[N]:
                 wave[N]['sp_weight_enable'] = False
             for p in ['left', 'middle', 'right']:
@@ -104,7 +106,7 @@ class _UserData():
         q = dict()
         q['questList'] = dict()
         q = self.__padding(q)
-        return q['questList']['default']
+        return q['questList']['new tab 1']
 
     def gui_setting(self):
         return self.__basic_setting

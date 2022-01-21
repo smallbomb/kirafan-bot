@@ -7,7 +7,6 @@ Note:
     set_timer frame (main)
     wave hide/unhide
     item exchange shop
-    tab add
 '''
 from log import logging
 from typeguard import typechecked
@@ -253,23 +252,28 @@ class kirafanbot_GUI():
             if tab:
                 self.handle_tab_event(tab, event, values)
             elif event.startswith('_button_'):
-                self.handle_button_event(event, values)
+                self.handle_button_event(event)
             elif event.startswith('_update_'):
                 self.handle_update_event(event, values[event])
             elif event == '_tab_group_':
                 self.handle_tab_group_event(values[event])
         self.window.close()
 
-    def find_tab_by_key(self, key):
+    def find_tabskey_by_id(self, id: str) -> Optional[str]:
+        for k, v in self.tabs.items():
+            if v.id == id:
+                return k
+        return None
+
+    def find_tab_by_key(self, key: str) -> Optional[Tab_Frame]:
         try:
-            i = key[key.index('_')+1:key.index('_', 1)]
-            # sssss
-            return self.tabs[i] if i.isdigit() else None
+            id = key[key.index('_')+1:key.index('_', 1)]
+            return self.tabs[self.find_tabskey_by_id(id)] if id.isdigit() else None
         except ValueError:
             return None
 
-    def find_tab_by_name(self, name):
-        for _, tab in self.tabs.items():
+    def find_tab_by_name(self, name: str) -> Optional[Tab_Frame]:
+        for tab in self.tabs.values():
             if tab.name == name:
                 return tab
         return None
@@ -290,7 +294,7 @@ class kirafanbot_GUI():
         logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
         logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
-    def handle_tab_group_event(self, tab_id: str):
+    def handle_tab_group_event(self, tab_id: Optional[str]):
         def __gen_tab_name():
             i = 1
             while True:
@@ -298,7 +302,7 @@ class kirafanbot_GUI():
                 if n not in [t.name for _, t in self.tabs.items()]:
                     return n
                 i += 1
-        if int(tab_id) == int(self.next_id) - 1:
+        if tab_id is not None and int(tab_id) == int(self.next_id) - 1:
             tab = self.find_tab_by_name('＋')
             self.data['questList']['＋'] = tab.quest
             new_name = __gen_tab_name()
@@ -310,29 +314,34 @@ class kirafanbot_GUI():
         if event.endswith('_rename_'):
             old_name = tab.name
             exclude = [t.name for _, t in self.tabs.items()] + ['quest_selector']
+            # magic: tab key will be modified by window[tab_key].Update() after executing tab.hide()
+            #        therefore, window['_tab_group_'].get() will confused.
             o_key = self.window['_tab_group_'].get()
             new_name = tab.rename_title(self.window, exclude)
             n_key = self.window['_tab_group_'].get()
-            self.tabs[n_key] = self.tabs.pop(o_key)
+            # update key value, avoid tab key being modified.
+            if n_key != o_key:
+                self.tabs[n_key] = self.tabs.pop(o_key)
             if new_name:
                 self.data['questList'] = {new_name if k == old_name else k: v for k, v in self.data['questList'].items()}
                 if self.data['questList']['quest_selector'] == old_name:
                     self.data['questList']['quest_selector'] = new_name
         elif event.endswith('_delete_'):
-            # sg.popup_ok_cancel(f"Are you sure you want to delete '{tab.name}' tab?", title='Confirm delete')
-            return_button = 'OK'
+            return_button = sg.popup_ok_cancel(f"Are you sure you want to delete '{tab.name}' tab?", title='Confirm delete')
             if return_button == 'OK':
-                self.window['_tab_group_'].Widget.hide(int(tab.id))
                 del self.data['questList'][tab.name]
-                del self.tabs[tab.id]
+                del self.tabs[self.find_tabskey_by_id(tab.id)]
+                self.window['_tab_group_'].Widget.hide(int(tab.id))
                 if self.data['questList']['quest_selector'] == tab.name:
                     self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name if self.window['_tab_group_'].get() else ''  # noqa: E501
-                if self.window['_tab_group_'].get() == self.find_tab_by_name('＋').id and len(self.tabs) > 1:
-                    self.update_tab_selected([*self.tabs.keys()][-2])
+                if self.window['_tab_group_'].get() == self.find_tab_by_name('＋').id:
+                    k = self.window['_tab_group_'].get()
+                    self.window[k].update(disabled=True)
+                    self.window[k].update(disabled=False)
         else:
             tab.handle(self.window, event, values)
 
-    def handle_button_event(self, key, values):
+    def handle_button_event(self, key):
         button_event_map = {
             'Start': lambda k: self.bt_start_event(k),
             'Reset': lambda k: self.bt_reset_event(),
@@ -341,8 +350,6 @@ class kirafanbot_GUI():
             'Visit Room': lambda k: self.bt_visit_room_event(k)
         }
         button_str = key[len('_button_'):-1]
-        if key == '_button_ScreenShot_':
-            print(values)
         button_event_map[button_str](key)
 
     def bt_start_event(self, key):
