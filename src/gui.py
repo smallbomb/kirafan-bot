@@ -294,6 +294,3 @@ class kirafanbot_GUI():
         # adb.reload()
         kirafan.reload()
         logging.info('kirafan-bot reload configure')
-
-
-uKirafanbotGUI = kirafanbot_GUI().open()
