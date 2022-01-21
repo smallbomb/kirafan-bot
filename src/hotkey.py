@@ -29,8 +29,7 @@ class Hotkey:
         self.kb = KBHit()
         self.positions = [Position(_id) for _id in range(1, 10)]
         self.keys = [f'z+{i}' for i in (list(range(1, 10)) if mode == 'hotkey' else []) + list(keys)]
-        for key in self.keys:
-            keyboard.add_hotkey(key, self.__user_command, args=[key[-1]])
+        self.add_hotkey()
 
     def __user_command(self, key):
         while self.kb.kbhit():
@@ -57,7 +56,10 @@ class Hotkey:
 
     def __cmd_s(self):
         if self.mode == 'gui':
-            self.window['_button_Start_'].GetText() == 'Stop' and self.window.write_event_value('_button_Start_', None)
+            if self.window['_button_Start_'].GetText() == 'Stop':
+                self.window.write_event_value('_button_Start_', None)
+            elif self.window['_button_Visit Room_'].GetText() == 'Stop Visit':
+                self.window.write_event_value('_button_Visit Room_', None)
         elif self.run_job.is_alive():
             logging.info('press stop now!, Please wait for a while')
             self.run_job.stop()
@@ -135,6 +137,14 @@ class Hotkey:
         else:
             self.square_job = Job(target=square)
             self.square_job.start()
+
+    def add_hotkey(self):
+        for key in self.keys:
+            keyboard.add_hotkey(key, self.__user_command, args=[key[-1]])
+
+    def remove_all_hotkey(self):
+        for key in self.keys:
+            keyboard.remove_hotkey(key)
 
     def tutorial_region(self) -> Region:
         print('drawing game region on window: start')

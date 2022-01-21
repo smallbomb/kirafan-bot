@@ -1,9 +1,11 @@
+import re
 import json
 import PySimpleGUI as sg
 from copy import deepcopy
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
+_tab_handle_re = re.compile(r'^_(loop_count_setting|stamina|orb|wave).*_$')
 
 
 @typechecked
@@ -113,15 +115,16 @@ class Tab_Frame():
             window[f'{self.__prefix_key}_stamina_priority_'].unbind('<Button-1>')
 
     def handle(self, window: sg.Window, event: str, values: Dict):
+        _handle_map = {
+            'loop_count_setting': lambda window, key, value: self.handle_loop_count_event(value),
+            'stamina': lambda window, key, value: self.handle_stamina_event(window, key, value),
+            'orb': lambda window, key, value: self.handle_orb_event(window, key, value),
+            'wave': lambda window, key, value: self.handle_wave_event(window, key, value)
+        }
         key = event[len(self.__prefix_key):]
-        if key == '_loop_count_setting_':
-            self.handle_loop_count_event(values[event])
-        elif key.startswith('_stamina_'):
-            self.handle_stamina_event(window, key, values[event])
-        elif key.startswith('_orb'):
-            self.handle_orb_event(window, key, values[event])
-        elif key.startswith('_wave'):
-            self.handle_wave_event(window, key, values[event])
+        matchresult = _tab_handle_re.match(key)
+        if matchresult:
+            _handle_map[matchresult[1]](window, key, values[event])
 
     def handle_stamina_event(self, window: sg.Window, key: str, value):
         if '_use_' in key:
@@ -138,7 +141,10 @@ class Tab_Frame():
                 window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
 
     def handle_loop_count_event(self, value: str):
-        self.quest['loop_count'] = int(value) if value.isdigit() else value
+        if value.isdigit():
+            self.quest['loop_count'] = int(value)
+        elif value == '':
+            self.quest['loop_count'] = 0
 
     def handle_orb_event(self, window: sg.Window, key: str, value):
         n = key[4]

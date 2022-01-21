@@ -3,11 +3,11 @@ Note:
     set debug level 測試
     log window open/hide (main)
     friend support area (tab)
-    adb frame  (main)
     set_timer frame (main)
     wave hide/unhide
     item exchange shop
 '''
+import re
 import PySimpleGUI as sg
 from log import logging
 from data import uData
@@ -17,7 +17,8 @@ from thread import Job
 from gui_tab_frame import Tab_Frame
 from run import run, kirafan
 from visit_friend_room import run as visit_friend_room
-# from adb import adb
+from hotkey import Hotkey
+from adb import adb
 
 
 @typechecked
@@ -29,27 +30,37 @@ class kirafanbot_GUI():
         self.window = sg.Window(f'kirafan-bot  v{uData.setting["version"]}', self.layout, finalize=True)
         self.update_tab_selected(self.find_tab_by_name(self.data['questList']['quest_selector']).id)
         self.update_tabs_bind()
+        self.update_adb_bind()
         self.run_job = Job(target=run)
         self.visit_room_job = Job(target=visit_friend_room)
+        self.hotkey = Hotkey('s', mode='gui', window=self.window)
+        if self.data['adb']['use']:
+            self.hotkey.remove_all_hotkey()
+        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb)_.*$')
 
     def open(self):
+        _map = {
+            'tab': lambda event, values: self.handle_tab_event(self.find_tab_by_key(event), event, values),
+            'tab_group': lambda event, values: self.handle_tab_group_event(values[event]),
+            'adb': lambda event, values: self.handle_adb_event(event, values[event]),
+            'button': lambda event, values: self.handle_button_event(event),
+            'update': lambda event, values: self.handle_update_event(event, values[event])
+        }
         while True:
             event, values = self.window.read()
             if event in (sg.WIN_CLOSED, '_button_Exit_'):
                 self.__save()
                 self.stop_all_safe()
                 break
-            tab = self.find_tab_by_key(event)
-            print(f'tab={"none" if tab is None else tab.name}, event={event}, '
+
+            print(f'event={event}, '
                   f'(value, type)={(values[event], type(values[event])) if event in values else ("none", "none_type")}')
-            if tab:
-                self.handle_tab_event(tab, event, values)
-            elif event.startswith('_button_'):
-                self.handle_button_event(event)
-            elif event.startswith('_update_'):
-                self.handle_update_event(event, values[event])
-            elif event == '_tab_group_':
-                self.handle_tab_group_event(values[event])
+            matchresult = self._open_re.match(event)
+            if matchresult:
+                _cls = 'tab' if matchresult[1].isdigit() else matchresult[1]
+                _map[_cls](event, values)
+            else:
+                print(f'{event} not match')
         self.window.close()
 
     def find_tabskey_by_id(self, id: str) -> Optional[str]:
@@ -78,6 +89,12 @@ class kirafanbot_GUI():
         for _, tab in self.tabs.items():
             tab.update_all_bind(self.window)
 
+    def update_adb_bind(self):
+        if self.data['adb']['use']:
+            self.window['_adb_serial_'].bind('<Button-1>', '')
+        else:
+            self.window['_adb_serial_'].unbind('<Button-1>')
+
     def check_configure_and_status(self):
         if (self.data['questList']['quest_selector'] != self.tabs[self.window['_tab_group_'].get()].name or
            self.tabs[self.window['_tab_group_'].get()].is_modified()):
@@ -86,22 +103,6 @@ class kirafanbot_GUI():
         logging.info(f'kirafan region = {list(kirafan.region)}')
         logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
         logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
-
-    def handle_tab_group_event(self, tab_id: Optional[str]):
-        def __gen_tab_name():
-            i = 1
-            while True:
-                n = f'new tab {i}'
-                if n not in [t.name for _, t in self.tabs.items()]:
-                    return n
-                i += 1
-        if tab_id is not None and int(tab_id) == int(self.next_id) - 1:
-            tab = self.find_tab_by_name('＋')
-            self.data['questList']['＋'] = tab.quest
-            new_name = __gen_tab_name()
-            self.window[f'_{tab.id}_{tab.name}_title_'].update(new_name)
-            self.handle_tab_event(tab, '_rename_', None)
-            self.window['_tab_group_'].add_tab(self.__tab_plus()[0])
 
     def handle_tab_event(self, tab: Tab_Frame, event: str, values: Optional[Dict]):
         if event.endswith('_rename_'):
@@ -133,6 +134,47 @@ class kirafanbot_GUI():
                     self.window[k].update(disabled=False)
         else:
             tab.handle(self.window, event, values)
+
+    def handle_tab_group_event(self, tab_id: Optional[str]):
+        def __gen_tab_name():
+            i = 1
+            while True:
+                n = f'new tab {i}'
+                if n not in [t.name for _, t in self.tabs.items()]:
+                    return n
+                i += 1
+        if tab_id is not None and int(tab_id) == int(self.next_id) - 1:
+            tab = self.find_tab_by_name('＋')
+            self.data['questList']['＋'] = tab.quest
+            new_name = __gen_tab_name()
+            self.window[f'_{tab.id}_{tab.name}_title_'].update(new_name)
+            self.handle_tab_event(tab, '_rename_', None)
+            self.window['_tab_group_'].add_tab(self.__tab_plus()[0])
+
+    def handle_adb_event(self, key: str, value):
+        key = key[5:-1]
+        if key == 'use':
+            if value:
+                self.hotkey.remove_all_hotkey()
+            else:
+                self.hotkey.add_hotkey()
+            self.data['adb'][key] = value
+            self.window['_adb_serial_'].Widget.config(readonlybackground=('white' if value else 'gray'))
+            self.window['_adb_path_'].Widget.config(readonlybackground=('white' if value else 'gray'))
+            self.window['_adb_browse_'].update(disabled=(not value))
+            self.update_adb_bind()
+            uData.adb_mode_switch()
+            adb.reload()
+            kirafan.adb_mode_switch()
+        elif key == 'path' and self.data['adb'][key] != value:
+            self.data['adb'][key] = value
+            self.__reload()
+        elif key == 'serial':
+            new_serial = sg.popup_get_text('new serial:', title='modify serial', default_text=self.data['adb'][key], size=30)
+            if new_serial and self.data['adb'][key] != new_serial:
+                self.data['adb'][key] = new_serial
+                self.window[f'_adb_{key}_'].update(new_serial)
+                self.__reload()
 
     def handle_button_event(self, key: str):
         button_event_map = {
@@ -172,11 +214,11 @@ class kirafanbot_GUI():
 
     def bt_reset_event(self):
         self.__save()
+        if self.data['questList']['quest_selector'] == self.tabs[self.window['_tab_group_'].get()].name:
+            self.__reload()
         self.update_stop_once_status()
         self.tabs[self.window['_tab_group_'].get()].reset(self.window)
         logging.info(f'reset quest: {self.tabs[self.window["_tab_group_"].get()].name} finish')
-        if self.data['questList']['quest_selector'] == self.tabs[self.window['_tab_group_'].get()].name:
-            self.__reload()
 
     def bt_stop_once_event(self):
         kirafan.stop_once = not kirafan.stop_once
@@ -245,6 +287,7 @@ class kirafanbot_GUI():
         return [
             self.__run_quest_selector(),
             self.__tab_group_area(),
+            self.__adb_area(),
             self.__button_area(),
         ]
 
@@ -266,6 +309,18 @@ class kirafanbot_GUI():
         tab = self.tabs[self.next_id] = Tab_Frame(self.next_id, '＋', uData.create_default_quest())
         self.next_id = str(int(self.next_id) + 1)
         return [sg.Tab(tab.name, tab.create_layout(), key=tab.id)]
+
+    def __adb_area(self) -> List:
+        adb = self.data['adb']
+        frame_layout = [[
+            sg.Checkbox('use', default=adb['use'], key='_adb_use_', enable_events=True),
+            sg.Text('serial:', pad=((5, 0), 5)),
+            sg.Input(adb['serial'], key='_adb_serial_', size=13, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
+            sg.Text('path:', pad=((5, 0), 5)),
+            sg.Input(adb['path'], key='_adb_path_', size=30, enable_events=True, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
+            sg.FileBrowse(key='_adb_browse_', disabled=not adb['use'])
+        ]]
+        return [sg.Frame('adb', frame_layout)]
 
     def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Exit']
@@ -291,6 +346,6 @@ class kirafanbot_GUI():
 
     def __reload(self):
         uData.reload()
-        # adb.reload()
+        adb.reload()
         kirafan.reload()
         logging.info('kirafan-bot reload configure')

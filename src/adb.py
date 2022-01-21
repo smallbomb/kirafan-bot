@@ -31,7 +31,7 @@ class _Adb():
         self.__has_screenshot_IM = None
         self.__cv2_IM_COLOR_cache = None
         self.__cv2_IM_GRAY_cache = None
-        if which(adb_path) is None and uData.setting["adb"]["use"]:
+        if uData.setting['mode'].lower() == 'hotkey' and which(adb_path) is None and uData.setting["adb"]["use"]:
             raise FileNotFoundError(adb_path)
 
     def _screenshot(self, grayscale: bool = False):

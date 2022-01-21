@@ -3,15 +3,7 @@ from data import uData
 from run import kirafan
 from hotkey import Hotkey
 from gui import kirafanbot_GUI
-# from thread import Job
-# from time import sleep
 
-
-# def hotkey_wait_for_gui(stop):
-#     while True:
-#         sleep(1)
-#         if stop():
-#             break
 
 def check_basic_information(hotkey):
     if uData.region_is_init():
@@ -32,12 +24,6 @@ def check_basic_information(hotkey):
 def main():
     if uData.setting['mode'].lower() == 'gui':
         kirafanbot_GUI().open()
-        # Hotkey('s', mode='gui', window=gui.window)
-        # stop_thread = False
-        # Job(target=hotkey_wait_for_gui, args=(lambda: stop_thread,)).start()
-        # gui.open()
-        # stop_thread = True
-
     elif uData.setting['mode'].lower() == 'hotkey':
         try:
             hotkey = Hotkey('rslmptcoxk')
