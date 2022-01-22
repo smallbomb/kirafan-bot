@@ -190,7 +190,7 @@ class BOT:
             self.objects['shop_material'].click(2, 0.5)
             self.objects['shop_exchange'].click(2, 0.5)
             self.objects['shop_count_bar_start'].swipe(*self.objects['shop_count_bar_end'].coord, 1)
-            self.objects['shop_exchange_confirm'].click(2, 0.5)
+            self.objects['shop_count_confirm'].click(2, 0.5)
             if interrupt():
                 logging.debug('cork_shop_exchange_once(): interrupt')
                 return False

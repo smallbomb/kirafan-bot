@@ -60,6 +60,8 @@ class Hotkey:
                 self.window.write_event_value('_button_Start_', None)
             elif self.window['_button_Visit Room_'].GetText() == 'Stop Visit':
                 self.window.write_event_value('_button_Visit Room_', None)
+            elif self.window['_button_Cork Shop_'].GetText() == 'Stop Exchange':
+                self.window.write_event_value('_button_Cork Shop_', None)
         elif self.run_job.is_alive():
             logging.info('press stop now!, Please wait for a while')
             self.run_job.stop()
