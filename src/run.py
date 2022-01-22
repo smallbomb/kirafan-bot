@@ -93,7 +93,6 @@ def _try_to_move_next_new_battle(bot):
             sleep(kirafan.sleep['loading'])
             break
         elif not bot.is_running():
-            # insufficient stamina items.
             break
         elif kirafan.icons['ok'].click(adb_update_cache=False):
             # if event is session clear, bot will not resume battle. because of batttle finish.
@@ -127,7 +126,10 @@ def _skip_award_result(bot):
     ct, retry = 12, True
     while bot.is_running():
         kirafan.objects['center_left'].click(ct)
-        if kirafan.icons['again'].click():
+        if not bot.is_running():
+            logging.debug('_skip_award_result(): interrupt')
+            break
+        elif kirafan.icons['again'].click():
             break
         elif kirafan.crea_stop and kirafan.objects['center_left'].found(False) and kirafan.icons['tojiru'].found(False):
             logging.info('crea_stop: appear crea mission')
@@ -147,8 +149,7 @@ def _skip_award_result(bot):
 def _ck_move_to_next_battle(bot) -> bool:
     # check stamina_Au first. wait for loading time even if user has enough stamina.
     if kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
-        if not kirafan.use_stamina():
-            logging.info('insufficient stamina items.')
+        if not kirafan.use_stamina(lambda: not bot.is_running()):
             bot.stop()
             return False
         if not kirafan.icons['again'].click():

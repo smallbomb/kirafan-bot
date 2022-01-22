@@ -1,6 +1,6 @@
 import logging
 from typeguard import typechecked
-from defined import Tuple, Dict
+from defined import Tuple, Dict, Callable
 from data import uData
 from adb import adb
 from wave import Wave, gen_circle_list
@@ -67,7 +67,7 @@ class BOT:
 
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png',
-                  'tojiru.png', 'friend_icon.png', 'visit_room.png']
+                  'tojiru.png', 'friend_icon.png', 'visit_room.png', 'cork_face.png']
         if self.stamina['use']:
             images += ['stamina_title.png']
         if self.loop_count > 0:
@@ -111,15 +111,19 @@ class BOT:
     def get_current_wave(self) -> Wave:
         return self.waves[str(self.wave_id)]
 
-    def use_stamina(self) -> bool:
+    def use_stamina(self, interrupt: Callable[[], bool]) -> bool:
         for item_count in self.stamina['priority']:
             item, count = (item_count.split(":") + ['1'])[:2]
             if self.objects[f'stamina_{item}'].found(False) and int(count) > 0:
                 self.objects[f'stamina_{item}'].click(2, 0.5)
                 if int(count) > 1:
                     self.objects['stamina_add'].click(int(count) - 1)
+                if interrupt():
+                    logging.debug('use_stamina(): interrupt')
+                    return False
                 self.objects['stamina_hai'].click(8)
                 return True
+        logging.info('insufficient stamina items.')
         return False
 
     def miss_icon_files(self) -> Tuple:
@@ -179,6 +183,26 @@ class BOT:
                 else:
                     self.objects['center'].click(3)  # advoid auto mode
                 return True
+        return False
+
+    def cork_shop_exchange_once(self, interrupt: Callable[[], bool]) -> int:
+        if self.objects['shop_material'].found(False):
+            self.objects['shop_material'].click(2, 0.5)
+            self.objects['shop_exchange'].click(2, 0.5)
+            self.objects['shop_count_bar_start'].swipe(*self.objects['shop_count_bar_end'].coord, 1)
+            self.objects['shop_exchange_confirm'].click(2, 0.5)
+            if interrupt():
+                logging.debug('cork_shop_exchange_once(): interrupt')
+                return False
+            elif self.icons['hai'].scan(3):
+                self.icons['hai'].click(2, adb_update_cache=False)
+                if self.icons['ok'].scan(5):
+                    self.icons['ok'].click(adb_update_cache=False)
+                    sleep(1)
+                    return True
+            logging.error('unknown error')
+        else:
+            logging.info('insufficient material...')
         return False
 
     def reload(self):

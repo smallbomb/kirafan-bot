@@ -53,6 +53,13 @@
       "orb_targetB": {"x":0.50392, "y":0.50139, "color": "None", "owner": ["orb"]},
       "orb_targetC": {"x":0.61538, "y":0.50418, "color": "None", "owner": ["orb"]},
       "orb_target_cancel": {"x":0.56044, "y":0.65181, "color": "None", "owner": ["orb"]},
+      "shop_enhance_field": {"x":0.47187, "y":0.19583, "color": "white_strict", "owner": ["bot"]},
+      "shop_evo_field": {"x":0.67188, "y":0.19583, "color": "white_strict", "owner": ["bot"]},
+      "shop_material": {"x":0.30859, "y":0.28750, "color": "light_khaki", "owner": ["bot"]},
+      "shop_exchange": {"x":0.75156, "y":0.65417, "color": "None", "owner": ["bot"]},
+      "shop_count_bar_start": {"x":0.63125, "y":0.64444, "color": "None", "owner": ["bot"]},
+      "shop_count_bar_end": {"x":0.67188, "y":0.64444, "color": "None", "owner": ["bot"]},
+      "shop_count_confirm": {"x":0.59922, "y":0.84444, "color": "None", "owner": ["bot"]},
       "home_page": {"x":0.19074, "y":-0.02228, "color": "None", "owner": ["bot"]}
     },
     "4:3": {
@@ -61,6 +68,10 @@
     }
   },
   "color": {
+    "white_strict": {
+      "rgb": [255, 255, 255],
+      "tolerance": 5
+    },
     "ivory": {
       "rgb": [250, 250, 235],
       "tolerance": 25

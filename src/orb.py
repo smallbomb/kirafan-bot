@@ -1,10 +1,8 @@
 import logging
-import pyautogui
 from defined import Dict
 from data import uData
 from typeguard import typechecked
 from object import Load_Objects
-from adb import adb
 
 
 @typechecked
@@ -66,11 +64,7 @@ class Orb:
     def __slide_out_orb_list(self) -> bool:
         destX = uData.setting['game_region'][0] + uData.setting['game_region'][2] - 1
         destY = self.objects['entrypoint'].coord[1]
-        if uData.setting['adb']['use']:
-            adb.swipe(*self.objects['entrypoint'].coord, destX, destY, 1)
-        else:
-            pyautogui.moveTo(*self.objects['entrypoint'].coord)
-            pyautogui.dragTo(destX, destY, 1, button='left')
+        self.objects['entrypoint'].swipe(destX, destY, 1)
         return self.objects['cancel'].found()
 
     def adb_mode_switch(self):

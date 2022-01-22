@@ -58,6 +58,13 @@ class Object():
             duration = round(time(), 1) - t0
         self.__click(*self.coord)
 
+    def swipe(self, destX: int, destY: int, duration: float = 0):
+        if uData.setting['adb']['use']:
+            adb.swipe(*self.coord, destX, destY, duration)
+        else:
+            pyautogui.moveTo(*self.coord)
+            pyautogui.dragTo(destX, destY, duration, button='left')
+
 
 @typechecked
 def Load_Objects(obj_name: Owner) -> Dict:

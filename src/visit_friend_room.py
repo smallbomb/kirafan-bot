@@ -20,7 +20,7 @@ def run(window):
 
     logging.info('kirafan stop(visit_friend_room)...')
     if bot.is_not_gui_button_stop():
-        bot.send_event('_update_button_friend_start_', 'Visit Room')
+        bot.send_event('_update_button_visit_room_', 'Visit Room')
 
 
 @typechecked
