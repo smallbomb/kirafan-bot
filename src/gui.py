@@ -275,12 +275,13 @@ class kirafanbot_GUI():
 
     def update_button_status(self, key: str, new_button: str):
         old_button = self.window[key].GetText()
-        self.window[key].Update(new_button, disabled=(old_button == new_button))
         if old_button == new_button:
+            self.window[key].Update(disabled=True)
             self.window['_tips_'].Update('Tips: Please wait for a while')
             self.window.Refresh()
             return
 
+        self.window[key].Update(new_button, disabled=False)
         self.toggle_other_buttons(old_button)
         if key == '_button_Start_':
             self.window['_running_status_'].Update('' if new_button == 'Start' else self.tabs[self.window['_tab_group_'].get()].name)  # noqa: E501
