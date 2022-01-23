@@ -2,6 +2,7 @@
 Note:
     set debug level 測試
     log window open/hide (main)
+    window game region (button?)
     friend support area (tab)
     set_timer frame (main)
     wave hide/unhide
@@ -165,6 +166,7 @@ class kirafanbot_GUI():
             self.window['_adb_serial_'].Widget.config(readonlybackground=('white' if value else 'gray'))
             self.window['_adb_path_'].Widget.config(readonlybackground=('white' if value else 'gray'))
             self.window['_adb_browse_'].update(disabled=(not value))
+            self.update_tips_information()
             self.update_adb_bind()
             uData.adb_mode_switch()
             adb.reload()
@@ -286,7 +288,14 @@ class kirafanbot_GUI():
         self.toggle_other_buttons(old_button)
         if key == '_button_Start_':
             self.window['_running_status_'].Update('' if new_button == 'Start' else self.tabs[self.window['_tab_group_'].get()].name)  # noqa: E501
-        if new_button.startswith('Stop') and not self.data['adb']['use']:
+        self.update_tips_information()
+
+    def update_tips_information(self):
+        if not (self.battle_job.is_not_gui_button_stop() and self.visit_room_job.is_not_gui_button_stop() and
+                self.cork_shop_job.is_not_gui_button_stop()):
+            return
+        if not self.data['adb']['use'] and (self.battle_job.is_alive() or self.visit_room_job.is_alive() or
+                                            self.cork_shop_job.is_alive()):
             self.window['_tips_'].Update('Tips: press hotkey(z+s) to stop bot')
         else:
             self.window['_tips_'].Update('')
