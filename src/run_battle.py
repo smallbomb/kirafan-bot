@@ -2,15 +2,12 @@ import logging
 import threading
 from typeguard import typechecked
 from time import sleep
-from bot import BOT
-
-
-kirafan = BOT()
+from bot import kirafan
 
 
 def run(window):
     bot = threading.currentThread()
-    bot.send_event = window.write_event_value
+    bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logging.info('kirafan start...')
     logging.info(f'loop_count = {kirafan.loop_count} now')
     while bot.is_running():
@@ -33,8 +30,7 @@ def run(window):
                 logging.debug(f'transitions now...({kirafan.wave_id}/{kirafan.wave_total})')
                 sleep(kirafan.sleep['wave_transitions'])
     logging.info('kirafan stop...')
-    if bot.is_not_gui_button_stop():
-        bot.send_event('_update_button_start_', 'Start')
+    bot.send_event('_update_button_start_', 'Start')
 
 
 @typechecked

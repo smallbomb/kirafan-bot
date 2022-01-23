@@ -1,6 +1,6 @@
 from log import logging
 from data import uData
-from run import kirafan
+from bot import kirafan
 from hotkey import Hotkey
 from gui import kirafanbot_GUI
 

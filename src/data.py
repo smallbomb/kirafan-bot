@@ -1,8 +1,7 @@
 import copy
-import commentjson as json
+import json
 from typeguard import typechecked
 from defined import Dict
-
 __VERSION__ = '3.0.0'
 
 
@@ -14,7 +13,14 @@ class _UserData():
 
     def __load_file(self, fname: str) -> Dict:
         with open(fname, encoding="utf-8") as f:
-            d = json.load(f)
+            # simply remove the '//' comment
+            if fname.endswith('.jsonc'):
+                s = ''
+                for line in f:
+                    s += line.partition('//')[0]
+                d = json.loads(s)
+            else:
+                d = json.load(f)
         return d
 
     def __load(self) -> Dict:

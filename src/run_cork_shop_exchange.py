@@ -1,11 +1,11 @@
 import logging
 import threading
-from run import kirafan
+from bot import kirafan
 
 
 def run(window):
     bot = threading.currentThread()
-    bot.send_event = window.write_event_value
+    bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logging.info('cork shop start...')
     time = 1
     while bot.is_running():
@@ -22,5 +22,4 @@ def run(window):
         bot.stop()
 
     logging.info('kirafan stop(cork shop)...')
-    if bot.is_not_gui_button_stop():
-        bot.send_event('_update_button_cork_shop_', 'Cork Shop')
+    bot.send_event('_update_button_cork_shop_', 'Cork Shop')

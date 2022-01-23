@@ -8,8 +8,9 @@ from adb import adb
 from thread import Job
 from kbhit import KBHit
 from window import square
-from run import run, kirafan
+from bot import kirafan
 from position import Position, Shot, calc_region, monitor_mode
+from run_battle import run as battle
 
 
 class fake_window:
@@ -23,7 +24,7 @@ class Hotkey:
         self.mode = mode
         self.window = window
         self.shot_job = None
-        self.run_job = Job(target=run)
+        self.battle_job = Job(target=battle)
         self.square_job = Job(target=square)
         self.monitor_job = Job(target=monitor_mode)
         self.kb = KBHit()
@@ -46,13 +47,13 @@ class Hotkey:
         getattr(self, method_name)()
 
     def __cmd_r(self):
-        if not self.run_job.is_alive():
+        if not self.battle_job.is_alive():
             logging.info('press start now!')
-            self.run_job = Job(target=run, args=(fake_window,))
-            self.run_job.start()
-        elif self.run_job.is_pausing():
+            self.battle_job = Job(target=battle, args=(fake_window,))
+            self.battle_job.start()
+        elif self.battle_job.is_pausing():
             logging.info('press resume now!')
-            self.run_job.resume()
+            self.battle_job.resume()
 
     def __cmd_s(self):
         if self.mode == 'gui':
@@ -62,10 +63,10 @@ class Hotkey:
                 self.window.write_event_value('_button_Visit Room_', None)
             elif self.window['_button_Cork Shop_'].GetText() == 'Stop Exchange':
                 self.window.write_event_value('_button_Cork Shop_', None)
-        elif self.run_job.is_alive():
+        elif self.battle_job.is_alive():
             logging.info('press stop now!, Please wait for a while')
-            self.run_job.stop()
-            self.run_job.join()
+            self.battle_job.stop()
+            self.battle_job.join()
 
     def __cmd_l(self):
         uData.reload()
@@ -172,9 +173,9 @@ class Hotkey:
         return keyboard.wait(hotkey)
 
     def safe_exit(self):
-        if self.run_job.is_alive():
-            self.run_job.stop()
-            self.run_job.join()
+        if self.battle_job.is_alive():
+            self.battle_job.stop()
+            self.battle_job.join()
         if self.monitor_job.is_alive():
             self.monitor_job.stop()
             self.monitor_job.join()

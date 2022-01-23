@@ -232,6 +232,7 @@ class BOT:
             self.waves[str(wave_id)].adb_mode_switch()
 
 
+kirafan = BOT()
 # Test
 if __name__ == '__main__':
     bot = BOT()

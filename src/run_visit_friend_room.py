@@ -2,12 +2,12 @@ import logging
 import threading
 from typeguard import typechecked
 from time import sleep
-from run import kirafan
+from bot import kirafan
 
 
 def run(window):
     bot = threading.currentThread()
-    bot.send_event = window.write_event_value
+    bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logging.info('visit_friend start...')
     tries = 0
     while bot.is_running():
@@ -19,8 +19,7 @@ def run(window):
             sleep(kirafan.sleep['loading'])
 
     logging.info('kirafan stop(visit_friend_room)...')
-    if bot.is_not_gui_button_stop():
-        bot.send_event('_update_button_visit_room_', 'Visit Room')
+    bot.send_event('_update_button_visit_room_', 'Visit Room')
 
 
 @typechecked

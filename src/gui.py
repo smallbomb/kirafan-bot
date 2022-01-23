@@ -14,11 +14,12 @@ from typeguard import typechecked
 from defined import List, Optional, Dict
 from thread import Job
 from gui_tab_frame import Tab_Frame
-from run import run, kirafan
-from visit_friend_room import run as visit_friend_room
-from cork_shop import run as cork_shop_exchange
-from hotkey import Hotkey
+from bot import kirafan
 from adb import adb
+from hotkey import Hotkey
+from run_battle import run as battle
+from run_visit_friend_room import run as visit_friend_room
+from run_cork_shop_exchange import run as cork_shop_exchange
 
 
 @typechecked
@@ -31,7 +32,7 @@ class kirafanbot_GUI():
         self.update_tab_selected(self.find_tab_by_name(self.data['questList']['quest_selector']).id)
         self.update_tabs_bind()
         self.update_adb_bind()
-        self.run_job = Job(target=run)
+        self.battle_job = Job(target=battle)
         self.visit_room_job = Job(target=visit_friend_room)
         self.cork_shop_job = Job(target=cork_shop_exchange)
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
@@ -194,18 +195,18 @@ class kirafanbot_GUI():
         bt_name = self.window[key].GetText()
         if bt_name == 'Start':
             self.check_configure_and_status()
-            if not self.run_job.is_alive():
+            if not self.battle_job.is_alive():
                 logging.info('press start now!')
-                self.run_job = Job(target=run, args=(self.window,))
-                self.run_job.start()
-            elif self.run_job.is_pausing():
+                self.battle_job = Job(target=battle, args=(self.window,))
+                self.battle_job.start()
+            elif self.battle_job.is_pausing():
                 logging.info('press resume now!')
-                self.run_job.resume()
+                self.battle_job.resume()
             self.update_button_status(key, 'Stop')
         elif bt_name == 'Stop':
-            if self.run_job.is_alive():
+            if self.battle_job.is_alive():
                 self.update_button_status(key, bt_name)
-                self.stop_safe(self.run_job)
+                self.stop_safe(self.battle_job)
             self.update_button_status(key, 'Start')
 
     def bt_reset_event(self):
@@ -333,7 +334,7 @@ class kirafanbot_GUI():
             [sg.TabGroup([
                 [sg.Tab(tab.name, tab.create_layout(), key=id) for id, tab in self.tabs.items()],
                 self.__tab_plus()
-            ], key='_tab_group_', selected_title_color='red', enable_events=True)]
+            ], key='_tab_group_', selected_title_color='red2', focus_color='Any', enable_events=True)]
         ]
 
     def __tab_plus(self) -> List:
@@ -361,7 +362,7 @@ class kirafanbot_GUI():
         ]
 
     def stop_all_safe(self):
-        self.stop_safe(self.run_job)
+        self.stop_safe(self.battle_job)
         self.stop_safe(self.visit_room_job)
 
     def stop_safe(self, job: Job):
