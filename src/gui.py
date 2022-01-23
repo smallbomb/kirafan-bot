@@ -144,6 +144,7 @@ class kirafanbot_GUI():
                 if n not in [t.name for _, t in self.tabs.items()]:
                     return n
                 i += 1
+        self.window['_tab_group_'].set_focus()
         if tab_id is not None and int(tab_id) == int(self.next_id) - 1:
             tab = self.find_tab_by_name('＋')
             self.data['questList']['＋'] = tab.quest
@@ -200,19 +201,12 @@ class kirafanbot_GUI():
             elif self.run_job.is_pausing():
                 logging.info('press resume now!')
                 self.run_job.resume()
-            self.change_other_buttons(bt_name)
-            self.window[key].Update('Stop')
-            self.window['_running_quest_status_'].Update(self.tabs[self.window['_tab_group_'].get()].name)
+            self.update_button_status(key, 'Stop')
         elif bt_name == 'Stop':
-            self.window[key].Update('Start', disabled=True)
             if self.run_job.is_alive():
-                self.window['_stop_status_'].Update('Please wait for a while')
-                self.window.Refresh()
+                self.update_button_status(key, bt_name)
                 self.stop_safe(self.run_job)
-                self.window['_stop_status_'].Update('')
-            self.change_other_buttons(bt_name)
-            self.window[key].Update(disabled=False)
-            self.window['_running_quest_status_'].Update('')
+            self.update_button_status(key, 'Start')
 
     def bt_reset_event(self):
         self.__save()
@@ -243,17 +237,12 @@ class kirafanbot_GUI():
                 self.visit_room_job.start()
             elif self.visit_room_job.is_pausing():
                 self.visit_room_job.resume()
-            self.change_other_buttons(bt_name)
-            self.window[key].Update('Stop Visit')
+            self.update_button_status(key, 'Stop Visit')
         elif bt_name == 'Stop Visit':
-            self.window[key].Update('Visit Room', disabled=True)
             if self.visit_room_job.is_alive():
-                self.window['_stop_status_'].Update('Please wait for a while')
-                self.window.Refresh()
+                self.update_button_status(key, bt_name)
                 self.stop_safe(self.visit_room_job)
-                self.window['_stop_status_'].Update('')
-            self.change_other_buttons(bt_name)
-            self.window[key].Update(disabled=False)
+            self.update_button_status(key, 'Visit Room')
 
     def bt_cork_shop_event(self, key: str):
         bt_name = self.window[key].GetText()
@@ -263,70 +252,77 @@ class kirafanbot_GUI():
                 self.cork_shop_job.start()
             elif self.cork_shop_job.is_pausing():
                 self.cork_shop_job.resume()
-            self.change_other_buttons(bt_name)
-            self.window[key].Update('Stop Exchange')
+            self.update_button_status(key, 'Stop Exchange')
         elif bt_name == 'Stop Exchange':
-            self.window[key].Update('Cork Shop', disabled=True)
             if self.cork_shop_job.is_alive():
-                self.window['_stop_status_'].Update('Please wait for a while')
-                self.window.Refresh()
+                self.update_button_status(key, bt_name)
                 self.stop_safe(self.cork_shop_job)
-                self.window['_stop_status_'].Update('')
-            self.change_other_buttons(bt_name)
-            self.window[key].Update(disabled=False)
+            self.update_button_status(key, 'Cork Shop')
 
     def handle_update_event(self, key: str, value):
         update_event_map = {
             '_update_wave_id_': lambda v: self.find_tab_by_name(self.data['questList']['quest_selector']).update_wave_id_status(self.window, v),  # noqa: E501
             '_update_loop_count_': lambda v: self.find_tab_by_name(self.data['questList']['quest_selector']).update_loop_count_status(self.window, v),  # noqa: E501
             '_update_stop_once_': lambda v: self.update_stop_once_status(),
-            '_update_button_start_': lambda v: self.update_button_start_status(v),
-            '_update_button_visit_room_': lambda v: (self.change_other_buttons(self.window['_button_Visit Room_'].GetText()),
-                                                     self.window['_button_Visit Room_'].Update(v)),
-            '_update_button_cork_shop_': lambda v: (self.change_other_buttons(self.window['_button_Cork Shop_'].GetText()),
-                                                    self.window['_button_Cork Shop_'].Update(v))
+            '_update_button_start_': lambda v: self.update_button_status('_button_Start_', v),
+            '_update_button_visit_room_': lambda v: self.update_button_status('_button_Visit Room_', v),
+            '_update_button_cork_shop_': lambda v: self.update_button_status('_button_Cork Shop_', v)
         }
         update_event_map[key](value)
 
     def update_stop_once_status(self):
         self.window['_button_Stop once_'].Update('Cancel' if kirafan.stop_once else 'Stop once')
 
-    def update_button_start_status(self, new_button_status: str):
-        self.change_other_buttons(self.window['_button_Start_'].GetText())
-        self.window['_button_Start_'].Update(new_button_status)
-        self.window['_running_quest_status_'].Update('' if new_button_status == 'Start' else self.tabs[self.window['_tab_group_'].get()].name)  # noqa: E501
+    def update_button_status(self, key: str, new_button: str):
+        old_button = self.window[key].GetText()
+        self.window[key].Update(new_button, disabled=(old_button == new_button))
+        if old_button == new_button:
+            self.window['_tips_'].Update('Tips: Please wait for a while')
+            self.window.Refresh()
+            return
 
-    def change_other_buttons(self, current_button: str):
-        change_other_buttons_map = {
+        self.toggle_other_buttons(old_button)
+        if key == '_button_Start_':
+            self.window['_running_status_'].Update('' if new_button == 'Start' else self.tabs[self.window['_tab_group_'].get()].name)  # noqa: E501
+        if new_button.startswith('Stop') and not self.data['adb']['use']:
+            self.window['_tips_'].Update('Tips: press hotkey(z+s) to stop bot')
+        else:
+            self.window['_tips_'].Update('')
+
+    def toggle_other_buttons(self, current_button: str):
+        toggle_other_buttons_map = {
+            'Start': lambda: (self.window['_button_Visit Room_'].Update(disabled=True),
+                              self.window['_button_Cork Shop_'].Update(disabled=True)),
             'Visit Room': lambda: (self.window['_button_Start_'].Update(disabled=True),
                                    self.window['_button_Stop once_'].Update(disabled=True),
                                    self.window['_button_Cork Shop_'].Update(disabled=True)),
-            'Stop Visit': lambda: (self.window['_button_Start_'].Update(disabled=False),
-                                   self.window['_button_Stop once_'].Update(disabled=False),
-                                   self.window['_button_Cork Shop_'].Update(disabled=False)),
-            'Start': lambda: (self.window['_button_Visit Room_'].Update(disabled=True),
-                              self.window['_button_Cork Shop_'].Update(disabled=True)),
-            'Stop': lambda: (self.window['_button_Visit Room_'].Update(disabled=False),
-                             self.window['_button_Cork Shop_'].Update(disabled=False)),
             'Cork Shop': lambda: (self.window['_button_Start_'].Update(disabled=True),
                                   self.window['_button_Stop once_'].Update(disabled=True),
                                   self.window['_button_Visit Room_'].Update(disabled=True)),
+            'Stop': lambda: (self.window['_button_Visit Room_'].Update(disabled=False),
+                             self.window['_button_Cork Shop_'].Update(disabled=False)),
+            'Stop Visit': lambda: (self.window['_button_Start_'].Update(disabled=False),
+                                   self.window['_button_Stop once_'].Update(disabled=False),
+                                   self.window['_button_Cork Shop_'].Update(disabled=False)),
             'Stop Exchange': lambda: (self.window['_button_Start_'].Update(disabled=False),
                                       self.window['_button_Stop once_'].Update(disabled=False),
                                       self.window['_button_Visit Room_'].Update(disabled=False)),
         }
-        change_other_buttons_map[current_button]()
+        toggle_other_buttons_map[current_button]()
 
     def create_layout(self) -> List:
         return [
-            self.__run_quest_selector(),
             self.__tab_group_area(),
             self.__adb_area(),
-            self.__button_area(),
+            self.__information_area() +
+            self.__button_area()
         ]
 
-    def __run_quest_selector(self) -> List:
-        return [sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Arial', 11, 'bold'), key='_running_quest_status_')]
+    def __information_area(self) -> List:
+        return [
+            sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Any', 11, 'bold'), size=17, key='_running_status_'),
+            sg.Text('', size=27, text_color='red2', justification='right', font=('Any', 11, 'bold'), key='_tips_')
+        ]
 
     def __tab_group_area(self) -> List:
         self.tabs = {str(i): Tab_Frame(str(i), name, self.data['questList'][name])
@@ -359,8 +355,8 @@ class kirafanbot_GUI():
     def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Cork Shop', 'Exit']
         return [
-            *[sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=(12)) for bt in button_list],
-            sg.Text('', key='_stop_status_')
+            sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None)
+            for bt in button_list
         ]
 
     def stop_all_safe(self):

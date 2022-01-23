@@ -32,8 +32,8 @@ class Tab_Frame():
     def __info_modify(self) -> List:
         return [
             sg.Input(self.name, key=f'{self.__prefix_key}_title_', size=20),
-            sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=6),
-            sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=6)
+            sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=6, mouseover_colors=None),
+            sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=6, mouseover_colors=None)
         ]
 
     def __crea_stop(self) -> List:
