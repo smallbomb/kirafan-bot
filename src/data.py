@@ -32,8 +32,8 @@ class _UserData():
         for k in list(filter(lambda s: s != 'ratio', self.__adv_setting.keys())):
             data[k] = self.__adv_setting[k]
         data['ratio'] = self.__adv_setting['ratio'][self.__adv_setting['aspect_ratio']]
-        self.__adb_region = tuple(data['game_region'][:2] + data['adb']['emulator_resolution'])
-        self.__pyautogui_region = tuple(data['game_region'])
+        self.__adb_region = tuple(data['location'] + data['adb']['emulator_resolution'])
+        self.__pyautogui_region = tuple(data['location'] + data['region_width_height'])
         data['game_region'] = self.__adb_region if data['adb']['use'] else self.__pyautogui_region
         data['quest_selector'] = data['questList']['quest_selector']
         quest = data['questList'][data['quest_selector']]

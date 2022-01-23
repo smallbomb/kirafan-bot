@@ -1,7 +1,7 @@
 {
   "mode": "gui", // ['gui', 'hotkey']
   "img_dir": "img_1280x720", // default to support 1280x720 resuolution
-  "game_region": [0, 40, 1280, 720], // [left, top, width, height]: four-integer list of the left, top, width, and height of the region
+  "region_width_height": [1280, 720],
   "aspect_ratio": "16:9",
   "confidence": 0.92,
   "crash_detection": false, // Note: if true, need 'kirafan_app_icon.png' image when adb use setting was set false.

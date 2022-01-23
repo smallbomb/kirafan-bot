@@ -1,5 +1,6 @@
 {
   "loglevel": "info",
+  "location": [0, 40],
   "adb": {
     "use": false,
     "path": "C:\\path\\adb.exe",
