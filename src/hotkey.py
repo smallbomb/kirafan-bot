@@ -24,9 +24,7 @@ class Hotkey:
         self.mode = mode
         self.window = window
         self.shot_job = None
-        self.battle_job = Job(target=battle)
-        self.square_job = Job(target=square)
-        self.monitor_job = Job(target=monitor_mode)
+        self.battle_job = self.square_job = self.monitor_job = Job()
         self.kb = KBHit()
         self.positions = [Position(_id) for _id in range(1, 10)]
         self.keys = [f'z+{i}' for i in (list(range(1, 10)) if mode == 'hotkey' else []) + list(keys)]

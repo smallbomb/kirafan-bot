@@ -33,9 +33,7 @@ class kirafanbot_GUI():
         self.update_tab_selected(self.find_tab_by_name(self.data['questList']['quest_selector']).id)
         self.update_tabs_bind()
         self.update_adb_bind()
-        self.battle_job = Job(target=battle)
-        self.visit_room_job = Job(target=visit_friend_room)
-        self.cork_shop_job = Job(target=cork_shop_exchange)
+        self.battle_job = self.visit_room_job = self.cork_shop_job = Job()
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
         if self.data['adb']['use']:
             self.hotkey.remove_all_hotkey()
