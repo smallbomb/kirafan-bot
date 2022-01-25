@@ -7,7 +7,7 @@ from data import uData
 from adb import adb
 from thread import Job
 from kbhit import KBHit
-from window import square
+from window import game_region
 from bot import kirafan
 from position import Position, Shot, calc_region, monitor_mode
 from run_battle import run as battle
@@ -132,12 +132,8 @@ class Hotkey:
         logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def __cmd_x(self):
-        if self.square_job.is_alive():
-            self.square_job.stop()
-            self.square_job.join()
-        else:
-            self.square_job = Job(target=square)
-            self.square_job.start()
+        uData.save_location(*game_region())
+        self.__cmd_l()
 
     def add_hotkey(self):
         for key in self.keys:
@@ -177,9 +173,6 @@ class Hotkey:
         if self.monitor_job.is_alive():
             self.monitor_job.stop()
             self.monitor_job.join()
-        if self.square_job.is_alive():
-            self.square_job.stop()
-            self.square_job.join()
 
         sleep(0.1)
         while self.kb.kbhit():

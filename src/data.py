@@ -121,5 +121,9 @@ class _UserData():
         with open('bot_setting.json', 'w', encoding="utf-8") as f:
             json.dump(self.__basic_setting, f, ensure_ascii=False)
 
+    def save_location(self, x: int, y: int):
+        self.__basic_setting['location'] = [x, y]
+        self.save_gui_setting()
+
 
 uData = _UserData()
