@@ -57,7 +57,7 @@ class _UserData():
     def __padding(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']
         if len(questlist) <= 1:
-            questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1, '1': {"auto": True}}}
+            questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1}}
             questlist['quest_selector'] = 'new tab 1'
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
             self.__padding_friend_support(questlist[q])
@@ -84,7 +84,7 @@ class _UserData():
     def padding_wave(self, wave: Dict):
         for N in map(str, range(1, wave['total'] + 1)):
             if N not in wave:
-                wave[N] = dict()
+                wave[N] = {'auto': True}
             if 'sp_weight_enable' not in wave[N]:
                 wave[N]['sp_weight_enable'] = False
             for p in ['left', 'middle', 'right']:
