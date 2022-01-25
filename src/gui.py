@@ -359,7 +359,7 @@ class kirafanbot_GUI():
             sg.Input(adb['path'], key='_adb_path_', size=30, enable_events=True, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
             sg.FileBrowse(key='_adb_browse_', disabled=not adb['use'])
         ]]
-        return [sg.Frame('adb', frame_layout)]
+        return [sg.Frame('adb.exe', frame_layout)]
 
     def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Cork Shop', 'Exit']
