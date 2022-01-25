@@ -37,4 +37,15 @@ def game_region() -> Coord:
         if event == '_titlebar_close_':
             break
     window.close()
-    return (_location[0], _location[1] + extra_y)
+
+    x, y = (_location[0], _location[1] + extra_y)
+    screenwidth, screenhieght = sg.Window.get_screen_size()
+    if (
+            x < 0 or
+            y < 0 or
+            x + uData.setting['game_region'][2] > screenwidth or
+            y + uData.setting['game_region'][3] > screenhieght
+       ):
+        sg.popup_error('game region out of screen', title='Error')
+        return uData.setting['game_region'][:2]
+    return (x, y)
