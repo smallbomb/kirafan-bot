@@ -3,7 +3,7 @@ import pyautogui
 import threading
 from sys import stdout
 from typeguard import typechecked
-from defined import Coord, Region
+from defined import Coord
 from data import uData
 
 
@@ -44,13 +44,6 @@ class Shot:
         left, top, width, height = (c1[0], c1[1], c2[0] - c1[0], c2[1] - c1[1])
         logging.info(f'screenshot save {self.name} picture file to {self.dpath}')
         pyautogui.screenshot(self.dpath, region=(left, top, width, height))
-
-
-@typechecked
-def calc_region(top_left: Coord, bottom_right: Coord) -> Region:
-    x0, y0 = top_left
-    x1, y1 = bottom_right
-    return (x0, y0, x1 - x0, y1 - y0)
 
 
 def monitor_mode():

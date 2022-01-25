@@ -2,14 +2,14 @@ import logging
 import keyboard
 from time import sleep
 from typeguard import typechecked
-from defined import Region, Tuple
+from defined import Tuple
 from data import uData
 from adb import adb
 from thread import Job
 from kbhit import KBHit
 from window import game_region
 from bot import kirafan
-from position import Position, Shot, calc_region, monitor_mode
+from position import Position, Shot, monitor_mode
 from run_battle import run as battle
 
 
@@ -145,15 +145,6 @@ class Hotkey:
     def remove_all_hotkey(self):
         for key in self.keys:
             keyboard.remove_hotkey(key)
-
-    def tutorial_region(self) -> Region:
-        print('drawing game region on window: start')
-        print('move mouse to the kirafan screen top left corner, then press hotkey "z+1"')
-        keyboard.wait('z+1')
-        print('move mouse to the kirafan screen bottom right corner, then press hotkey "z+2"')
-        keyboard.wait('z+2')
-        print('drawing game region on window: stop')
-        return calc_region(self.positions[0].coord, self.positions[1].coord)
 
     def tutorial_screenshot(self, tuple_f: Tuple[str, str]):
         """

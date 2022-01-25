@@ -48,17 +48,11 @@ class _UserData():
         return data
 
     def reload(self):
-        old_region = self.setting['game_region']
         self.setting = self.__load()
-        if self.region_is_init():
-            self.setting['game_region'] = old_region
 
     def adb_mode_switch(self):
         self.setting['adb']['use'] = not self.setting['adb']['use']
         self.setting['game_region'] = self.__adb_region if self.setting['adb']['use'] else self.__pyautogui_region
-
-    def region_is_init(self) -> bool:
-        return all(x <= y for x, y in zip(self.setting['game_region'], (0, 0, 1, 1)))
 
     def __padding(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']

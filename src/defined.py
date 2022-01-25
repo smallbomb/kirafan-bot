@@ -5,7 +5,6 @@ Dict
 Optional
 Callable
 Coord = Tuple[int, int]
-Region = Tuple[int, int, int, int]
 RGB = Tuple[int, int, int]
 Ratio = Tuple[float, float]
 Owner = Literal["wave", "character", "bot", "orb", "all"]

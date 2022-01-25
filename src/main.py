@@ -5,14 +5,7 @@ from hotkey import Hotkey
 from gui import kirafanbot_GUI
 
 
-def check_basic_information(hotkey):
-    if uData.region_is_init():
-        uData.setting['game_region'] = hotkey.tutorial_region()
-        kirafan.reload()
-    logging.info(f'kirafan region = {list(kirafan.region)}')
-    logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
-    logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
-
+def check_basic_information():
     tuple_files = kirafan.miss_icon_files()
     if tuple_files:
         print('miss icon files:')
@@ -28,7 +21,10 @@ def main():
         try:
             hotkey = Hotkey('rslmptcoxk')
             logging.info("hotkey setting finish...")
-            check_basic_information(hotkey)
+            logging.info(f'kirafan region = {list(kirafan.region)}')
+            logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
+            logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+            check_basic_information()
             print('please press \'f3\' button to exit...')
             hotkey.wait('f3')
             hotkey.safe_exit()
