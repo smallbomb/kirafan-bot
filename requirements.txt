@@ -2,6 +2,7 @@ opencv-python==4.5.3.56
 keyboard>=0.13.5
 PyAutoGUI>=0.9.52
 typeguard>=2.10.0
+Pillow>=8.1.0
 colorama>=0.4.4
 PySimpleGUI>=4.56.0
 flake8
