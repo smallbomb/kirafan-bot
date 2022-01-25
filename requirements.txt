@@ -6,3 +6,4 @@ colorama>=0.4.4
 PySimpleGUI>=4.56.0
 flake8
 pytest
+python-xlib>=0.29; platform_system!='Windows'
