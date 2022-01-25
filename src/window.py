@@ -23,7 +23,7 @@ def game_region() -> Coord:
                        keep_on_top=True, background_color='green2', no_titlebar=True, return_keyboard_events=True,
                        modal=True, transparent_color='red',  grab_anywhere_using_control=False)
 
-    sg.popup_ok('You can move window.\nIf game region is fine, please click \'X\' to close window')
+    sg.popup_ok('Tips: You can move window and click \'X\' to record new region', title='Tips')
     window.read()
     location = window.current_location(True)
     window.close()
