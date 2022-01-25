@@ -104,7 +104,7 @@ class Wave:
         elif not self.objects['friend'].found(False):
             return False
 
-        self.objects['friend'].click(3)
+        self.objects['friend'].click(3, 0.3)
         if self.objects['friend_ok'].found(True):  # found it because player's character maybe less than 3.
             target = self.__friend['replace'].lower().replace('character', 'friend_replace')
             self.objects[target].click(3)
