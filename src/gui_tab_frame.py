@@ -6,6 +6,9 @@ from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
 _tab_handle_re = re.compile(r'^_(loop_count_setting|stamina|orb|wave).*_$')
+_tab_handle_wave_event_re = re.compile(r'^_wave\d*_.*(auto|sp_weight_enable|sp_weight|skill_priority|total)_$')
+pos = ['left', 'middle', 'right']
+sk_list = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
 
 
 @typechecked
@@ -39,7 +42,7 @@ class Tab_Frame():
     def __crea_stop(self) -> List:
         k = [f'{self.__prefix_key}_crea_stop_']
         return [
-            sg.Checkbox('crea_stop', key=k[0], default=self.quest['crea_stop'], enable_events=True)
+            sg.Checkbox('crea mission stop', key=k[0], default=self.quest['crea_stop'], enable_events=True)
         ]
 
     def __loop_count(self) -> List:
@@ -74,7 +77,7 @@ class Tab_Frame():
 
     def __wave_area(self) -> List:
         w = self.quest['wave']
-        k = [f'{self.__prefix_key}_wave_status_', f'{self.__prefix_key}_wave_setting_']
+        k = [f'{self.__prefix_key}_wave_status_', f'{self.__prefix_key}_wave_total_']
         frame_layout = [[
             sg.Text(f'wave = {self.wave_status} /', key=k[0], pad=((5, 2), 5)),
             sg.InputCombo((1, 2, 3, 5), key=k[1], pad=0, default_value=w['total'], enable_events=True)
@@ -161,33 +164,55 @@ class Tab_Frame():
         else:
             self.quest['orb'][n][key] = value
 
-    def handle_wave_event(self, window: sg.Window, key: str, value):
+    def handle_wave_event(self, window, key, value):
+        _handle_wave_event_map = {
+            'auto': lambda w, k, v: self.w_auto_event(w, k, v),
+            'sp_weight_enable': lambda w, k, v: self.w_sp_weight_enable_event(w, k, v),
+            'sp_weight': lambda w, k, v: self.w_sp_weight_event(k, v),
+            'skill_priority': lambda w, k, v: self.w_skill_priority_event(w, k, v),
+            'total': lambda w, k, v: self.w_total_event(w, v)
+        }
+        matchresult = _tab_handle_wave_event_re.match(key)
+        if matchresult:
+            _handle_wave_event_map[matchresult[1]](window, key, value)
+
+    def w_auto_event(self, window: sg.Window, key: str, value: bool):
         N = key[5]
-        pos = ['left', 'middle', 'right']
-        if '_auto_' in key:
-            self.quest['wave'][N]['auto'] = value
-            self.update_waveN_bind(window, N)
-            for k in ([f'{self.__prefix_key}_wave{N}_sp_weight_enable_'] +
-                      [f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_' for p in pos] +
-                      [f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_' for p in pos]):
-                if k.endswith('_sp_weight_enable_'):
-                    window[k].Update(disabled=value)
-                elif k.endswith('_skill_priority_'):
-                    window[k].Widget.config(readonlybackground=('gray' if value else 'white'))
-                elif window[f'{self.__prefix_key}_wave{N}_sp_weight_enable_'].get():
-                    window[k].Update(disabled=value)
-        elif '_sp_weight_enable_' in key:
-            for k in [f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_' for p in pos]:
-                window[k].Update(disabled=(not value))
-        elif '_skill_priority_' in key:
-            default = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
-            current_list = list(filter(lambda e: e != '', value.split(' > ')))
-            available_list = [x for x in default if x not in current_list]
-            current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, default,
-                                        window.mouse_location()).open()
-            if current_list is not None:
-                self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = current_list if current_list != ['Same as Wave1'] else self.quest['wave']['1'][f'character_{key[17:key.index("_", 17)]}']['skill_priority']  # noqa: E501
-                window[f'{self.__prefix_key}{key}'].Update(' > '.join(self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority']))  # noqa: E501
+        self.quest['wave'][N]['auto'] = value
+        self.update_waveN_bind(window, N)
+        window[f'{self.__prefix_key}_wave{N}_sp_weight_enable_'].Update(disabled=value)
+        for (sk, sp) in ([[
+                            f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_',
+                            f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_'
+                          ] for p in pos]):
+            window[sk].Widget.config(readonlybackground=('gray' if value else 'white'))
+            if window[f'{self.__prefix_key}_wave{N}_sp_weight_enable_'].get():
+                window[sp].Update(disabled=value)
+
+    def w_sp_weight_enable_event(self, window: sg.Window, key: str, value: bool):
+        N = key[5]
+        self.quest['wave'][N]['sp_weight_enable'] = value
+        for k in [f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_' for p in pos]:
+            window[k].Update(disabled=(not value))
+
+    def w_sp_weight_event(self, key: str, value: int):
+        N = key[5]
+        p = key[17:key.index('_', 17)]
+        self.quest['wave'][N][f'character_{p}']['sp_weight'] = value
+
+    def w_skill_priority_event(self, window: sg.Window, key: str, value: str):
+        N = key[5]
+        current_list = list(filter(lambda e: e != '', value.split(' > ')))
+        available_list = [sk for sk in sk_list if sk not in current_list]
+        current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, sk_list,
+                                    window.mouse_location()).open()
+        if current_list is not None:
+            p = key[17:key.index('_', 17)]
+            self.quest['wave'][N][f'character_{p}']['skill_priority'] = current_list if current_list != ['Same as Wave1'] else self.quest['wave']['1'][f'character_{p}']['skill_priority']  # noqa: E501
+            window[f'{self.__prefix_key}{key}'].Update(' > '.join(self.quest['wave'][N][f'character_{p}']['skill_priority']))
+
+    def w_total_event(self, window: sg.Window, value: int):
+        self.quest['wave']['total'] = value
 
     def update_wave_id_status(self, window: sg.Window, w_id: int):
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')
