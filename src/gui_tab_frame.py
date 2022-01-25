@@ -135,7 +135,8 @@ class Tab_Frame():
             default = ['Au', 'Ag', 'Cu']
             current_list = list(filter(lambda e: e != '', value.split(' > ')))
             available_list = [x for x in default if x not in [c[:2] for c in current_list]]
-            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default).open()
+            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default,
+                                        window.mouse_location()).open()
             if current_list is not None:
                 self.quest['stamina']['priority'] = current_list
                 window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
@@ -182,7 +183,8 @@ class Tab_Frame():
             default = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
             current_list = list(filter(lambda e: e != '', value.split(' > ')))
             available_list = [x for x in default if x not in current_list]
-            current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, default).open()
+            current_list = priority_GUI('skill', key.replace('_', ' ').strip(), current_list, available_list, default,
+                                        window.mouse_location()).open()
             if current_list is not None:
                 self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority'] = current_list if current_list != ['Same as Wave1'] else self.quest['wave']['1'][f'character_{key[17:key.index("_", 17)]}']['skill_priority']  # noqa: E501
                 window[f'{self.__prefix_key}{key}'].Update(' > '.join(self.quest['wave'][N][f'character_{key[17:key.index("_", 17)]}']['skill_priority']))  # noqa: E501

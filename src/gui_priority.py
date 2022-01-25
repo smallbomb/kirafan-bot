@@ -1,18 +1,19 @@
 import PySimpleGUI as sg
 from typeguard import typechecked
-from defined import List, Optional, Dict
+from defined import List, Optional, Dict, Coord
 
 
 @typechecked
 class priority_GUI():
-    def __init__(self, priority_type: str, text: str, current_list: List, available_list: List, default_list: List):
+    def __init__(self, priority_type: str, text: str, current_list: List, available_list: List, default_list: List,
+                 mouseXY: Coord):
         self.type = priority_type
         self.current_list = current_list
         self.available_list = available_list
         self.default_list = default_list
         self.stamina = self.__create_stamina_count_dict()
         self.layout = self.create_layout(text)
-        self.window = sg.Window('kirafan-bot priority', self.layout, modal=True)
+        self.window = sg.Window('kirafan-bot priority', self.layout, location=(mouseXY[0] - 240, mouseXY[1] - 190), modal=True)
 
     def __create_stamina_count_dict(self) -> Optional[Dict]:
         r = None
