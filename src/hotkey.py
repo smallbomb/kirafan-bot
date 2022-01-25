@@ -132,8 +132,11 @@ class Hotkey:
         logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def __cmd_x(self):
-        uData.save_location(*game_region())
-        self.__cmd_l()
+        old = uData.setting['game_region'][:2]
+        new = game_region()
+        if old != new:
+            uData.save_location(*new)
+            self.__cmd_l()
 
     def add_hotkey(self):
         for key in self.keys:
