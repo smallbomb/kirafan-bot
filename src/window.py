@@ -22,7 +22,7 @@ def game_region() -> Coord:
 
     # (0, 40) => (0, 15)
     extra_y = 25
-    _location = [uData.setting['game_region'][0], uData.setting['game_region'][1] - extra_y]
+    _location = (uData.setting['game_region'][0], uData.setting['game_region'][1] - extra_y)
 
     window = sg.Window('', layout, location=_location,
                        keep_on_top=True, background_color='green2', no_titlebar=True, modal=True,
