@@ -33,10 +33,8 @@ def game_region() -> Coord:
         event, _ = window.read()
         if event is None:
             break
-        elif event in 'grab':
-            _location = window.current_location(True)
-        elif event == '_titlebar_close_':
-            _location = window.current_location(True)
+        _location = window.current_location(True)
+        if event == '_titlebar_close_':
             break
     window.close()
     return (_location[0], _location[1] + extra_y)
