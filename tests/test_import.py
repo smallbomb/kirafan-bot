@@ -17,4 +17,4 @@ def test_hotkey_and_mainfunc():
     if os.name == 'nt':
         hotkey = Hotkey('rslmptcoxk')
         assert hotkey.safe_exit() is None
-        assert check_basic_information(hotkey) is None
+        assert check_basic_information() is None
