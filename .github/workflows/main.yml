@@ -27,7 +27,7 @@ jobs:
       run: bash ./scripts/install-dependencies.sh
     - name: Lint with flake8
       run: flake8 . --count
-    - name: name: Test with pytest - ubuntu
+    - name: Test with pytest - ubuntu
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         full_cmdpath=$(command -v pytest)
