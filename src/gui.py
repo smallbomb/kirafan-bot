@@ -3,7 +3,6 @@ Note:
     set debug level 測試
     log window open/hide (main)
     window game region (button?)
-    friend support area (tab)
     set_timer frame (main)
     wave hide/unhide
 '''

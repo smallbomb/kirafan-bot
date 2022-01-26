@@ -9,6 +9,7 @@ _tab_handle_re = re.compile(r'^_(loop_count_setting|crea_stop|friend_support|sta
 _tab_handle_wave_event_re = re.compile(r'^_wave\d*_.*(auto|sp_weight_enable|sp_weight|skill_priority|total)_$')
 pos = ['left', 'middle', 'right']
 sk_list = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
+stamina_list = ['Au', 'Ag', 'Cu']
 
 
 @typechecked
@@ -100,7 +101,7 @@ class Tab_Frame():
             column = [sg.Text(f'wave{N}:'), sg.Checkbox('auto', key=k[0], default=w[N]['auto'], enable_events=True),
                       sg.Checkbox('sp_weight', key=k[1], default=(w[N]['sp_weight_enable']), enable_events=True),
                       sg.Text('character', pad=((5, 0), 5))]
-            for p in ['left', 'middle', 'right']:
+            for p in pos:
                 k = [f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_',
                      f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_']
                 column += [
@@ -118,7 +119,7 @@ class Tab_Frame():
         self.update_stamina_bind(window)
 
     def update_waveN_bind(self, window: sg.Window, N: str):
-        for p in ['left', 'middle', 'right']:
+        for p in pos:
             if not self.quest['wave'][N]['auto']:
                 window[f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_'].bind('<Button-1>', '')
             else:
@@ -170,10 +171,9 @@ class Tab_Frame():
             window[f'{self.__prefix_key}_stamina_priority_'].Widget.config(readonlybackground=('white' if value else 'gray'))
             self.update_stamina_bind(window)
         elif '_stamina_priority_' in key:
-            default = ['Au', 'Ag', 'Cu']
             current_list = list(filter(lambda e: e != '', value.split(' > ')))
-            available_list = [x for x in default if x not in [c[:2] for c in current_list]]
-            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default,
+            available_list = [s for s in stamina_list if s not in [c[:2] for c in current_list]]
+            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, stamina_list,
                                         window.mouse_location()).open()
             if current_list is not None:
                 self.quest['stamina']['priority'] = current_list

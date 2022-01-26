@@ -42,7 +42,7 @@ class priority_GUI():
         if self.type != 'stamina':
             return []
         layout = [sg.Text('count:')]
-        for s in ['Au', 'Ag', 'Cu']:
+        for s in self.default_list:
             _pad = (((0, 5), 5) if s == 'Cu' else ((0, 100), 5))
             layout += [sg.Text(s, pad=((5, 0), 5))]
             layout += [sg.Spin([i for i in range(1, 11)], initial_value=self.stamina[s], size=(2, 1), pad=_pad, key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]  # noqa: E501
@@ -107,5 +107,5 @@ class priority_GUI():
 
     def update_stamina_spin(self):
         if self.type == 'stamina':
-            for s in ['Au', 'Ag', 'Cu']:
+            for s in self.default_list:
                 self.window[f'_stamina_count_{s}_'].Update(disabled=(s in self.available_list))
