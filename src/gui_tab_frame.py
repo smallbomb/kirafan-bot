@@ -5,7 +5,7 @@ from copy import deepcopy
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
-_tab_handle_re = re.compile(r'^_(loop_count_setting|crea_stop|stamina|orb|wave).*_$')
+_tab_handle_re = re.compile(r'^_(loop_count_setting|crea_stop|friend_support|stamina|orb|wave).*_$')
 _tab_handle_wave_event_re = re.compile(r'^_wave\d*_.*(auto|sp_weight_enable|sp_weight|skill_priority|total)_$')
 pos = ['left', 'middle', 'right']
 sk_list = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
@@ -24,25 +24,11 @@ class Tab_Frame():
 
     def create_layout(self) -> List:
         return [
-            self.__info_modify(),
-            self.__crea_stop(),
-            self.__loop_count(),
-            self.__stamina_area(),
-            self.__orb_area(),
+            self.__loop_count() +
+            self.__tab_modify(),
+            self.__orb_area() +
+            [sg.Column([self.__crea_stop(), self.__stamina_area(), self.__friend_support_area()])],
             self.__wave_area()
-        ]
-
-    def __info_modify(self) -> List:
-        return [
-            sg.Input(self.name, key=f'{self.__prefix_key}_title_', size=20),
-            sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=6, mouseover_colors=None),
-            sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=6, mouseover_colors=None)
-        ]
-
-    def __crea_stop(self) -> List:
-        k = [f'{self.__prefix_key}_crea_stop_']
-        return [
-            sg.Checkbox('crea mission stop', key=k[0], default=self.quest['crea_stop'], enable_events=True)
         ]
 
     def __loop_count(self) -> List:
@@ -52,15 +38,14 @@ class Tab_Frame():
             sg.Input(self.quest['loop_count'], key=k[1], size=(3, 1), pad=0, enable_events=True)
         ]
 
-    def __stamina_area(self) -> List:
-        stamina = self.quest['stamina']
-        k = [f'{self.__prefix_key}_stamina_use_', f'{self.__prefix_key}_stamina_priority_']
-        frame_layout = [[
-            sg.Checkbox('use', key=k[0], default=stamina['use'], enable_events=True),
-            sg.Text('priority:', pad=((5, 0), 5)),
-            sg.Input(' > '.join(stamina['priority']), size=20, key=k[1], disabled_readonly_background_color=('white' if stamina['use'] else 'gray'), disabled=True)  # noqa: E501
-        ]]
-        return [sg.Frame('stamina', frame_layout)]
+    def __tab_modify(self) -> List:
+        return [
+            sg.Column([[
+                sg.Input(self.name, key=f'{self.__prefix_key}_title_', size=20),
+                sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=6, mouseover_colors=None),
+                sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=6, mouseover_colors=None)
+            ]], pad=(0, 0), element_justification='r', expand_x=True)
+        ]
 
     def __orb_area(self) -> List:
         orb = self.quest['orb']
@@ -74,6 +59,34 @@ class Tab_Frame():
                ) for n in map(str, range(1, 4))]
         ]
         return [sg.Frame('orb', frame_layout)]
+
+    def __crea_stop(self) -> List:
+        k = [f'{self.__prefix_key}_crea_stop_']
+        return [
+            sg.Checkbox('crea mission stop', key=k[0], pad=((12, 5), 0), default=self.quest['crea_stop'], enable_events=True)
+        ]
+
+    def __stamina_area(self) -> List:
+        stamina = self.quest['stamina']
+        k = [f'{self.__prefix_key}_stamina_use_', f'{self.__prefix_key}_stamina_priority_']
+        frame_layout = [[
+            sg.Checkbox('use', key=k[0], default=stamina['use'], enable_events=True),
+            sg.Text('priority:', pad=((5, 0), 5)),
+            sg.Input(' > '.join(stamina['priority']), size=20, key=k[1], disabled_readonly_background_color=('white' if stamina['use'] else 'gray'), disabled=True)  # noqa: E501
+        ]]
+        return [sg.Frame('stamina', frame_layout)]
+
+    def __friend_support_area(self) -> List:
+        friend_support = self.quest['friend_support']
+        k = [f'{self.__prefix_key}_friend_support_use_', f'{self.__prefix_key}_friend_support_wave_N_',
+             f'{self.__prefix_key}_friend_support_myturn_', f'{self.__prefix_key}_friend_support_replace_']
+        frame_layout = [[
+            sg.Checkbox('use', key=k[0], default=friend_support['use'], enable_events=True),
+            sg.Text('wave_N:', pad=((5, 2), 5)), sg.InputCombo([i for i in range(1, 6)], key=k[1], default_value=friend_support['wave_N'], disabled=(not friend_support['use']), enable_events=True),  # noqa: E501
+            sg.Text('mytuen:', pad=((5, 2), 5)), sg.Spin([i for i in range(0, 100)], size=(2, 1), key=k[2], initial_value=friend_support['myturn'], disabled=(not friend_support['use']), enable_events=True),  # noqa: E501
+            sg.Text('replace:', pad=((5, 2), 5)), sg.InputCombo([f'character_{p}' for p in pos], size=15, key=k[3], default_value=friend_support['replace'], disabled=(not friend_support['use']), enable_events=True),  # noqa: E501
+        ]]
+        return [sg.Frame('friend_support', frame_layout)]
 
     def __wave_area(self) -> List:
         w = self.quest['wave']
@@ -120,30 +133,16 @@ class Tab_Frame():
     def handle(self, window: sg.Window, event: str, values: Dict):
         _handle_map = {
             'loop_count_setting': lambda window, key, value: self.handle_loop_count_event(value),
+            'orb': lambda window, key, value: self.handle_orb_event(window, key, value),
             'crea_stop': lambda window, key, value: self.quest.update({'crea_stop': value}),
             'stamina': lambda window, key, value: self.handle_stamina_event(window, key, value),
-            'orb': lambda window, key, value: self.handle_orb_event(window, key, value),
+            'friend_support': lambda window, key, value: self.handle_friend_support_event(window, key, value),
             'wave': lambda window, key, value: self.handle_wave_event(window, key, value)
         }
         key = event[len(self.__prefix_key):]
         matchresult = _tab_handle_re.match(key)
         if matchresult:
             _handle_map[matchresult[1]](window, key, values[event])
-
-    def handle_stamina_event(self, window: sg.Window, key: str, value):
-        if '_use_' in key:
-            self.quest['stamina']['use'] = value
-            window[f'{self.__prefix_key}_stamina_priority_'].Widget.config(readonlybackground=('white' if value else 'gray'))
-            self.update_stamina_bind(window)
-        elif '_stamina_priority_' in key:
-            default = ['Au', 'Ag', 'Cu']
-            current_list = list(filter(lambda e: e != '', value.split(' > ')))
-            available_list = [x for x in default if x not in [c[:2] for c in current_list]]
-            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default,
-                                        window.mouse_location()).open()
-            if current_list is not None:
-                self.quest['stamina']['priority'] = current_list
-                window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
 
     def handle_loop_count_event(self, value: str):
         if value.isdigit():
@@ -164,6 +163,29 @@ class Tab_Frame():
             self.quest['orb'][n][key] = value
         else:
             self.quest['orb'][n][key] = value
+
+    def handle_stamina_event(self, window: sg.Window, key: str, value):
+        if '_use_' in key:
+            self.quest['stamina']['use'] = value
+            window[f'{self.__prefix_key}_stamina_priority_'].Widget.config(readonlybackground=('white' if value else 'gray'))
+            self.update_stamina_bind(window)
+        elif '_stamina_priority_' in key:
+            default = ['Au', 'Ag', 'Cu']
+            current_list = list(filter(lambda e: e != '', value.split(' > ')))
+            available_list = [x for x in default if x not in [c[:2] for c in current_list]]
+            current_list = priority_GUI('stamina', key.replace('_', ' ').strip(), current_list, available_list, default,
+                                        window.mouse_location()).open()
+            if current_list is not None:
+                self.quest['stamina']['priority'] = current_list
+                window[f'{self.__prefix_key}{key}'].Update(' > '.join(current_list))
+
+    def handle_friend_support_event(self, window: sg.Window, key: str, value):
+        k = key[16:-1]
+        self.quest['friend_support'][k] = value
+        if k == 'use':
+            window[f'{self.__prefix_key}_friend_support_wave_N_'].Update(disabled=(not value))
+            window[f'{self.__prefix_key}_friend_support_myturn_'].Update(disabled=(not value))
+            window[f'{self.__prefix_key}_friend_support_replace_'].Update(disabled=(not value))
 
     def handle_wave_event(self, window, key, value):
         _handle_wave_event_map = {
