@@ -143,7 +143,6 @@ def _skip_award_result(bot):
 
 
 def _ck_move_to_next_battle(bot) -> bool:
-    # check stamina_Au first. wait for loading time even if user has enough stamina.
     if kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
         if not kirafan.use_stamina(lambda: not bot.is_running()):
             bot.stop()
