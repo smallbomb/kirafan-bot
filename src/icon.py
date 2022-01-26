@@ -38,7 +38,7 @@ class Icon:
             adb.set_update_cv2_IM_cache_flag()
 
         center = self.__locateCenterOnScreen(self.__IM_cache if self.__adb_use else self.path,
-                                             region=self.__region if not self.__adb_use else self.name,  #debug  Can not move to next new battle. maybe insufficient stamina items? pause now...
+                                             region=self.__region,
                                              grayscale=True,
                                              confidence=self.__confidence)
         if center:

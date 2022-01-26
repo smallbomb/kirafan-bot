@@ -39,13 +39,24 @@ def game_region() -> Coord:
     window.close()
 
     x, y = (_location[0], _location[1] + extra_y)
-    screenwidth, screenhieght = sg.Window.get_screen_size()
-    if (
-            x < 0 or
-            y < 0 or
-            x + uData.setting['game_region'][2] > screenwidth or
-            y + uData.setting['game_region'][3] > screenhieght
-       ):
-        sg.popup_error('game region out of screen', title='Error')
-        return uData.setting['game_region'][:2]
-    return (x, y)
+    status = _ck_region(x, y, *uData.setting['game_region'][2:])
+    if status == 0:
+        return (x, y)
+    elif status == -1:
+        cause = '.'
+    elif status == -2:
+        cause = ', please update home page ratio(advanced_setting.jsonc) or reselect game region.'
+
+    sg.popup_error(f'Game region out of screen{cause}', title='Error')
+    return uData.setting['game_region'][:2]
+
+
+def _ck_region(x: int, y: int, width: int, height: int) -> int:
+    screenwidth, screenheight = sg.Window.get_screen_size()
+    if x < 0 or y < 0 or x + width > screenwidth or y + height > screenheight:
+        return -1
+    if uData.setting['crash_detection'] and not uData.setting['adb']['use'] and 'home_page' in uData.setting['ratio']:
+        ratioX, ratioY = uData.setting['ratio']['home_page']['x'], uData.setting['ratio']['home_page']['y']
+        if int(round(x + ratioX * width)) < 0 or int(round(y + ratioY * height)) < 0:
+            return -2
+    return 0
