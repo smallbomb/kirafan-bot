@@ -99,7 +99,7 @@ class Tab_Frame():
         for N in map(str, range(1, w['total'] + 1)):
             k = [f'{self.__prefix_key}_wave{N}_auto_', f'{self.__prefix_key}_wave{N}_sp_weight_enable_']
             column = [sg.Text(f'wave{N}:'), sg.Checkbox('auto', key=k[0], default=w[N]['auto'], enable_events=True),
-                      sg.Checkbox('sp_weight', key=k[1], default=(w[N]['sp_weight_enable']), enable_events=True),
+                      sg.Checkbox('sp_weight', key=k[1], default=(w[N]['sp_weight_enable']), disabled=(w[N]['auto']), enable_events=True),  # noqa: E501
                       sg.Text('character', pad=((5, 0), 5))]
             for p in pos:
                 k = [f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_',
