@@ -27,14 +27,21 @@ jobs:
       run: bash ./scripts/install-dependencies.sh
     - name: Lint with flake8
       run: flake8 . --count
-    - name: Test with pytest
+    - name: name: Test with pytest - ubuntu
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         full_cmdpath=$(command -v pytest)
         DISPLAY=:0 sudo $full_cmdpath -s
-    - name: Test with pytest
-      if: "!startsWith(matrix.os, 'ubuntu')"
-      run: pytest -s
+    - name: Test with pytest - windows
+      if: "startsWith(matrix.os, 'windows')"
+      run: |
+        Set-DisplayResolution -Width 1920 -Height 1080 -Force
+        pytest -s
+    - name: Test with pytest - macos
+      if: "startsWith(matrix.os, 'macos')"
+      run: |
+        "/Library/Application Support/VMware Tools/vmware-resolutionSet" 2560 1440
+        pytest -s
 
   installer:
     name: Build installation

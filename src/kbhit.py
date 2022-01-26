@@ -52,8 +52,10 @@ class KBHit:
             return msvcrt.kbhit()
 
         else:
-            dr = select([sys.stdin], [], [], 0)[0]
-            return dr != []
+            # Now, I can't test this feature becaue I have no linux system device...
+            return False and select([sys.stdin], [], [], 0)[0]
+            # dr = select([sys.stdin], [], [], 0)[0]
+            # return dr != []
 
 
 # Test

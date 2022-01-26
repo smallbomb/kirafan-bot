@@ -8,5 +8,6 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 if [[ -n "$ImageOS" ]] && [[ "$ImageOS" = ubuntu* ]]; then
   sudo apt-get install xvfb
-  Xvfb :0 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  sudo apt-get install scrot
+  Xvfb :0 -screen 0 1366x768x24 > /dev/null 2>&1 &
 fi
