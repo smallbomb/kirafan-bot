@@ -6,7 +6,6 @@ Note:
     friend support area (tab)
     set_timer frame (main)
     wave hide/unhide
-    assign crea stop(tab)
 '''
 import re
 import PySimpleGUI as sg

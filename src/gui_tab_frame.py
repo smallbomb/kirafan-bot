@@ -5,7 +5,7 @@ from copy import deepcopy
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
-_tab_handle_re = re.compile(r'^_(loop_count_setting|stamina|orb|wave).*_$')
+_tab_handle_re = re.compile(r'^_(loop_count_setting|crea_stop|stamina|orb|wave).*_$')
 _tab_handle_wave_event_re = re.compile(r'^_wave\d*_.*(auto|sp_weight_enable|sp_weight|skill_priority|total)_$')
 pos = ['left', 'middle', 'right']
 sk_list = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
@@ -120,6 +120,7 @@ class Tab_Frame():
     def handle(self, window: sg.Window, event: str, values: Dict):
         _handle_map = {
             'loop_count_setting': lambda window, key, value: self.handle_loop_count_event(value),
+            'crea_stop': lambda window, key, value: self.quest.update({'crea_stop': value}),
             'stamina': lambda window, key, value: self.handle_stamina_event(window, key, value),
             'orb': lambda window, key, value: self.handle_orb_event(window, key, value),
             'wave': lambda window, key, value: self.handle_wave_event(window, key, value)
