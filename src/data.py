@@ -38,7 +38,8 @@ class _UserData():
         data['quest_selector'] = data['questList']['quest_selector']
         quest = data['questList'][data['quest_selector']]
         data['loop_count'] = quest['loop_count']
-        data['crea_stop'] = quest['crea_stop']
+        data['crea_comm_stop'] = quest['crea_stop']['comm']
+        data['crea_craft_stop'] = quest['crea_stop']['craft']
         data['stamina'] = quest['stamina']
         data['friend_support'] = quest['friend_support']
         data['orb'] = quest['orb']
@@ -57,14 +58,19 @@ class _UserData():
     def __padding(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']
         if len(questlist) <= 1:
-            questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': False, 'wave': {'total': 1}}
+            questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': {'comm': False, 'craft': False}, 'wave': {'total': 1}}
             questlist['quest_selector'] = 'new tab 1'
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
+            self.__padding_crea_stop(questlist[q])
             self.__padding_friend_support(questlist[q])
             self.__padding_stamina(questlist[q])
             self.__padding_orb(questlist[q])
             self.padding_wave(self.__wave_parse(questlist[q]['wave']))
         return rawdata
+
+    def __padding_crea_stop(self, quest: Dict):
+        if isinstance(quest['crea_stop'], bool):
+            quest['crea_stop'] = {'comm': False, 'craft': quest['crea_stop']}
 
     def __padding_friend_support(self, quest: Dict):
         if 'friend_support' not in quest:

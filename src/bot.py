@@ -47,7 +47,8 @@ class BOT:
         self.wave_total = self.data['wave']['total']
         self.loop_count = self.data['loop_count']
         self.sleep = self.data['sleep']
-        self.crea_stop = self.data['crea_stop']
+        self.crea_craft_stop = self.data['crea_stop']['craft']
+        self.crea_comm_stop = self.data['crea_stop']['comm']
         self.stamina = self.data['stamina'] or {"use": False}
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
@@ -66,8 +67,9 @@ class BOT:
         return string
 
     def __load_icons(self) -> Dict:
-        images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png',
-                  'tojiru.png', 'friend_icon.png', 'visit_room.png', 'cork_face.png']
+        images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png',
+                  'friend_icon.png', 'visit_room.png', 'cork_face.png', 'crea_craft_occur.png',
+                  'crea_comm_done.png']
         if self.stamina['use']:
             images += ['stamina_title.png']
         if self.loop_count > 0:
@@ -215,7 +217,8 @@ class BOT:
         self.wave_total = self.data['wave']['total']
         self.loop_count = self.data['loop_count']
         self.sleep = self.data['sleep']
-        self.crea_stop = self.data['crea_stop']
+        self.crea_craft_stop = self.data['crea_stop']['craft']
+        self.crea_comm_stop = self.data['crea_stop']['comm']
         self.stamina = self.data['stamina'] or {"use": False}
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()

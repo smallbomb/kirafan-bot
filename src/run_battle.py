@@ -127,11 +127,17 @@ def _skip_award_result(bot):
             break
         elif kirafan.icons['again'].click():
             break
-        elif kirafan.crea_stop and kirafan.objects['center_left'].found(False) and kirafan.icons['tojiru'].found(False):
-            logging.info('crea_stop: appear crea mission')
+        elif (kirafan.crea_craft_stop and kirafan.icons['tojiru'].found(False) and
+              kirafan.icons['crea_craft_occur'].found(False)):
+            logging.info('crea_stop: crea craft mission')
             bot.stop()
-        elif kirafan.icons['tojiru'].click(adb_update_cache=False):
-            logging.debug('icon: tojiru icon found. (Is character\'s crea mission?)')
+        elif kirafan.crea_comm_stop and kirafan.icons['tojiru'].found(False) and kirafan.icons['crea_comm_done'].found(False):
+            logging.info('crea_stop: crea communication done')
+            bot.stop()
+        elif kirafan.icons['tojiru'].found(False) and  (kirafan.icons['crea_craft_occur'].found(False) or
+                                                        kirafan.icons['crea_comm_done'].found(False) or
+                                                        kirafan.icons['nakayoshido'].found(False)):
+            kirafan.icons['tojiru'].click(adb_update_cache=False)
             retry = True
             ct = 8
         elif retry:

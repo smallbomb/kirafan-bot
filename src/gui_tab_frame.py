@@ -5,7 +5,7 @@ from copy import deepcopy
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
-_tab_handle_re = re.compile(r'^_(loop_count_setting|crea_stop|friend_support|stamina|orb|wave).*_$')
+_tab_handle_re = re.compile(r'^_(loop_count_setting|crea_(?:craft|comm)_stop|friend_support|stamina|orb|wave).*_$')
 _tab_handle_wave_event_re = re.compile(r'^_wave\d*_.*(auto|sp_weight_enable|sp_weight|skill_priority|total)_$')
 pos = ['left', 'middle', 'right']
 sk_list = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
@@ -62,9 +62,10 @@ class Tab_Frame():
         return [sg.Frame('orb', frame_layout)]
 
     def __crea_stop(self) -> List:
-        k = [f'{self.__prefix_key}_crea_stop_']
+        k = [f'{self.__prefix_key}_crea_craft_stop_', f'{self.__prefix_key}_crea_comm_stop_']
         return [
-            sg.Checkbox('crea mission stop', key=k[0], pad=((12, 5), 0), default=self.quest['crea_stop'], enable_events=True)
+            sg.Checkbox('crea craft stop', key=k[0], pad=((12, 5), 0), default=self.quest['crea_stop']['craft'], enable_events=True),  # noqa: E501
+            sg.Checkbox('crea comm stop', key=k[0], pad=((12, 5), 0), default=self.quest['crea_stop']['comm'], enable_events=True)  # noqa: E501
         ]
 
     def __stamina_area(self) -> List:
@@ -135,7 +136,8 @@ class Tab_Frame():
         _handle_map = {
             'loop_count_setting': lambda window, key, value: self.handle_loop_count_event(value),
             'orb': lambda window, key, value: self.handle_orb_event(window, key, value),
-            'crea_stop': lambda window, key, value: self.quest.update({'crea_stop': value}),
+            'crea_craft_stop': lambda window, key, value: self.quest['crea_stop'].update({'craft': value}),
+            'crea_comm_stop': lambda window, key, value: self.quest['crea_stop'].update({'comm': value}),
             'stamina': lambda window, key, value: self.handle_stamina_event(window, key, value),
             'friend_support': lambda window, key, value: self.handle_friend_support_event(window, key, value),
             'wave': lambda window, key, value: self.handle_wave_event(window, key, value)

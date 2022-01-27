@@ -58,7 +58,7 @@ class Character:
         return self.objects[sk].found(False)
 
     def __action_cd_skill(self, sk: str) -> bool:
-        # success: True, Failed: False
+        # success use skill: True, Fail to use skill: False
         if not self.objects[f'{sk}_cd'].found(False):
             return False
         logging.debug(f'character action: try to click {sk} 0.6 sec (skill cd now?)')
