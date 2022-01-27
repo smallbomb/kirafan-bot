@@ -43,8 +43,8 @@ class Tab_Frame():
         return [
             sg.Column([[
                 sg.Input(self.name, key=f'{self.__prefix_key}_title_', size=20),
-                sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=6, mouseover_colors=None),
-                sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=6, mouseover_colors=None)
+                sg.Button('Rename', key=f'{self.__prefix_key}_rename_', size=7, mouseover_colors=None),
+                sg.Button('Delete', key=f'{self.__prefix_key}_delete_', size=7, mouseover_colors=None)
             ]], pad=(0, 0), element_justification='r', expand_x=True)
         ]
 
