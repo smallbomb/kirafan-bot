@@ -134,9 +134,9 @@ def _skip_award_result(bot):
         elif kirafan.crea_comm_stop and kirafan.icons['tojiru'].found(False) and kirafan.icons['crea_comm_done'].found(False):
             logging.info('crea_stop: crea communication done')
             bot.stop()
-        elif kirafan.icons['tojiru'].found(False) and  (kirafan.icons['crea_craft_occur'].found(False) or
-                                                        kirafan.icons['crea_comm_done'].found(False) or
-                                                        kirafan.icons['nakayoshido'].found(False)):
+        elif kirafan.icons['tojiru'].found(False) and (kirafan.icons['crea_craft_occur'].found(False) or
+                                                       kirafan.icons['crea_comm_done'].found(False) or
+                                                       kirafan.icons['nakayoshido'].found(False)):
             kirafan.icons['tojiru'].click(adb_update_cache=False)
             retry = True
             ct = 8
