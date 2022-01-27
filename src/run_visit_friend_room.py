@@ -51,9 +51,6 @@ def _handle_visit_room(bot, tries: int, found_friend_icon: bool) -> bool:
         elif kirafan.icons['visit_room'].scan(sec):
             kirafan.icons['visit_room'].click(2, adb_update_cache=False)
             return True
-        elif kirafan.icons['tojiru'].click(adb_update_cache=False):
-            logging.error('No friend room....')
-            bot.stop()
         elif visit_room_retry:
             logging.debug('try a again because visit_room.png not found')
             visit_room_retry = False
