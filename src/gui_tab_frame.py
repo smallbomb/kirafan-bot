@@ -64,8 +64,8 @@ class Tab_Frame():
     def __crea_stop(self) -> List:
         k = [f'{self.__prefix_key}_crea_craft_stop_', f'{self.__prefix_key}_crea_comm_stop_']
         return [
-            sg.Checkbox('crea craft stop', key=k[0], pad=((12, 5), 0), default=self.quest['crea_stop']['craft'], enable_events=True),  # noqa: E501
-            sg.Checkbox('crea comm stop', key=k[0], pad=((12, 5), 0), default=self.quest['crea_stop']['comm'], enable_events=True)  # noqa: E501
+            sg.Checkbox('crea craft stop', key=k[0], pad=((12, 0), 0), default=self.quest['crea_stop']['craft'], enable_events=True),  # noqa: E501
+            sg.Checkbox('crea comm stop', key=k[1], default=self.quest['crea_stop']['comm'], enable_events=True)
         ]
 
     def __stamina_area(self) -> List:

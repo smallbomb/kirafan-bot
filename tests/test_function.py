@@ -35,12 +35,12 @@ def test_hotkey():
 def test_gui():
     kirafanbot_gui = kirafanbot_GUI()
     tab = kirafanbot_gui.find_tab_by_name('example')
-    testing = {'_0_example_loop_count_setting_': '54', '_0_example_crea_stop_': True, '_0_example_stamina_use_': False,
-               '_0_example_orb_name_': '5566', '_0_example_orb1_use_': False, '_0_example_orb1_wave_N_': 5,
-               '_0_example_orb1_myturn_': 10, '_0_example_orb1_target_': 'B', '_0_example_friend_support_use_': True,
-               '_0_example_friend_support_wave_N_': 5, '_0_example_friend_support_myturn_': 10,
-               '_0_example_friend_support_replace_': 'character_right', '_0_example_wave_total_': 5,
-               '_0_example_wave1_auto_': False, '_0_example_wave1_sp_weight_enable_': True,
+    testing = {'_0_example_loop_count_setting_': '54', '_0_example_crea_craft_stop_': True, '_0_example_crea_comm_stop_': True,
+               '_0_example_stamina_use_': False, '_0_example_orb_name_': '5566', '_0_example_orb1_use_': False,
+               '_0_example_orb1_wave_N_': 5, '_0_example_orb1_myturn_': 10, '_0_example_orb1_target_': 'B',
+               '_0_example_friend_support_use_': True, '_0_example_friend_support_wave_N_': 5,
+               '_0_example_friend_support_myturn_': 10, '_0_example_friend_support_replace_': 'character_right',
+               '_0_example_wave_total_': 5, '_0_example_wave1_auto_': False, '_0_example_wave1_sp_weight_enable_': True,
                '_0_example_wave1_character_left_sp_weight_': 4, '_0_example_wave1_character_middle_sp_weight_': 6,
                '_0_example_wave1_character_right_sp_weight_': 8, '_adb_use_': True}
     for k in testing.keys():
@@ -51,7 +51,8 @@ def test_gui():
     assert kirafanbot_gui.find_tab_by_key('_0_example_orb1_use_') is not None
     assert tab is not None
     assert uData.setting['loop_count'] == 54
-    assert uData.setting['crea_stop'] is True
+    assert uData.setting['crea_stop']['craft'] is True
+    assert uData.setting['crea_stop']['comm'] is True
     assert uData.setting['stamina']['use'] is False
     assert uData.setting['orb']['orb_name'] == '5566'
     assert uData.setting['orb']['1']['use'] is False
