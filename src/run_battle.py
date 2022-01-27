@@ -127,17 +127,7 @@ def _skip_award_result(bot):
             break
         elif kirafan.icons['again'].click():
             break
-        elif (kirafan.crea_craft_stop and kirafan.icons['tojiru'].found(False) and
-              kirafan.icons['crea_craft_occur'].found(False)):
-            logging.info('crea_stop: crea craft mission')
-            bot.stop()
-        elif kirafan.crea_comm_stop and kirafan.icons['tojiru'].found(False) and kirafan.icons['crea_comm_done'].found(False):
-            logging.info('crea_stop: crea communication done')
-            bot.stop()
-        elif kirafan.icons['tojiru'].found(False) and (kirafan.icons['crea_craft_occur'].found(False) or
-                                                       kirafan.icons['crea_comm_done'].found(False) or
-                                                       kirafan.icons['nakayoshido'].found(False)):
-            kirafan.icons['tojiru'].click(adb_update_cache=False)
+        elif _ck_tojiru_window_in_award(bot):
             retry = True
             ct = 8
         elif retry:
@@ -146,6 +136,30 @@ def _skip_award_result(bot):
         else:
             logging.error('icon: again.png not found...')
             bot.stop()
+
+
+@typechecked
+def _ck_tojiru_window_in_award(bot) -> bool:
+    """
+    1. crea comm
+    2. nakayoshido
+    3. crea craft
+    """
+    if kirafan.objects['center_left'].found(False):
+        # nakayoshido or crea craft
+        if kirafan.crea_craft_stop and kirafan.icons['crea_craft_occur'].found(False):
+            logging.info('crea_stop: crea craft mission')
+            bot.stop()
+            return True
+        return kirafan.icons['tojiru'].click(adb_update_cache=False)
+    elif kirafan.icons['crea_comm_done'].found(False):
+        # crea comm
+        if kirafan.crea_comm_stop:
+            logging.info('crea_stop: crea communication done')
+            bot.stop()
+            return True
+        return kirafan.icons['tojiru'].click(adb_update_cache=False)
+    return False
 
 
 def _ck_move_to_next_battle(bot) -> bool:

@@ -68,12 +68,13 @@ class BOT:
 
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png',
-                  'friend_icon.png', 'visit_room.png', 'cork_face.png', 'crea_craft_occur.png',
-                  'crea_comm_done.png']
+                  'friend_icon.png', 'visit_room.png', 'cork_face.png', 'crea_comm_done.png']
         if self.stamina['use']:
             images += ['stamina_title.png']
         if self.loop_count > 0:
             images += ['again.png']
+        if self.crea_craft_stop:
+            images += ['crea_craft_occur.png']
         if self.data['crash_detection'] and not self.data['adb']['use']:
             images += ['kirafan_app_icon.png', 'start_screen.png']
         icons = [Icon(image, self.data['confidence']) for image in images]
