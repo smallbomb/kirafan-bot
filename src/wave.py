@@ -5,6 +5,7 @@ from icon import Icon
 from object import Load_Objects
 from character import Character
 from orb import Orb
+from time import sleep
 
 
 @typechecked
@@ -120,6 +121,7 @@ class Wave:
     def auto_click(self):
         if self.objects['auto_button'].found(False):  # auto_button is blue
             self.__auto_button_multi_check = 0
+            sleep(1)
         else:
             self.__auto_button_multi_check += 1
 
