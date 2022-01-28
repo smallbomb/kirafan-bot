@@ -26,6 +26,7 @@ def wait_until(time: datetime, interrupt: Callable[[], bool], callback: Callable
         now_time = datetime.now()
         wait_s = round((time - now_time).total_seconds(), 1)
         if wait_s < 0:
+            callback('')
             break
 
         if uData.setting['mode'] == 'gui':
@@ -37,7 +38,7 @@ def wait_until(time: datetime, interrupt: Callable[[], bool], callback: Callable
                                   now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
             log_t = now_time
             sleep(wait_s / 2)
-    callback('')
+
 
 @typechecked
 class BOT:

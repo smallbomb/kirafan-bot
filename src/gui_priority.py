@@ -45,7 +45,7 @@ class priority_GUI():
         for s in self.default_list:
             _pad = (((0, 5), 5) if s == 'Cu' else ((0, 100), 5))
             layout += [sg.Text(s, pad=((5, 0), 5))]
-            layout += [sg.Spin([i for i in range(1, 11)], initial_value=self.stamina[s], size=(2, 1), pad=_pad, key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]  # noqa: E501
+            layout += [sg.Spin([i for i in range(1, 11)], readonly=True, initial_value=self.stamina[s], size=(2, 1), pad=_pad, key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]  # noqa: E501
         return layout
 
     def __skill_extend_button(self, text: str) -> List:

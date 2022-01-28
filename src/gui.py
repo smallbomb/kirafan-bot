@@ -3,7 +3,6 @@ Note:
     set debug level 測試
     log window open/hide (main)
     window game region (button?)
-    set_timer frame (main)
     wave hide/unhide
 '''
 import re
@@ -98,6 +97,7 @@ class kirafanbot_GUI():
 
     def check_configure_and_status(self):
         if (self.data['questList']['quest_selector'] != self.tabs[self.window['_tab_group_'].get()].name or
+           self.__original_timer_range != self.data['set_timer']['pause_range'] or
            self.tabs[self.window['_tab_group_'].get()].is_modified()):
             self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
@@ -181,13 +181,13 @@ class kirafanbot_GUI():
 
     def handle_timer_event(self, key: str, value):
         if key == '_timer_use_':
-            for tk in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_', 
+            for tk in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
                        '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
                 self.window[tk].update(disabled=(not value))
             self.data['set_timer']['use'] = value
         elif key == '_timer_show_':
             self.window[key].update(value)
-        elif key in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_', 
+        elif key in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
                      '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
             self.data['set_timer']['pause_range'] = '{}:{}:{}-{}:{}:{}'.format(
                 self.window['_timer_hour_start_'].get(),
@@ -313,9 +313,10 @@ class kirafanbot_GUI():
             return
         if not self.data['adb']['use'] and (self.battle_job.is_alive() or self.visit_room_job.is_alive() or
                                             self.cork_shop_job.is_alive()):
-            self.window['_tips_'].Update('Tips: press hotkey(z+s) to stop bot')
+            self.window['_tips_'].update('Tips: press hotkey(z+s) to stop bot')
         else:
-            self.window['_tips_'].Update('')
+            self.window['_tips_'].update('')
+            self.window['_timer_show_'].update('')
 
     def toggle_other_buttons(self, current_button: str):
         toggle_other_buttons_map = {
@@ -382,17 +383,18 @@ class kirafanbot_GUI():
 
     def __set_timer(self) -> List:
         timer = self.data['set_timer']
-        k = ['_timer_use_', '_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_', 
-             '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_','_timer_show_']
+        self.__original_timer_range = timer['pause_range']
+        k = ['_timer_use_', '_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
+             '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_', '_timer_show_']
         frame_layout = [[
             sg.Checkbox('use', default=timer['use'], key=k[0], enable_events=True),
             sg.Text('pause range(h:m:s):', pad=((5, 0), 5)),
-            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 24)], size=2, key=k[1], initial_value=timer['pause_range'][:2], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
-            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[2], initial_value=timer['pause_range'][3:5], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
-            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[3], initial_value=timer['pause_range'][6:8], disabled=(not timer['use']), enable_events=True), sg.Text('  -  ', pad=(0, 0)),  # noqa: E501
-            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 24)], size=2, key=k[4], initial_value=timer['pause_range'][9:11], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
-            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[5], initial_value=timer['pause_range'][12:14], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
-            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[6], initial_value=timer['pause_range'][15:17], disabled=(not timer['use']), enable_events=True)  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 24)], size=2, key=k[1], readonly=True, initial_value=timer['pause_range'][:2], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[2], readonly=True, initial_value=timer['pause_range'][3:5], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[3], readonly=True, initial_value=timer['pause_range'][6:8], disabled=(not timer['use']), enable_events=True), sg.Text('  -  ', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 24)], size=2, key=k[4], readonly=True, initial_value=timer['pause_range'][9:11], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[5], readonly=True, initial_value=timer['pause_range'][12:14], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[6], readonly=True, initial_value=timer['pause_range'][15:17], disabled=(not timer['use']), enable_events=True)  # noqa: E501
         ]]
         return [sg.Frame('timer', frame_layout), sg.Text('', size=35, key=k[7])]
 
@@ -415,6 +417,7 @@ class kirafanbot_GUI():
 
     def __save(self):
         uData.save_gui_setting()
+        self.__original_timer_range = self.data['set_timer']['pause_range']
         if self.window['_tab_group_'].get():  # is None if event == sg.exit
             self.tabs[self.window['_tab_group_'].get()].update_original_quest()
 
