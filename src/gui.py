@@ -2,7 +2,6 @@
 Note:
     set debug level 測試
     log window open/hide (main)
-    window game region (button?)
     wave hide/unhide
 '''
 import re

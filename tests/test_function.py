@@ -42,7 +42,8 @@ def test_gui():
                '_0_example_friend_support_myturn_': 10, '_0_example_friend_support_replace_': 'character_right',
                '_0_example_wave_total_': 5, '_0_example_wave1_auto_': False, '_0_example_wave1_sp_weight_enable_': True,
                '_0_example_wave1_character_left_sp_weight_': 4, '_0_example_wave1_character_middle_sp_weight_': 6,
-               '_0_example_wave1_character_right_sp_weight_': 8, '_adb_use_': True}
+               '_0_example_wave1_character_right_sp_weight_': 8, '_timer_use_': True, '_adb_use_': True,
+               '_button_ScreenShot_': None}
     for k in testing.keys():
         kirafanbot_gui.handle_tab_event(tab, k, testing)
         kirafanbot_gui.handle_adb_event(k, testing[k])
@@ -69,4 +70,6 @@ def test_gui():
     assert uData.setting['wave']['1']['character_left']['sp_weight'] == 4
     assert uData.setting['wave']['1']['character_middle']['sp_weight'] == 6
     assert uData.setting['wave']['1']['character_right']['sp_weight'] == 8
+    assert uData.setting['set_timer']['use'] is True
     assert uData.setting['adb']['use'] is True
+    assert os.path.exists('screenshot0.png') is True
