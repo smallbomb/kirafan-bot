@@ -36,13 +36,14 @@ class kirafanbot_GUI():
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
         if self.data['adb']['use']:
             self.hotkey.remove_all_hotkey()
-        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb)_.*$')
+        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer)_.*$')
 
     def open(self):
         _map = {
             'tab': lambda event, values: self.handle_tab_event(self.find_tab_by_key(event), event, values),
             'tab_group': lambda event, values: self.handle_tab_group_event(values[event]),
             'adb': lambda event, values: self.handle_adb_event(event, values[event]),
+            'timer': lambda event, values: self.handle_timer_event(event, values[event]),
             'button': lambda event, values: self.handle_button_event(event),
             'update': lambda event, values: self.handle_update_event(event, values[event])
         }
@@ -177,6 +178,25 @@ class kirafanbot_GUI():
                 self.data['adb'][key] = new_serial
                 self.window[f'_adb_{key}_'].update(new_serial)
                 self.__reload()
+
+    def handle_timer_event(self, key: str, value):
+        if key == '_timer_use_':
+            for tk in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_', 
+                       '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
+                self.window[tk].update(disabled=(not value))
+            self.data['set_timer']['use'] = value
+        elif key == '_timer_show_':
+            self.window[key].update(value)
+        elif key in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_', 
+                     '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
+            self.data['set_timer']['pause_range'] = '{}:{}:{}-{}:{}:{}'.format(
+                self.window['_timer_hour_start_'].get(),
+                self.window['_timer_min_start_'].get(),
+                self.window['_timer_sec_start_'].get(),
+                self.window['_timer_hour_end_'].get(),
+                self.window['_timer_min_end_'].get(),
+                self.window['_timer_sec_end_'].get()
+            )
 
     def handle_button_event(self, key: str):
         button_event_map = {
@@ -321,7 +341,7 @@ class kirafanbot_GUI():
     def create_layout(self) -> List:
         return [
             self.__tab_group_area(),
-            self.__adb_area(),
+            self.__adb_area() + self.__set_timer(),
             self.__information_area() +
             self.__button_area()
         ]
@@ -359,6 +379,22 @@ class kirafanbot_GUI():
             sg.FileBrowse(key='_adb_browse_', disabled=not adb['use'])
         ]]
         return [sg.Frame('adb.exe', frame_layout)]
+
+    def __set_timer(self) -> List:
+        timer = self.data['set_timer']
+        k = ['_timer_use_', '_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_', 
+             '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_','_timer_show_']
+        frame_layout = [[
+            sg.Checkbox('use', default=timer['use'], key=k[0], enable_events=True),
+            sg.Text('pause range(h:m:s):', pad=((5, 0), 5)),
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 24)], size=2, key=k[1], initial_value=timer['pause_range'][:2], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[2], initial_value=timer['pause_range'][3:5], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[3], initial_value=timer['pause_range'][6:8], disabled=(not timer['use']), enable_events=True), sg.Text('  -  ', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 24)], size=2, key=k[4], initial_value=timer['pause_range'][9:11], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[5], initial_value=timer['pause_range'][12:14], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
+            sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[6], initial_value=timer['pause_range'][15:17], disabled=(not timer['use']), enable_events=True)  # noqa: E501
+        ]]
+        return [sg.Frame('timer', frame_layout), sg.Text('', size=35, key=k[7])]
 
     def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Cork Shop', 'Exit']

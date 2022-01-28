@@ -16,7 +16,7 @@ def run(window):
                 logging.info(f'wave({kirafan.wave_id}/{kirafan.wave_total}) now...')
                 bot.send_event('_update_wave_id_', kirafan.wave_id)
                 bot.send_event('_update_stop_once_', None)
-            if kirafan.ck_timer_pause():
+            if kirafan.ck_timer_pause(lambda: not bot.is_running(), lambda s: bot.send_event('_timer_show_', s)):
                 continue
             _handle_battle_flows()
         else:

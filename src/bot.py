@@ -11,29 +11,33 @@ from datetime import datetime, timedelta
 
 
 @typechecked
-def wait_until(time: datetime):
+def wait_until(time: datetime, interrupt: Callable[[], bool], callback: Callable[[str], None]):
     def to_hour(s: float) -> int:
         return int(s / 3600) % 24
 
-    def to_min(s: float) -> str:
+    def to_min(s: float) -> int:
         return int(s / 60) % 60
 
     def to_sec(s: float) -> int:
         return int(s) % 60
 
     log_t = datetime.fromtimestamp(0)
-    while True:
+    while not interrupt():
         now_time = datetime.now()
         wait_s = round((time - now_time).total_seconds(), 1)
         if wait_s < 0:
             break
-        if (now_time - log_t).total_seconds() > 60:
+
+        if uData.setting['mode'] == 'gui':
+            callback(f'Countdown: {to_hour(wait_s):02}:{to_min(wait_s):02}:{to_sec(wait_s):02}')
+            sleep(1)
+        elif (now_time - log_t).total_seconds() > 60:
             s = 'Countdown: {:02d}H {:02d}M {:02d}S, Now: {:s}, End of pause: {:s}'
             logging.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
                                   now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
             log_t = now_time
-        sleep(wait_s / 2)
-
+            sleep(wait_s / 2)
+    callback('')
 
 @typechecked
 class BOT:
@@ -168,7 +172,7 @@ class BOT:
                     return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
         return False
 
-    def ck_timer_pause(self) -> bool:
+    def ck_timer_pause(self, interrupt, callback) -> bool:
         def time_in_range(start: datetime, end: datetime, now: datetime) -> bool:
             if start <= end:
                 return start <= now <= end
@@ -182,7 +186,7 @@ class BOT:
             now_time = datetime.now()
             if time_in_range(start_time, end_time, now_time):
                 if self.get_current_wave().is_myTurn():
-                    wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1))
+                    wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1), interrupt, callback)
                 else:
                     self.objects['center'].click(3)  # advoid auto mode
                 return True
