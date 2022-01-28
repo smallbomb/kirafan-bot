@@ -128,6 +128,11 @@ class _Adb():
     def reload(self):
         self.__init__()
 
+    def save_img(self, path: str):
+        self.set_update_cv2_IM_cache_flag()
+        im = self._screenshot()
+        cv2.imwrite(path, im)
+
 
 adb = _Adb()
 

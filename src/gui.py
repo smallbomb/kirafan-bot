@@ -7,12 +7,15 @@ Note:
 '''
 import re
 import PySimpleGUI as sg
+import pyautogui
+from os import path
 from log import logging
 from data import uData
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from thread import Job
 from gui_tab_frame import Tab_Frame
+from window import game_region
 from bot import kirafan
 from adb import adb
 from hotkey import Hotkey
@@ -164,6 +167,7 @@ class kirafanbot_GUI():
             self.window['_adb_serial_'].Widget.config(readonlybackground=('white' if value else 'gray'))
             self.window['_adb_path_'].Widget.config(readonlybackground=('white' if value else 'gray'))
             self.window['_adb_browse_'].update(disabled=(not value))
+            self.window['_button_Game region_'].update(disabled=value)
             self.update_tips_information()
             self.update_adb_bind()
             uData.adb_mode_switch()
@@ -204,6 +208,7 @@ class kirafanbot_GUI():
             'Reset': lambda k: self.bt_reset_event(),
             'Stop once': lambda k: self.bt_stop_once_event(),
             'ScreenShot': lambda k: self.bt_screenshot_event(),
+            'Game region': lambda k: self.bt_game_region_event(),
             'Visit Room': lambda k: self.bt_visit_room_event(k),
             'Cork Shop': lambda k: self.bt_cork_shop_event(k)
         }
@@ -242,12 +247,23 @@ class kirafanbot_GUI():
         logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def bt_screenshot_event(self):
-        self.tabs[self.window['_tab_group_'].get()].is_modified()
-        # print('')
-        # adb.set_update_cv2_IM_cache_flag()
-        # kirafan.objects_found_all_print()
-        # kirafan.icons_found_all_print()
-        # print('')
+        i = 0
+        while True:
+            if not path.exists(f'screenshot{i}.png'):
+                fname = f'screenshot{i}.png'
+                break
+            i += 1
+        if self.data['adb']['use']:
+
+            adb.save_img(fname)
+        else:
+            pyautogui.screenshot(fname, region=uData.setting['game_region'])
+
+    def bt_game_region_event(self):
+        new = list(game_region())
+        if self.data['location'] != new:
+            self.data['location'] = new
+            self.__reload()
 
     def bt_visit_room_event(self, key: str):
         bt_name = self.window[key].GetText()
@@ -321,36 +337,36 @@ class kirafanbot_GUI():
     def toggle_other_buttons(self, current_button: str):
         toggle_other_buttons_map = {
             'Start': lambda: (self.window['_button_Visit Room_'].Update(disabled=True),
-                              self.window['_button_Cork Shop_'].Update(disabled=True)),
+                              self.window['_button_Cork Shop_'].Update(disabled=True),
+                              self.window['_button_Game region_'].Update(disabled=True)),
             'Visit Room': lambda: (self.window['_button_Start_'].Update(disabled=True),
                                    self.window['_button_Stop once_'].Update(disabled=True),
-                                   self.window['_button_Cork Shop_'].Update(disabled=True)),
+                                   self.window['_button_Cork Shop_'].Update(disabled=True),
+                                   self.window['_button_Game region_'].Update(disabled=True)),
             'Cork Shop': lambda: (self.window['_button_Start_'].Update(disabled=True),
                                   self.window['_button_Stop once_'].Update(disabled=True),
-                                  self.window['_button_Visit Room_'].Update(disabled=True)),
+                                  self.window['_button_Visit Room_'].Update(disabled=True),
+                                  self.window['_button_Game region_'].Update(disabled=True)),
             'Stop': lambda: (self.window['_button_Visit Room_'].Update(disabled=False),
-                             self.window['_button_Cork Shop_'].Update(disabled=False)),
+                             self.window['_button_Cork Shop_'].Update(disabled=False),
+                             self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
             'Stop Visit': lambda: (self.window['_button_Start_'].Update(disabled=False),
                                    self.window['_button_Stop once_'].Update(disabled=False),
-                                   self.window['_button_Cork Shop_'].Update(disabled=False)),
+                                   self.window['_button_Cork Shop_'].Update(disabled=False),
+                                   self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
             'Stop Exchange': lambda: (self.window['_button_Start_'].Update(disabled=False),
                                       self.window['_button_Stop once_'].Update(disabled=False),
-                                      self.window['_button_Visit Room_'].Update(disabled=False)),
+                                      self.window['_button_Visit Room_'].Update(disabled=False),
+                                      self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
         }
         toggle_other_buttons_map[current_button]()
 
     def create_layout(self) -> List:
         return [
             self.__tab_group_area(),
-            self.__adb_area() + self.__set_timer(),
-            self.__information_area() +
-            self.__button_area()
-        ]
-
-    def __information_area(self) -> List:
-        return [
-            sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Any', 11, 'bold'), size=17, key='_running_status_'),
-            sg.Text('', size=27, text_color='red2', justification='right', font=('Any', 11, 'bold'), key='_tips_')
+            self.__adb_area() + self.__set_timer_area(),
+            self.__information_area(),
+            [sg.Column([self.__button_area()], element_justification='right', expand_x=True)]
         ]
 
     def __tab_group_area(self) -> List:
@@ -381,7 +397,7 @@ class kirafanbot_GUI():
         ]]
         return [sg.Frame('adb.exe', frame_layout)]
 
-    def __set_timer(self) -> List:
+    def __set_timer_area(self) -> List:
         timer = self.data['set_timer']
         self.__original_timer_range = timer['pause_range']
         k = ['_timer_use_', '_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
@@ -396,12 +412,20 @@ class kirafanbot_GUI():
             sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[5], readonly=True, initial_value=timer['pause_range'][12:14], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
             sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[6], readonly=True, initial_value=timer['pause_range'][15:17], disabled=(not timer['use']), enable_events=True)  # noqa: E501
         ]]
-        return [sg.Frame('timer', frame_layout), sg.Text('', size=35, key=k[7])]
+        return [sg.Frame('timer', frame_layout), sg.Text('', size=35, pad=(5, (25, 5)), key=k[7])]
+
+    def __information_area(self) -> List:
+        return [
+            sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Any', 11, 'bold'), size=30, key='_running_status_'),
+            sg.Column([[sg.Text('', size=30, text_color='red2', justification='right', font=('Any', 11, 'bold'), key='_tips_')
+                        ]], expand_x=True, element_justification='r')
+        ]
 
     def __button_area(self) -> List:
-        button_list = ['Start', 'Reset', 'Stop once', 'ScreenShot', 'Visit Room', 'Cork Shop', 'Exit']
+        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop', 'Game region', 'ScreenShot', 'Exit']
         return [
-            sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None)
+            sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
+                      disabled=True if bt == 'Game region' and self.data['adb']['use'] else False)
             for bt in button_list
         ]
 

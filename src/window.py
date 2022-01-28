@@ -1,4 +1,3 @@
-
 import PySimpleGUI as sg
 from data import uData
 from defined import Coord
