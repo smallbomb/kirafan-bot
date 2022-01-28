@@ -2,7 +2,6 @@
 Note:
     set debug level 測試
     log window open/hide (main)
-    wave hide/unhide
 '''
 import re
 import PySimpleGUI as sg

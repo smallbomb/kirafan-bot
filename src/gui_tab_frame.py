@@ -1,6 +1,7 @@
 import re
 import json
 import PySimpleGUI as sg
+from data import uData
 from copy import deepcopy
 from typeguard import typechecked
 from defined import List, Optional, Dict
@@ -98,21 +99,24 @@ class Tab_Frame():
             sg.InputCombo((1, 2, 3, 5), key=k[1], pad=0, default_value=w['total'], enable_events=True)
         ]]
         for N in map(str, range(1, w['total'] + 1)):
-            k = [f'{self.__prefix_key}_wave{N}_auto_', f'{self.__prefix_key}_wave{N}_sp_weight_enable_']
-            column = [sg.Text(f'wave{N}:'), sg.Checkbox('auto', key=k[0], default=w[N]['auto'], enable_events=True),
-                      sg.Checkbox('sp_weight', key=k[1], default=(w[N]['sp_weight_enable']), disabled=(w[N]['auto']), enable_events=True),  # noqa: E501
-                      sg.Text('character', pad=((5, 0), 5))]
-            for p in pos:
-                k = [f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_',
-                     f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_']
-                column += [
-                  sg.Text(f'{p}:', pad=((5, 2), 5)),
-                  sg.Input(' > '.join(w[N][f'character_{p}']['skill_priority']), pad=((0, 0), 5), size=(29), key=k[0], disabled_readonly_background_color=('gray' if w[N]['auto'] else 'white'), disabled=True),  # noqa: E501
-                  sg.Text('weight:', pad=((1, 2), 5)),
-                  sg.Spin([i for i in range(1, 10)], pad=(((0, 5), 5) if p == 'right' else ((0, 10), 5)), key=k[1], disabled=(w[N]['auto'] or not w[N]['sp_weight_enable']), initial_value=(w[N][f'character_{p}']['sp_weight']), enable_events=True)  # noqa: E501
-                ]
-            frame_layout = frame_layout + [column]
-        return [sg.Frame('wave', frame_layout)]
+            frame_layout += self.__a_wave_row(w, N)
+        return [sg.Frame('wave', frame_layout, key=f'{self.__prefix_key}_wave_frame_')]
+
+    def __a_wave_row(self, w: Dict, N: str) -> List[List]:
+        k = [f'{self.__prefix_key}_wave{N}_auto_', f'{self.__prefix_key}_wave{N}_sp_weight_enable_']
+        column = [sg.Text(f'wave{N}:'), sg.Checkbox('auto', key=k[0], default=w[N]['auto'], enable_events=True),
+                  sg.Checkbox('sp_weight', key=k[1], default=(w[N]['sp_weight_enable']), disabled=(w[N]['auto']), enable_events=True),  # noqa: E501
+                  sg.Text('character', pad=((5, 0), 5))]
+        for p in pos:
+            k = [f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_',
+                 f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_']
+            column += [
+                sg.Text(f'{p}:', pad=((5, 2), 5)),
+                sg.Input(' > '.join(w[N][f'character_{p}']['skill_priority']), pad=((0, 0), 5), size=(29), key=k[0], disabled_readonly_background_color=('gray' if w[N]['auto'] else 'white'), disabled=True),  # noqa: E501
+                sg.Text('weight:', pad=((1, 2), 5)),
+                sg.Spin([i for i in range(1, 10)], pad=(((0, 5), 5) if p == 'right' else ((0, 10), 5)), key=k[1], disabled=(w[N]['auto'] or not w[N]['sp_weight_enable']), initial_value=(w[N][f'character_{p}']['sp_weight']), enable_events=True)  # noqa: E501
+            ]
+        return [column]
 
     def update_all_bind(self, window: sg.Window):
         for N in map(str, range(1, self.quest['wave']['total'] + 1)):
@@ -236,8 +240,22 @@ class Tab_Frame():
             self.quest['wave'][N][f'character_{p}']['skill_priority'] = current_list if current_list != ['Same as Wave1'] else self.quest['wave']['1'][f'character_{p}']['skill_priority']  # noqa: E501
             window[f'{self.__prefix_key}{key}'].Update(' > '.join(self.quest['wave'][N][f'character_{p}']['skill_priority']))
 
-    def w_total_event(self, window: sg.Window, value: int):
-        self.quest['wave']['total'] = value
+    def w_total_event(self, window: sg.Window, new: int):
+        w = self.quest['wave']
+        old, w['total'] = w['total'], new
+
+        if old > new:  # fewer
+            for N in map(str, range(new + 1, old + 1)):
+                window[f'{self.__prefix_key}_wave{N}_auto_'].hide_row()
+                del w[N], window.AllKeysDict[f'{self.__prefix_key}_wave{N}_auto_']
+                del window.AllKeysDict[f'{self.__prefix_key}_wave{N}_sp_weight_enable_']
+                for p in pos:
+                    del window.AllKeysDict[f'{self.__prefix_key}_wave{N}_character_{p}_skill_priority_'],
+                    del window.AllKeysDict[f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_']
+        elif old < new:
+            uData.padding_wave(w)
+            for N in map(str, range(old + 1, new + 1)):
+                window.extend_layout(window[f'{self.__prefix_key}_wave_frame_'], self.__a_wave_row(w, N))
 
     def update_wave_id_status(self, window: sg.Window, w_id: int):
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')
