@@ -59,6 +59,8 @@ class _UserData():
         if len(questlist) <= 1:
             questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': {'comm': False, 'craft': False}, 'wave': {'total': 1}}
             questlist['quest_selector'] = 'new tab 1'
+        elif questlist['quest_selector'] not in questlist:
+            questlist['quest_selector'] = list(questlist.keys())[1]
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
             self.__padding_crea_stop(questlist[q])
             self.__padding_friend_support(questlist[q])
