@@ -47,6 +47,7 @@ def test_gui():
     for k in testing.keys():
         kirafanbot_gui.handle_tab_event(tab, k, testing)
         kirafanbot_gui.handle_adb_event(k, testing[k])
+        kirafanbot_gui.handle_timer_event(k, testing[k])
     uData.reload()
 
     assert kirafanbot_gui.find_tab_by_key('_0_example_orb1_use_') is not None
