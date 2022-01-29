@@ -68,16 +68,16 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 ## GUI mode
 !["gui_image"](./tutorial_img/gui.jpg)  
 
-* crea craft stop: stop kirafan-bot when crea craft mission appeared
-* crea comm stop: stop kirafan-bot when crea comm mission was completed.
-* Start: for battle
-* Reset: reload/reset setting (Note: click 'Start' or 'Reset' button for the changes to take effect)
-* Stop once: stop bot after current battle is completed
-* Visit Room: visit friend room three times. (**First, please move to room**)
-* Cork Shop: auto to exchenge material('強化素材' or '進化素材' only) (**First, please move to cork shop then select material category**)
-* Game region: open a window for emulator location
-* ScreenShot: capture a game region
-* Log: show/hide log area
+* `crea craft stop`: stop kirafan-bot when crea craft mission appeared
+* `crea comm stop`: stop kirafan-bot when crea comm mission was completed.
+* `Start`: for battle
+* `Reset`: reload/reset setting (Note: click 'Start' or 'Reset' button for the changes to take effect)
+* `Stop once`: stop bot after current battle is completed
+* `Visit Room`: visit friend room three times. (**First, please move to room**)
+* `Cork Shop`: auto to exchenge material('強化素材' or '進化素材' only) (**First, please move to cork shop then select material category**)
+* `Game region`: open a window for emulator location
+* `ScreenShot`: capture a game region
+* `Log`: show/hide log area
 
 # Glossary
 !["naming"](./tutorial_img/naming.jpg)
