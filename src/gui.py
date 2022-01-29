@@ -5,7 +5,7 @@ from os import path
 from log import logging, logger, loglevel
 from data import uData
 from typeguard import typechecked
-from defined import List, Optional, Dict
+from defined import List, Optional, Dict, Callable
 from thread import Job
 from gui_tab_frame import Tab_Frame
 from window import game_region
@@ -19,10 +19,11 @@ from run_cork_shop_exchange import run as cork_shop_exchange
 
 @typechecked
 class GUI_Handler(logging.Handler):
-    def __init__(self, window: sg.Window, multilinekey: str):
+    def __init__(self, window: sg.Window, multilinekey: str, winddow_blocked: Callable[[], bool]):
         super().__init__()
         sg.cprint_set_output_destination(window, multilinekey)
         self.formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%m-%d %H:%M')
+        self.window_blocked = winddow_blocked
         self._color_code_re = re.compile(r'(.*?)\x1b\[(\d+)m(.*?)\x1b\[0m(.*)')
         self._color_code_map = {
             '32': 'white on magenta',
@@ -31,6 +32,8 @@ class GUI_Handler(logging.Handler):
         }
 
     def emit(self, record):
+        if self.window_blocked():
+            return
         log = self.formatter.format(record)
         matchresult = self._color_code_re.match(log)
         if matchresult:
@@ -55,7 +58,8 @@ class kirafanbot_GUI():
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
         if self.data['adb']['use']:
             self.hotkey.remove_all_hotkey()
-        logger.addHandler(GUI_Handler(self.window, '_log_box_'))
+        logger.propagate = False
+        logger.addHandler(GUI_Handler(self.window, '_log_box_', self.blocked))
         self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level)_.*$')
 
     def open(self):
@@ -344,8 +348,7 @@ class kirafanbot_GUI():
         self.update_tips_information()
 
     def update_tips_information(self):
-        if not (self.battle_job.is_not_gui_button_stop() and self.visit_room_job.is_not_gui_button_stop() and
-                self.cork_shop_job.is_not_gui_button_stop()):
+        if self.blocked():
             return
         if not self.data['adb']['use'] and (self.battle_job.is_alive() or self.visit_room_job.is_alive() or
                                             self.cork_shop_job.is_alive()):
@@ -476,6 +479,12 @@ class kirafanbot_GUI():
             job.gui_button_stop()
             job.join()
             job.gui_button_stop_finish()
+
+    def blocked(self):
+        if not (self.battle_job.is_not_gui_button_stop() and self.visit_room_job.is_not_gui_button_stop() and
+                self.cork_shop_job.is_not_gui_button_stop()):
+            return True
+        return False
 
     def __save(self):
         uData.save_gui_setting()
