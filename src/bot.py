@@ -162,8 +162,6 @@ class BOT:
         if self.data['crash_detection']:
             if self.__ck_crash_count > 300:  # bot will be stoped.
                 return True
-            if self.__ck_crash_count > 150:
-                self.objects['home_page'].click()
             if self.__ck_crash_count > 100:  # try to move mouse and then click.
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:

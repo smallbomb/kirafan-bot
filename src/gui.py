@@ -79,14 +79,12 @@ class kirafanbot_GUI():
                 self.stop_all_safe()
                 break
 
-            print(f'event={event}, '
-                  f'(value, type)={(values[event], type(values[event])) if event in values else ("none", "none_type")}')
+            # print(f'event={event}, '
+            #       f'(value, type)={(values[event], type(values[event])) if event in values else ("none", "none_type")}')
             matchresult = self._open_re.match(event)
             if matchresult:
                 _cls = 'tab' if matchresult[1].isdigit() else matchresult[1]
                 _map[_cls](event, values)
-            else:
-                print(f'{event} not match')
         self.window.close()
 
     def find_tabskey_by_id(self, id: str) -> Optional[str]:
