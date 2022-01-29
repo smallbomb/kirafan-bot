@@ -36,7 +36,7 @@ class Tab_Frame():
     def __loop_count(self) -> List:
         k = [f'{self.__prefix_key}_loop_count_status_', f'{self.__prefix_key}_loop_count_setting_']
         return [
-            sg.Text(f'loop_count = {self.loop_count_status} of', key=k[0]),
+            sg.Text(f'loop count = {self.loop_count_status} of', key=k[0]),
             sg.Input(self.quest['loop_count'], key=k[1], size=(3, 1), pad=0, enable_events=True)
         ]
 
@@ -261,7 +261,7 @@ class Tab_Frame():
         window[f'{self.__prefix_key}_wave_status_'].Update(f'wave = {w_id} /')
 
     def update_loop_count_status(self, window: sg.Window, loop_count: int):
-        window[f'{self.__prefix_key}_loop_count_status_'].Update(f'loop_count = {loop_count} of')
+        window[f'{self.__prefix_key}_loop_count_status_'].Update(f'loop count = {loop_count} of')
 
     def rename_title(self, window: sg.Window, exclude: List) -> Optional[str]:
         new_title = window[f'{self.__prefix_key}_title_'].get()

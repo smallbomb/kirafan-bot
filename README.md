@@ -4,7 +4,7 @@
 !["Releases-Date"](https://img.shields.io/github/release-date/smallbomb/kirafan-bot.svg?style=plastic)
 
 # Kirafan-bot on emulator
-Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skill, weapon skill, and sp(とっておき) level. It is easy to configure kirafan-bot settings by using GUI. Kirafan Bot is like auto click tool. But, if you want to run bot on background, we also support [adb(Android Debug Bridge)](#support-adb-tool) tool.  
+Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skill, weapon skill, and sp(とっておき) level. It is easy to configure kirafan-bot settings by using GUI. Kirafan-bot is like auto click tool. But, if you want to run bot on background, we also support [adb(Android Debug Bridge)](#support-adb-tool) tool.  
 
 [kirarafantasia遊戲](https://kirarafantasia.com/)機器人。可以自動訓練技能、武器技能、珍藏(とっておき)，可以簡單地透過圖形化介面去設定腳本。如果想要在背景執行kirafan-bot，也支援[adb(Android Debug Bridge)](#support-adb-tool)工具。
 
@@ -48,8 +48,9 @@ py src
 
 # Kirafan-bot mode
 1. Hotkey mode
-2. GUI mode (**default**)  
-please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you want to change mode.
+2. GUI mode (**default**)
+
+please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you want to change kirafan-bot mode.
 
 ## Hotkey mode
 * z+1~z+9 (record position and rgb)
@@ -67,13 +68,15 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 ## GUI mode
 !["gui_image"](./tutorial_img/gui.jpg)  
 
+* crea craft stop: stop kirafan-bot when crea craft mission appeared
+* crea comm stop: stop kirafan-bot when crea comm mission was completed.
 * Start: for battle
 * Reset: reload/reset setting (Note: click 'Start' or 'Reset' button for the changes to take effect)
 * Stop once: stop bot after current battle is completed
-* Visit Room: visit friend room three times. (**Need to move to kirara room first**)
-* Cork Shop: auto to exchenge material('強化素材' or '進化素材' only) (**Need to move to cork shop first**)
+* Visit Room: visit friend room three times. (**First, please move to room**)
+* Cork Shop: auto to exchenge material('強化素材' or '進化素材' only) (**First, please move to cork shop then select material category**)
 * Game region: open a window for emulator location
-* ScreenShot: capture game region image
+* ScreenShot: capture a game region
 * Log: show/hide log area
 
 # Glossary
