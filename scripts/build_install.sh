@@ -5,6 +5,6 @@
 set -ex
 
 python -m pip install pyinstaller
-pyinstaller -F src/main.py
+pyinstaller -F src/main.py --noconsole
 mv ./dist/main* ./kirafan-bot.exe
 tar cvf kirafan-bot.tar kirafan-bot.exe bot_setting.json advanced_setting.jsonc img_1280x720 LICENSE
