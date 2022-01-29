@@ -23,10 +23,10 @@ class GUI_Handler(logging.Handler):
         super().__init__()
         sg.cprint_set_output_destination(window, multilinekey)
         self.formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%m-%d %H:%M')
-        self._color_code_re = re.compile(r'(.*?)\x1b\[(\d+)m(.*?)\x1b\[0m(.*?)')
+        self._color_code_re = re.compile(r'(.*?)\x1b\[(\d+)m(.*?)\x1b\[0m(.*)')
         self._color_code_map = {
             '32': 'white on magenta',
-            '35': 'white on deep sky blue',
+            '35': 'white on purple',
             '41': 'white on red'
         }
 
@@ -274,10 +274,10 @@ class kirafanbot_GUI():
                 break
             i += 1
         if self.data['adb']['use']:
-
             adb.save_img(fname)
         else:
             pyautogui.screenshot(fname, region=uData.setting['game_region'])
+        logger.info(f'screenshot file: \x1b[35m{fname}\x1b[0m')
 
     def bt_game_region_event(self):
         new = list(game_region())

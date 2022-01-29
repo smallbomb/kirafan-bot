@@ -120,6 +120,7 @@ class BOT:
         return self.waves[str(self.wave_id)]
 
     def use_stamina(self, interrupt: Callable[[], bool]) -> bool:
+        logger.debug('use stamina start...')
         for item_count in self.stamina['priority']:
             item, count = (item_count.split(":") + ['1'])[:2]
             if self.objects[f'stamina_{item}'].found(False) and int(count) > 0:
