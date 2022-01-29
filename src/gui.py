@@ -1,12 +1,8 @@
-'''
-Note:
-    log window open/hide (main)
-'''
 import re
 import PySimpleGUI as sg
 import pyautogui
 from os import path
-from log import logger, loglevel
+from log import logging, logger, loglevel
 from data import uData
 from typeguard import typechecked
 from defined import List, Optional, Dict
@@ -19,6 +15,30 @@ from hotkey import Hotkey
 from run_battle import run as battle
 from run_visit_friend_room import run as visit_friend_room
 from run_cork_shop_exchange import run as cork_shop_exchange
+
+
+@typechecked
+class GUI_Handler(logging.Handler):
+    def __init__(self, window: sg.Window, multilinekey: str):
+        super().__init__()
+        sg.cprint_set_output_destination(window, multilinekey)
+        self.formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%m-%d %H:%M')
+        self._color_code_re = re.compile(r'(.*?)\x1b\[(\d+)m(.*?)\x1b\[0m(.*?)')
+        self._color_code_map = {
+            '32': 'white on magenta',
+            '35': 'white on deep sky blue',
+            '41': 'white on red'
+        }
+
+    def emit(self, record):
+        log = self.formatter.format(record)
+        matchresult = self._color_code_re.match(log)
+        if matchresult:
+            sg.cprint(matchresult[1], end='')
+            sg.cprint(matchresult[3], end='', c=self._color_code_map[matchresult[2]])
+            sg.cprint(matchresult[4])
+        else:
+            sg.cprint(log)
 
 
 @typechecked
@@ -35,6 +55,7 @@ class kirafanbot_GUI():
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
         if self.data['adb']['use']:
             self.hotkey.remove_all_hotkey()
+        logger.addHandler(GUI_Handler(self.window, '_log_box_'))
         self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level)_.*$')
 
     def open(self):
@@ -103,7 +124,7 @@ class kirafanbot_GUI():
             self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
         logger.info(f'kirafan region = {list(kirafan.region)}')
-        logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
+        logger.info(f'kirafan adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
         logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     def handle_tab_event(self, tab: Tab_Frame, event: str, values: Optional[Dict]):
@@ -423,13 +444,13 @@ class kirafanbot_GUI():
 
     def __log_level_area(self) -> List:
         level_row = [
-            sg.Text('log level:', pad=((5, 0), 5)),
+            sg.Text('Log level:', pad=((5, 0), 5)),
             sg.InputCombo([e.name for e in loglevel], default_value=self.data['loglevel'].upper(),
                           key='_log_level_', enable_events=True)
         ]
         logbox_row = [
             sg.Column([
-                [sg.Multiline(size=(165, 5), key='_log_box_', pad=(0, 0))]
+                [sg.Multiline(size=(165, 7), key='_log_box_', pad=(0, 0))]
             ], element_justification='center', expand_x=True, pad=(0, 0))
         ]
         return [sg.pin(

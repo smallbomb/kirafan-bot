@@ -5,6 +5,7 @@ from shutil import which
 from subprocess import Popen, PIPE
 from typeguard import typechecked
 from time import sleep
+from log import logger
 from defined import RGB, Coord, Optional
 from data import uData
 
@@ -35,7 +36,7 @@ class _Adb():
             if uData.setting['mode'].lower() == 'hotkey':
                 raise FileNotFoundError(adb_path)
             else:
-                print(f'Warnning: {adb_path} does not exist')
+                logger.warning(f'{adb_path} does not exist')
 
     def _screenshot(self, grayscale: bool = False):
         if self.__has_screenshot_IM:

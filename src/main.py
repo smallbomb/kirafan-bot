@@ -25,7 +25,7 @@ def main():
             logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
             logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
             check_basic_information()
-            print('please press \'f3\' button to exit...')
+            logger.info('please press \'f3\' button to exit...')
             hotkey.wait('f3')
             hotkey.safe_exit()
         except KeyboardInterrupt:
