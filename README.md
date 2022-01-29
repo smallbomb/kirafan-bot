@@ -4,7 +4,7 @@
 !["Releases-Date"](https://img.shields.io/github/release-date/smallbomb/kirafan-bot.svg?style=plastic)
 
 # Kirafan-bot on emulator
-Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skill, weapon skill, and sp(とっておき) level. It is easy to configure by using GUI. Kirafan Bot is like auto click tool. But, if you want to run bot on background, we also support [adb(Android Debug Bridge)](#support-adb-tool) tool.  
+Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic training skill, weapon skill, and sp(とっておき) level. It is easy to configure kirafan-bot settings by using GUI. Kirafan Bot is like auto click tool. But, if you want to run bot on background, we also support [adb(Android Debug Bridge)](#support-adb-tool) tool.  
 
 [kirarafantasia遊戲](https://kirarafantasia.com/)機器人。可以自動訓練技能、武器技能、珍藏(とっておき)，可以簡單地透過圖形化介面去設定腳本。如果想要在背景執行kirafan-bot，也支援[adb(Android Debug Bridge)](#support-adb-tool)工具。
 
