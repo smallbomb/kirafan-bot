@@ -1,13 +1,12 @@
 '''
 Note:
-    set debug level 測試
     log window open/hide (main)
 '''
 import re
 import PySimpleGUI as sg
 import pyautogui
 from os import path
-from log import logger
+from log import logger, loglevel
 from data import uData
 from typeguard import typechecked
 from defined import List, Optional, Dict
@@ -36,7 +35,7 @@ class kirafanbot_GUI():
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
         if self.data['adb']['use']:
             self.hotkey.remove_all_hotkey()
-        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer)_.*$')
+        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level)_.*$')
 
     def open(self):
         _map = {
@@ -44,6 +43,7 @@ class kirafanbot_GUI():
             'tab_group': lambda event, values: self.handle_tab_group_event(values[event]),
             'adb': lambda event, values: self.handle_adb_event(event, values[event]),
             'timer': lambda event, values: self.handle_timer_event(event, values[event]),
+            'log_level': lambda event, values: (self.data.update({'loglevel': values[event]}), logger.setLevel(values[event])),
             'button': lambda event, values: self.handle_button_event(event),
             'update': lambda event, values: self.handle_update_event(event, values[event])
         }
@@ -205,10 +205,11 @@ class kirafanbot_GUI():
             'Start': lambda k: self.bt_start_event(k),
             'Reset': lambda k: self.bt_reset_event(),
             'Stop once': lambda k: self.bt_stop_once_event(),
-            'ScreenShot': lambda k: self.bt_screenshot_event(),
-            'Game region': lambda k: self.bt_game_region_event(),
             'Visit Room': lambda k: self.bt_visit_room_event(k),
-            'Cork Shop': lambda k: self.bt_cork_shop_event(k)
+            'Cork Shop': lambda k: self.bt_cork_shop_event(k),
+            'Game region': lambda k: self.bt_game_region_event(),
+            'ScreenShot': lambda k: self.bt_screenshot_event(),
+            'Log': lambda k: self.window['_log_area_'].update(visible=(not self.window['_log_area_'].visible)),
         }
         button_str = key[len('_button_'):-1]
         button_event_map[button_str](key)
@@ -364,7 +365,8 @@ class kirafanbot_GUI():
             self.__tab_group_area(),
             self.__adb_area() + self.__set_timer_area(),
             self.__information_area(),
-            [sg.Column([self.__button_area()], element_justification='right', expand_x=True)]
+            self.__button_area(),
+            self.__log_level_area()
         ]
 
     def __tab_group_area(self) -> List:
@@ -419,13 +421,30 @@ class kirafanbot_GUI():
                         ]], expand_x=True, element_justification='r')
         ]
 
-    def __button_area(self) -> List:
-        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop', 'Game region', 'ScreenShot', 'Exit']
-        return [
-            sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
-                      disabled=True if bt == 'Game region' and self.data['adb']['use'] else False)
-            for bt in button_list
+    def __log_level_area(self) -> List:
+        level_row = [
+            sg.Text('log level:', pad=((5, 0), 5)),
+            sg.InputCombo([e.name for e in loglevel], default_value=self.data['loglevel'].upper(),
+                          key='_log_level_', enable_events=True)
         ]
+        logbox_row = [
+            sg.Column([
+                [sg.Multiline(size=(165, 5), key='_log_box_', pad=(0, 0))]
+            ], element_justification='center', expand_x=True, pad=(0, 0))
+        ]
+        return [sg.pin(
+            sg.Column([
+                level_row,
+                logbox_row
+            ], expand_x=True, k='_log_area_', visible=False)
+        )]
+
+    def __button_area(self) -> List:
+        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop', 'Game region', 'ScreenShot', 'Log', 'Exit']
+        return [sg.Column([
+            [sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
+                       disabled=True if bt == 'Game region' and self.data['adb']['use'] else False) for bt in button_list]
+        ], element_justification='right', expand_x=True)]
 
     def stop_all_safe(self):
         self.stop_safe(self.battle_job)

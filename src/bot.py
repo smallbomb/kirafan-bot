@@ -35,7 +35,7 @@ def wait_until(time: datetime, interrupt: Callable[[], bool], callback: Callable
         elif (now_time - log_t).total_seconds() > 60:
             s = 'Countdown: {:02d}H {:02d}M {:02d}S, Now: {:s}, End of pause: {:s}'
             logger.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
-                                  now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
+                                 now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
             log_t = now_time
             sleep(wait_s / 2)
 
