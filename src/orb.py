@@ -1,4 +1,4 @@
-import logging
+from log import logger
 from defined import Dict
 from data import uData
 from typeguard import typechecked
@@ -34,12 +34,12 @@ class Orb:
             return False
 
         while not self.__slide_out_orb_list():
-            logging.info('slide out orb list failed')
+            logger.info('slide out orb list failed')
 
         if self.__use_orb():
-            logging.info(f'orb action: use orb0{self.option} success')
+            logger.info(f'orb action: use orb0{self.option} success')
         else:
-            logging.info(f'orb action: use orb0{self.option} failed')
+            logger.info(f'orb action: use orb0{self.option} failed')
         self.use = False
         return True
 

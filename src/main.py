@@ -1,4 +1,4 @@
-from log import logging
+from log import logger
 from data import uData
 from bot import kirafan
 from hotkey import Hotkey
@@ -20,10 +20,10 @@ def main():
     elif uData.setting['mode'].lower() == 'hotkey':
         try:
             hotkey = Hotkey('rslmptcoxk')
-            logging.info("hotkey setting finish...")
-            logging.info(f'kirafan region = {list(kirafan.region)}')
-            logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
-            logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+            logger.info("hotkey setting finish...")
+            logger.info(f'kirafan region = {list(kirafan.region)}')
+            logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
+            logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
             check_basic_information()
             print('please press \'f3\' button to exit...')
             hotkey.wait('f3')

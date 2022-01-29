@@ -1,6 +1,6 @@
-import logging
 import pyautogui
 import threading
+from log import logger
 from sys import stdout
 from typeguard import typechecked
 from defined import Coord
@@ -26,7 +26,7 @@ class Position:
         self.rgb = pyautogui.screenshot().getpixel(self.coord)
         self.ratio = ((x - x0) / width, (y - y0) / height)
         msg = ('\n' if preNewline else '') + f'recode position{self.id:02}'
-        logging.info(msg)
+        logger.info(msg)
         self.__init = False
 
 
@@ -42,7 +42,7 @@ class Shot:
         c1 = self.top_left
         c2 = self.bottom_right
         left, top, width, height = (c1[0], c1[1], c2[0] - c1[0], c2[1] - c1[1])
-        logging.info(f'screenshot save {self.name} picture file to {self.dpath}')
+        logger.info(f'screenshot save {self.name} picture file to {self.dpath}')
         pyautogui.screenshot(self.dpath, region=(left, top, width, height))
 
 

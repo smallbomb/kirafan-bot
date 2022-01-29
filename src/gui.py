@@ -7,7 +7,7 @@ import re
 import PySimpleGUI as sg
 import pyautogui
 from os import path
-from log import logging
+from log import logger
 from data import uData
 from typeguard import typechecked
 from defined import List, Optional, Dict
@@ -102,9 +102,9 @@ class kirafanbot_GUI():
            self.tabs[self.window['_tab_group_'].get()].is_modified()):
             self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
-        logging.info(f'kirafan region = {list(kirafan.region)}')
-        logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
-        logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+        logger.info(f'kirafan region = {list(kirafan.region)}')
+        logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
+        logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     def handle_tab_event(self, tab: Tab_Frame, event: str, values: Optional[Dict]):
         if event.endswith('_rename_'):
@@ -218,11 +218,11 @@ class kirafanbot_GUI():
         if bt_name == 'Start':
             self.check_configure_and_status()
             if not self.battle_job.is_alive():
-                logging.info('press start now!')
+                logger.info('press start now!')
                 self.battle_job = Job(target=battle, args=(self.window,))
                 self.battle_job.start()
             elif self.battle_job.is_pausing():
-                logging.info('press resume now!')
+                logger.info('press resume now!')
                 self.battle_job.resume()
             self.update_button_status(key, 'Stop')
         elif bt_name == 'Stop':
@@ -237,12 +237,12 @@ class kirafanbot_GUI():
             self.__reload()
         self.update_stop_once_status()
         self.tabs[self.window['_tab_group_'].get()].reset(self.window)
-        logging.info(f'reset quest: {self.tabs[self.window["_tab_group_"].get()].name} finish')
+        logger.info(f'reset quest: {self.tabs[self.window["_tab_group_"].get()].name} finish')
 
     def bt_stop_once_event(self):
         kirafan.stop_once = not kirafan.stop_once
         self.update_stop_once_status()
-        logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
+        logger.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def bt_screenshot_event(self):
         i = 0
@@ -447,4 +447,4 @@ class kirafanbot_GUI():
         uData.reload()
         adb.reload()
         kirafan.reload()
-        logging.info('kirafan-bot reload configure')
+        logger.info('kirafan-bot reload configure')

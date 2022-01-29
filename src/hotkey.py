@@ -1,5 +1,5 @@
-import logging
 import keyboard
+from log import logger
 from time import sleep
 from typeguard import typechecked
 from defined import Tuple
@@ -46,11 +46,11 @@ class Hotkey:
 
     def __cmd_r(self):
         if not self.battle_job.is_alive():
-            logging.info('press start now!')
+            logger.info('press start now!')
             self.battle_job = Job(target=battle, args=(fake_window,))
             self.battle_job.start()
         elif self.battle_job.is_pausing():
-            logging.info('press resume now!')
+            logger.info('press resume now!')
             self.battle_job.resume()
 
     def __cmd_s(self):
@@ -62,7 +62,7 @@ class Hotkey:
             elif self.window['_button_Cork Shop_'].GetText() == 'Stop Exchange':
                 self.window.write_event_value('_button_Cork Shop_', None)
         elif self.battle_job.is_alive():
-            logging.info('press stop now!, Please wait for a while')
+            logger.info('press stop now!, Please wait for a while')
             self.battle_job.stop()
             self.battle_job.join()
 
@@ -70,17 +70,17 @@ class Hotkey:
         uData.reload()
         adb.reload()
         kirafan.reload()
-        logging.info(f'kirafan region = {list(kirafan.region)}')
-        logging.info('reload setting.json finish')
-        logging.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
-        logging.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+        logger.info(f'kirafan region = {list(kirafan.region)}')
+        logger.info('reload setting.json finish')
+        logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
+        logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     def __cmd_k(self):
         uData.adb_mode_switch()
         adb.reload()
         kirafan.adb_mode_switch()
-        logging.info(f'kirafan region = {list(kirafan.region)}')
-        logging.info(f'kirafan adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
+        logger.info(f'kirafan region = {list(kirafan.region)}')
+        logger.info(f'kirafan adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
         tuple_files = kirafan.miss_icon_files()
         if tuple_files:
             print('miss icon files:')
@@ -129,7 +129,7 @@ class Hotkey:
 
     def __cmd_o(self):
         kirafan.stop_once = not kirafan.stop_once
-        logging.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
+        logger.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def __cmd_x(self):
         old = uData.setting['game_region'][:2]

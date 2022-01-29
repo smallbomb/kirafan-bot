@@ -1,4 +1,4 @@
-import logging
+from log import logger
 from typeguard import typechecked
 from defined import Tuple, Dict, Callable
 from data import uData
@@ -34,7 +34,7 @@ def wait_until(time: datetime, interrupt: Callable[[], bool], callback: Callable
             sleep(1)
         elif (now_time - log_t).total_seconds() > 60:
             s = 'Countdown: {:02d}H {:02d}M {:02d}S, Now: {:s}, End of pause: {:s}'
-            logging.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
+            logger.info(s.format(to_hour(wait_s), to_min(wait_s), to_sec(wait_s),
                                   now_time.strftime("%H:%M:%S"), time.strftime("%H:%M:%S")))
             log_t = now_time
             sleep(wait_s / 2)
@@ -127,11 +127,11 @@ class BOT:
                 if int(count) > 1:
                     self.objects['stamina_add'].click(int(count) - 1)
                 if interrupt():
-                    logging.debug('use_stamina(): interrupt')
+                    logger.debug('use_stamina(): interrupt')
                     return False
                 self.objects['stamina_hai'].click(8)
                 return True
-        logging.info('insufficient stamina items.')
+        logger.info('insufficient stamina items.')
         return False
 
     def miss_icon_files(self) -> Tuple:
@@ -200,7 +200,7 @@ class BOT:
             self.objects['shop_count_bar_start'].swipe(*self.objects['shop_count_bar_end'].coord, 1)
             self.objects['shop_count_confirm'].click(2, 0.5)
             if interrupt():
-                logging.debug('cork_shop_exchange_once(): interrupt')
+                logger.debug('cork_shop_exchange_once(): interrupt')
                 return False
             elif self.icons['hai'].scan(3):
                 self.icons['hai'].click(2, adb_update_cache=False)
@@ -208,9 +208,9 @@ class BOT:
                     self.icons['ok'].click(adb_update_cache=False)
                     sleep(1)
                     return True
-            logging.error('unknown error')
+            logger.error('unknown error')
         else:
-            logging.info('insufficient material...')
+            logger.info('insufficient material...')
         return False
 
     def reload(self):
