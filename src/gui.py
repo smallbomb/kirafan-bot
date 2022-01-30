@@ -439,7 +439,7 @@ class kirafanbot_GUI():
         ]
         logbox_row = [
             sg.Column([
-                [sg.Multiline(size=(165, 7), key='_log_box_', pad=(0, 0))]
+                [sg.Multiline(size=(165, 10), key='_log_box_', pad=(0, 0))]
             ], element_justification='center', expand_x=True, pad=(0, 0))
         ]
         return [sg.pin(
