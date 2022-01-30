@@ -4,7 +4,7 @@
   "region_width_height": [1280, 720], // for PyAutoGUI. (Do not use adb.exe)
   "aspect_ratio": "16:9",
   "confidence": 0.92, // confidence level for image matching
-  "crash_detection": false, // Note: if true AND don't use adb.
+  "crash_detection": false, // Note: if true AND don't use adb tool.
                             //       please screenshot 'kirafan_app_icon.png' image from your emulator
                             //       and save to img_dir folder.
   "ratio": {
