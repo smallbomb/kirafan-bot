@@ -112,9 +112,9 @@ class Tab_Frame():
                  f'{self.__prefix_key}_wave{N}_character_{p}_sp_weight_']
             column += [
                 sg.Text(f'{p}:', pad=((5, 2), 5)),
-                sg.Input(' > '.join(w[N][f'character_{p}']['skill_priority']), pad=((0, 0), 5), size=(29), key=k[0], disabled_readonly_background_color=('gray' if w[N]['auto'] else 'white'), disabled=True),  # noqa: E501
+                sg.Input(' > '.join(w[N][f'character_{p}']['skill_priority']), pad=((0, 0), 5), size=29, key=k[0], disabled_readonly_background_color=('gray' if w[N]['auto'] else 'white'), disabled=True),  # noqa: E501
                 sg.Text('weight:', pad=((1, 2), 5)),
-                sg.Spin([i for i in range(1, 10)], pad=(((0, 5), 5) if p == 'right' else ((0, 10), 5)), key=k[1], disabled=(w[N]['auto'] or not w[N]['sp_weight_enable']), initial_value=(w[N][f'character_{p}']['sp_weight']), enable_events=True)  # noqa: E501
+                sg.Spin([i for i in range(1, 10)], pad=(((0, 5), 5) if p == 'right' else ((0, 10), 5)), size=1, key=k[1], disabled=(w[N]['auto'] or not w[N]['sp_weight_enable']), initial_value=(w[N][f'character_{p}']['sp_weight']), enable_events=True)  # noqa: E501
             ]
         return [column]
 

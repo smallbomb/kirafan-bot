@@ -1,6 +1,12 @@
 {
   "loglevel": "info",
   "location": [0, 40],
+  "sleep": {
+    "click": 0.2,
+    "sp": 7,
+    "loading": 9,
+    "wave_transitions": 2
+  },
   "adb": {
     "use": false,
     "path": "C:\\path\\adb.exe",

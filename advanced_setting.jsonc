@@ -3,16 +3,10 @@
   "img_dir": "img_1280x720", // default to support 1280x720 resuolution
   "region_width_height": [1280, 720], // for PyAutoGUI. (Do not use adb.exe)
   "aspect_ratio": "16:9",
-  "confidence": 0.92,
-  "crash_detection": false, // Note: if true AND adb use setting was set false.
+  "confidence": 0.92, // confidence level for image matching
+  "crash_detection": false, // Note: if true AND don't use adb.
                             //       please screenshot 'kirafan_app_icon.png' image from your emulator
                             //       and save to img_dir folder.
-  "sleep": {                // delay time(second)
-    "click": 0.2,           // mouse click
-    "sp": 7,                // とっておき animation
-    "loading": 9,           // lodding time (has kuromo icon) 
-    "wave_transitions": 2
-  },
   "ratio": {
     "16:9": {
       "focus_ch_left": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},

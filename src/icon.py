@@ -28,9 +28,6 @@ class Icon:
         return path.isfile(self.path)
 
     def get_center(self, adb_update_cache: bool) -> Optional[Coord]:
-        """
-        return None or Coord(x,y)
-        """
         if not self.file_exist():
             return None
 

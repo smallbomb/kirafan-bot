@@ -58,16 +58,17 @@ class kirafanbot_GUI():
             self.hotkey.remove_all_hotkey()
         logger.propagate = False
         logger.addHandler(GUI_Handler(self.window, '_log_box_', self.blocked))
-        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level)_.*$')
+        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level|sleep)_.*$')
 
     def open(self):
         _map = {
             'tab': lambda event, values: self.handle_tab_event(self.find_tab_by_key(event), event, values),
             'tab_group': lambda event, values: self.handle_tab_group_event(values[event]),
-            'adb': lambda event, values: self.handle_adb_event(event, values[event]),
+            'sleep': lambda event, values: self.handle_sleep_event(event, values[event]),
             'timer': lambda event, values: self.handle_timer_event(event, values[event]),
-            'log_level': lambda event, values: (self.data.update({'loglevel': values[event]}), logger.setLevel(values[event])),
+            'adb': lambda event, values: self.handle_adb_event(event, values[event]),
             'button': lambda event, values: self.handle_button_event(event),
+            'log_level': lambda event, values: (self.data.update({'loglevel': values[event]}), logger.setLevel(values[event])),
             'update': lambda event, values: self.handle_update_event(event, values[event])
         }
         while True:
@@ -175,6 +176,32 @@ class kirafanbot_GUI():
             self.handle_tab_event(tab, '_rename_', None)
             self.window['_tab_group_'].add_tab(self.__tab_plus()[0])
 
+    def handle_sleep_event(self, key: str, value: str):
+        key = key[7:-1]
+        if value.replace('.', '', 1).isdigit():
+            self.data[key] = float(value)
+        elif value == '':
+            self.data[key] = 0
+
+    def handle_timer_event(self, key: str, value):
+        if key == '_timer_use_':
+            for tk in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
+                       '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
+                self.window[tk].update(disabled=(not value))
+            self.data['set_timer']['use'] = value
+        elif key == '_timer_countdown_':
+            self.window[key].update(value)
+        elif key in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
+                     '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
+            self.data['set_timer']['pause_range'] = '{}:{}:{}-{}:{}:{}'.format(
+                self.window['_timer_hour_start_'].get(),
+                self.window['_timer_min_start_'].get(),
+                self.window['_timer_sec_start_'].get(),
+                self.window['_timer_hour_end_'].get(),
+                self.window['_timer_min_end_'].get(),
+                self.window['_timer_sec_end_'].get()
+            )
+
     def handle_adb_event(self, key: str, value):
         key = key[5:-1]
         if key == 'use':
@@ -202,25 +229,6 @@ class kirafanbot_GUI():
                 self.window[f'_adb_{key}_'].update(new_serial)
                 self.__reload()
 
-    def handle_timer_event(self, key: str, value):
-        if key == '_timer_use_':
-            for tk in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
-                       '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
-                self.window[tk].update(disabled=(not value))
-            self.data['set_timer']['use'] = value
-        elif key == '_timer_show_':
-            self.window[key].update(value)
-        elif key in ['_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
-                     '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']:
-            self.data['set_timer']['pause_range'] = '{}:{}:{}-{}:{}:{}'.format(
-                self.window['_timer_hour_start_'].get(),
-                self.window['_timer_min_start_'].get(),
-                self.window['_timer_sec_start_'].get(),
-                self.window['_timer_hour_end_'].get(),
-                self.window['_timer_min_end_'].get(),
-                self.window['_timer_sec_end_'].get()
-            )
-
     def handle_button_event(self, key: str):
         button_event_map = {
             'Start': lambda k: self.bt_start_event(k),
@@ -231,6 +239,7 @@ class kirafanbot_GUI():
             'Game region': lambda k: self.bt_game_region_event(),
             'ScreenShot': lambda k: self.bt_screenshot_event(),
             'Log': lambda k: self.window['_log_area_'].update(visible=(not self.window['_log_area_'].visible)),
+            'More settings': lambda k: self.window['_more_settings_area_'].update(visible=(not self.window['_more_settings_area_'].visible)),
         }
         button_str = key[len('_button_'):-1]
         button_event_map[button_str](key)
@@ -341,7 +350,7 @@ class kirafanbot_GUI():
             self.window['_tips_'].update('Tips: press hotkey(z+s) to stop bot')
         else:
             self.window['_tips_'].update('')
-            self.window['_timer_show_'].update('')
+            self.window['_timer_countdown_'].update('')
 
     def toggle_other_buttons(self, current_button: str):
         toggle_other_buttons_map = {
@@ -373,7 +382,7 @@ class kirafanbot_GUI():
     def create_layout(self) -> List:
         return [
             self.__tab_group_area(),
-            self.__adb_area() + self.__set_timer_area(),
+            self.__more_settings_area(),
             self.__information_area(),
             self.__button_area(),
             self.__log_level_area()
@@ -395,23 +404,34 @@ class kirafanbot_GUI():
         self.next_id = str(int(self.next_id) + 1)
         return [sg.Tab(tab.name, tab.create_layout(), key=tab.id)]
 
-    def __adb_area(self) -> List:
-        adb = self.data['adb']
-        frame_layout = [[
-            sg.Checkbox('use', default=adb['use'], key='_adb_use_', enable_events=True),
-            sg.Text('serial:', pad=((5, 0), 5)),
-            sg.Input(adb['serial'], key='_adb_serial_', size=13, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
-            sg.Text('path:', pad=((5, 0), 5)),
-            sg.Input(adb['path'], key='_adb_path_', size=30, enable_events=True, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
-            sg.FileBrowse(key='_adb_browse_', disabled=not adb['use'])
+    def __more_settings_area(self) -> List:
+        return [sg.pin(
+            sg.Column([
+                self.__sleep_area() + self.__set_timer_area(),
+                self.__adb_area()
+            ], k='_more_settings_area_', visible=False)
+        )]
+
+    def __sleep_area(self) -> List:
+        delay = self.data['sleep']
+        k = ['_sleep_click_', '_sleep_sp_', '_sleep_loadding_', '_sleep_wave_transitions_']
+        layout = [[
+            sg.Text('click:', pad=((5, 0), 5)),
+            sg.Input(delay['click'], size=3, pad=((0, 10), 5), key=k[0], enable_events=True),
+            sg.Text('sp:', pad=((5, 0), 5)),
+            sg.Input(delay['sp'], size=3, pad=((0, 10), 5), key=k[1], enable_events=True),
+            sg.Text('loading:', pad=((5, 0), 5)),
+            sg.Input(delay['loading'], size=3, pad=((0, 10), 5), key=k[2], enable_events=True),
+            sg.Text('wave transition:', pad=((5, 0), 5)),
+            sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True)
         ]]
-        return [sg.Frame('adb.exe', frame_layout)]
+        return [sg.Frame('delay (s)', layout, pad=((0, 5), 5), size=(500, 70))]
 
     def __set_timer_area(self) -> List:
         timer = self.data['set_timer']
         self.__original_timer_range = timer['pause_range']
         k = ['_timer_use_', '_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
-             '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_', '_timer_show_']
+             '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']
         frame_layout = [[
             sg.Checkbox('use', default=timer['use'], key=k[0], enable_events=True),
             sg.Text('pause range(h:m:s):', pad=((5, 0), 5)),
@@ -422,14 +442,35 @@ class kirafanbot_GUI():
             sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[5], readonly=True, initial_value=timer['pause_range'][12:14], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
             sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[6], readonly=True, initial_value=timer['pause_range'][15:17], disabled=(not timer['use']), enable_events=True)  # noqa: E501
         ]]
-        return [sg.Frame('timer', frame_layout), sg.Text('', size=35, pad=(5, (25, 5)), key=k[7])]
+        return [sg.Frame('timer', frame_layout, size=(650, 70))]
+
+    def __adb_area(self) -> List:
+        adb = self.data['adb']
+        frame_layout = [[
+            sg.Checkbox('use', default=adb['use'], key='_adb_use_', enable_events=True),
+            sg.Text('serial:', pad=((5, 0), 5)),
+            sg.Input(adb['serial'], key='_adb_serial_', size=13, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
+            sg.Text('path:', pad=((5, 0), 5)),
+            sg.Input(adb['path'], key='_adb_path_', size=63, enable_events=True, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
+            sg.FileBrowse(key='_adb_browse_', size=7, disabled=not adb['use'])
+        ]]
+        return [sg.Frame('adb.exe', frame_layout, pad=((0, 5), 5), size=(1160, 70))]
 
     def __information_area(self) -> List:
         return [
-            sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Any', 11, 'bold'), size=30, key='_running_status_'),
+            sg.Text('Running:', pad=((5, 0), 5)), sg.Text('', font=('Any', 11, 'bold'), size=40, key='_running_status_'),
+            sg.Column([[sg.Text('', size=30, key='_timer_countdown_')]], expand_x=True, element_justification='center'),
             sg.Column([[sg.Text('', size=30, text_color='red2', justification='right', font=('Any', 11, 'bold'), key='_tips_')
-                        ]], expand_x=True, element_justification='r')
+                        ]], expand_x=True, element_justification='right')
         ]
+
+    def __button_area(self) -> List:
+        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop',
+                       'Game region', 'ScreenShot', 'Log', 'More settings', 'Exit']
+        return [sg.Column([
+            [sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
+                       disabled=True if bt == 'Game region' and self.data['adb']['use'] else False) for bt in button_list]
+        ], element_justification='right', expand_x=True)]
 
     def __log_level_area(self) -> List:
         level_row = [
@@ -448,13 +489,6 @@ class kirafanbot_GUI():
                 logbox_row
             ], expand_x=True, k='_log_area_', visible=False)
         )]
-
-    def __button_area(self) -> List:
-        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop', 'Game region', 'ScreenShot', 'Log', 'Exit']
-        return [sg.Column([
-            [sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
-                       disabled=True if bt == 'Game region' and self.data['adb']['use'] else False) for bt in button_list]
-        ], element_justification='right', expand_x=True)]
 
     def stop_all_safe(self):
         self.stop_safe(self.battle_job)
