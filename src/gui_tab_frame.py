@@ -89,7 +89,7 @@ class Tab_Frame():
             sg.Text('mytuen:', pad=((5, 2), 5)), sg.Spin([i for i in range(0, 100)], size=(2, 1), key=k[2], initial_value=friend_support['myturn'], disabled=(not friend_support['use']), enable_events=True),  # noqa: E501
             sg.Text('replace:', pad=((5, 2), 5)), sg.InputCombo([f'character_{p}' for p in pos], size=15, key=k[3], default_value=friend_support['replace'], disabled=(not friend_support['use']), enable_events=True),  # noqa: E501
         ]]
-        return [sg.Frame('friend_support', frame_layout)]
+        return [sg.Frame('friend support', frame_layout)]
 
     def __wave_area(self) -> List:
         w = self.quest['wave']
