@@ -34,11 +34,11 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 
 
 # Installation
-windows 使用者可以[**點擊這裡**](https://github.com/smallbomb/kirafan-bot/releases)下載exe檔案來使用  
+Download [**.exe**](https://github.com/smallbomb/kirafan-bot/releases) file for windows user   
 #### or
-Python version >= 3.8  
-download [**source code**](https://github.com/smallbomb/kirafan-bot/releases)
-```
+Download [**Python**](https://www.python.org/) and kirafan-bot [**source code**](https://github.com/smallbomb/kirafan-bot/releases)
+```bash
+# kirafan-bot requires Python version >= 3.8
 pip install -r requirements.txt
 py src
 ```
@@ -54,16 +54,19 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 
 ## Hotkey mode
 * z+1~z+9 (record position and rgb)
-* z+r (run/resume bot)
-* z+s (stop bot)
-* z+o (stop bot after current battle is completed)
-* z+l (bot_setting.json reload)
+* z+r (run/resume battle)
+* z+s (stop kirafan-bot)
+* z+o (stop kirafan-bot after current battle is completed)
+* z+l (bot_setting.json and advanced_setting.jsonc reload)
 * z+m (monitor mode)
-* z+t (test objects and icons exist?)
+* z+t (test to find all objects and icons)
 * z+p (print position01~09)
 * z+c (check/add icon file)
-* z+x (open game region window for adjusting position)
+* z+x (open game region window for adjusting location)
 * z+k (switch adb/pyautogui mode)
+* z+v (visit friend room three times)
+* z+e (exchenge material) ('強化素材' or '進化素材' only)
+* z+i (screenshot)
 
 ## GUI mode
 !["gui_image"](./tutorial_img/gui.jpg)  
@@ -74,7 +77,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 * `Reset`: reload/reset setting (Note: click 'Start' or 'Reset' button for the changes to take effect)
 * `Stop once`: stop bot after current battle is completed
 * `Visit Room`: visit friend room three times. (**First, please move to room**)
-* `Cork Shop`: auto to exchenge material('強化素材' or '進化素材' only) (**First, please move to cork shop then select material category**)
+* `Cork Shop`: auto to exchenge material ('強化素材' or '進化素材' only) (**First, please move to cork shop then select material category**)
 * `Game region`: open a window for emulator location
 * `ScreenShot`: capture a game region
 * `Log`: show/hide log area

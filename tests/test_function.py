@@ -17,7 +17,7 @@ def test_data_format():
 
 
 def test_hotkey():
-    hotkey = Hotkey('rslmptcoxk')
+    hotkey = Hotkey('rslmptcoxkvei')
     assert hotkey.safe_exit() is None
     assert hotkey._Hotkey__user_command('1') is None
     assert hotkey._Hotkey__user_command('r') is None
@@ -29,6 +29,12 @@ def test_hotkey():
     assert hotkey._Hotkey__user_command('o') is None
     # assert hotkey._Hotkey__user_command('x') is None
     assert hotkey._Hotkey__user_command('k') is None
+    assert hotkey._Hotkey__user_command('v') is None
+    assert hotkey._Hotkey__user_command('s') is None
+    assert hotkey._Hotkey__user_command('e') is None
+    assert hotkey._Hotkey__user_command('s') is None
+    assert hotkey._Hotkey__user_command('i') is None
+    assert os.path.exists('screenshot0.png') is True
     assert hotkey.remove_all_hotkey() is None
 
 
@@ -73,4 +79,4 @@ def test_gui():
     assert uData.setting['wave']['1']['character_right']['sp_weight'] == 8
     assert uData.setting['set_timer']['use'] is True
     assert uData.setting['adb']['use'] is True
-    assert os.path.exists('screenshot0.png') is True
+    assert os.path.exists('screenshot1.png') is True

@@ -1,7 +1,5 @@
 import re
 import PySimpleGUI as sg
-import pyautogui
-from os import path
 from log import logging, logger, loglevel
 from data import uData
 from typeguard import typechecked
@@ -269,17 +267,7 @@ class kirafanbot_GUI():
         logger.info(f'({str(kirafan.stop_once):>5}) kirafan-bot stop after current battle is completed')
 
     def bt_screenshot_event(self):
-        i = 0
-        while True:
-            if not path.exists(f'screenshot{i}.png'):
-                fname = f'screenshot{i}.png'
-                break
-            i += 1
-        if self.data['adb']['use']:
-            adb.save_img(fname)
-        else:
-            pyautogui.screenshot(fname, region=uData.setting['game_region'])
-        logger.info(f'screenshot file: \x1b[35m{fname}\x1b[0m')
+        kirafan.screenshot()
 
     def bt_game_region_event(self):
         new = list(game_region())

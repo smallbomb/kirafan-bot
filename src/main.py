@@ -19,7 +19,7 @@ def main():
         kirafanbot_GUI().open()
     elif uData.setting['mode'].lower() == 'hotkey':
         try:
-            hotkey = Hotkey('rslmptcoxk')
+            hotkey = Hotkey('rslmptcoxkvei')
             logger.info("hotkey setting finish...")
             logger.info(f'kirafan region = {list(kirafan.region)}')
             logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')

@@ -1,3 +1,5 @@
+import pyautogui
+from os import path
 from log import logger
 from typeguard import typechecked
 from defined import Tuple, Dict, Callable
@@ -211,6 +213,19 @@ class BOT:
         else:
             logger.info('insufficient material...')
         return False
+
+    def screenshot(self):
+        i = 0
+        while True:
+            if not path.exists(f'screenshot{i}.png'):
+                fname = f'screenshot{i}.png'
+                break
+            i += 1
+        if self.data['adb']['use']:
+            adb.save_img(fname)
+        else:
+            pyautogui.screenshot(fname, region=uData.setting['game_region'])
+        logger.info(f'screenshot file: \x1b[35m{fname}\x1b[0m')
 
     def reload(self):
         # self.wave_id = -1

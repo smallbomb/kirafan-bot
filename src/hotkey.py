@@ -11,6 +11,8 @@ from window import game_region
 from bot import kirafan
 from position import Position, Shot, monitor_mode
 from run_battle import run as battle
+from run_visit_friend_room import run as visit_friend_room
+from run_cork_shop_exchange import run as cork_shop_exchange
 
 
 class fake_window:
@@ -24,7 +26,7 @@ class Hotkey:
         self.mode = mode
         self.window = window
         self.shot_job = None
-        self.battle_job = self.square_job = self.monitor_job = Job()
+        self.battle_job = self.visit_room_job = self.cork_shop_job = self.monitor_job = Job()
         self.kb = KBHit()
         self.positions = [Position(_id) for _id in range(1, 10)]
         self.keys = [f'z+{i}' for i in (list(range(1, 10)) if mode == 'hotkey' else []) + list(keys)]
@@ -45,13 +47,28 @@ class Hotkey:
         getattr(self, method_name)()
 
     def __cmd_r(self):
-        if not self.battle_job.is_alive():
-            logger.info('press start now!')
+        if self.process_idle():
             self.battle_job = Job(target=battle, args=(fake_window,))
             self.battle_job.start()
         elif self.battle_job.is_pausing():
-            logger.info('press resume now!')
             self.battle_job.resume()
+
+    def __cmd_v(self):
+        if self.process_idle():
+            self.visit_room_job = Job(target=visit_friend_room, args=(fake_window,))
+            self.visit_room_job.start()
+        elif self.visit_room_job.is_pausing():
+            self.visit_room_job.resume()
+
+    def __cmd_e(self):
+        if self.process_idle():
+            self.cork_shop_job = Job(target=cork_shop_exchange, args=(fake_window,))
+            self.cork_shop_job.start()
+        elif self.cork_shop_job.is_pausing():
+            self.cork_shop_job.resume()
+
+    def __cmd_i(self):
+        kirafan.screenshot()
 
     def __cmd_s(self):
         if self.mode == 'gui':
@@ -61,10 +78,9 @@ class Hotkey:
                 self.window.write_event_value('_button_Visit Room_', None)
             elif self.window['_button_Cork Shop_'].GetText() == 'Stop Exchange':
                 self.window.write_event_value('_button_Cork Shop_', None)
-        elif self.battle_job.is_alive():
+        elif not self.process_idle():
             logger.info('press stop now!, Please wait for a while')
-            self.battle_job.stop()
-            self.battle_job.join()
+            self.safe_exit()
 
     def __cmd_l(self):
         uData.reload()
@@ -160,6 +176,9 @@ class Hotkey:
     def wait(self, hotkey: str):
         return keyboard.wait(hotkey)
 
+    def process_idle(self) -> bool:
+        return not (self.battle_job.is_alive() or self.visit_room_job.is_alive() or self.cork_shop_job.is_alive())
+
     def safe_exit(self):
         if self.battle_job.is_alive():
             self.battle_job.stop()
@@ -167,6 +186,12 @@ class Hotkey:
         if self.monitor_job.is_alive():
             self.monitor_job.stop()
             self.monitor_job.join()
+        if self.visit_room_job.is_alive():
+            self.visit_room_job.stop()
+            self.visit_room_job.join()
+        if self.cork_shop_job.is_alive():
+            self.cork_shop_job.stop()
+            self.cork_shop_job.join()
 
         sleep(0.1)
         while self.kb.kbhit():
