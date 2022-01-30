@@ -239,7 +239,7 @@ class kirafanbot_GUI():
             'Game region': lambda k: self.bt_game_region_event(),
             'ScreenShot': lambda k: self.bt_screenshot_event(),
             'Log': lambda k: self.window['_log_area_'].update(visible=(not self.window['_log_area_'].visible)),
-            'More settings': lambda k: self.window['_more_settings_area_'].update(visible=(not self.window['_more_settings_area_'].visible)),
+            'More settings': lambda k: self.window['_more_settings_area_'].update(visible=(not self.window['_more_settings_area_'].visible)),  # noqa: E501
         }
         button_str = key[len('_button_'):-1]
         button_event_map[button_str](key)
