@@ -37,7 +37,7 @@ class Tab_Frame():
         k = [f'{self.__prefix_key}_loop_count_status_', f'{self.__prefix_key}_loop_count_setting_']
         return [
             sg.Text(f'loop count = {self.loop_count_status} of', key=k[0]),
-            sg.Input(self.quest['loop_count'], key=k[1], size=(3, 1), pad=0, enable_events=True)
+            sg.Input(self.quest['loop_count'], key=k[1], size=(4, 1), pad=0, enable_events=True)
         ]
 
     def __tab_modify(self) -> List:
