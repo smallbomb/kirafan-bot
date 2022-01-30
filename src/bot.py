@@ -122,20 +122,27 @@ class BOT:
         return self.waves[str(self.wave_id)]
 
     def use_stamina(self, interrupt: Callable[[], bool]) -> bool:
-        logger.debug('use stamina start...')
-        for item_count in self.stamina['priority']:
-            item, count = (item_count.split(":") + ['1'])[:2]
-            if self.objects[f'stamina_{item}'].found(False) and int(count) > 0:
-                self.objects[f'stamina_{item}'].click(2, 0.5)
-                if int(count) > 1:
-                    self.objects['stamina_add'].click(int(count) - 1)
-                if interrupt():
-                    logger.debug('use_stamina(): interrupt')
-                    return False
-                self.objects['stamina_hai'].click(8)
-                return True
-        logger.info('insufficient stamina items.')
-        return False
+        logger.debug('use stamina(): start...')
+        retry = self.data['adb']['use']
+        while True:
+            for item_count in self.stamina['priority']:
+                item, count = (item_count.split(":") + ['1'])[:2]
+                if self.objects[f'stamina_{item}'].found(False) and int(count) > 0:
+                    logger.debug(f'use stamina item: {item}:{count}')
+                    self.objects[f'stamina_{item}'].click(2, 0.5)
+                    if int(count) > 1:
+                        self.objects['stamina_add'].click(int(count) - 1)
+                    if interrupt():
+                        logger.debug('use_stamina(): interrupt')
+                        return False
+                    self.objects['stamina_hai'].click(8)
+                    return True
+            if retry:
+                retry = False
+                adb.set_update_cv2_IM_cache_flag()
+            else:
+                logger.info('insufficient stamina items.')
+                return False
 
     def miss_icon_files(self) -> Tuple:
         ret = tuple()

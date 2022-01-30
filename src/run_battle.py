@@ -146,12 +146,15 @@ def _ck_tojiru_window_in_award(bot) -> bool:
     3. crea craft
     """
     if kirafan.objects['center_left'].found(False):
-        # nakayoshido or crea craft
+        # Is nakayoshido or crea craft?
         if kirafan.crea_craft_stop and kirafan.icons['crea_craft_occur'].found(False):
             logger.info('crea_stop: crea craft mission')
             bot.stop()
             return True
-        return kirafan.icons['tojiru'].click(adb_update_cache=False)
+        if kirafan.icons['tojiru'].click(adb_update_cache=False):
+            logger.debug('nakayoshido or crea craft appears')
+            return True
+        return False
     elif kirafan.icons['crea_comm_done'].found(False):
         # crea comm
         if kirafan.crea_comm_stop:

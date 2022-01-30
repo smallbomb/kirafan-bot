@@ -129,8 +129,9 @@ class _Adb():
     def reload(self):
         self.__init__()
 
-    def save_img(self, path: str):
-        self.set_update_cv2_IM_cache_flag()
+    def save_img(self, path: str, adb_update_cache: bool = True):
+        if adb_update_cache:
+            self.__has_screenshot_IM = False
         im = self._screenshot()
         cv2.imwrite(path, im)
 
