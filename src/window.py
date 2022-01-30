@@ -17,7 +17,8 @@ def game_region() -> Coord:
         [sg.Graph(canvas_size=(1280, 720), graph_bottom_left=None, graph_top_right=None, background_color='red', pad=1)]
     ]
 
-    sg.popup_ok('Tips: You can move window and click \'X\' to record new region', title='Tips')
+    sg.popup_ok('Please move window and change the game size of emulator to fill window.',
+                'Click \'X\' to record new region', title='Tips')
 
     # (0, 40) => (0, 15)
     extra_y = 25
