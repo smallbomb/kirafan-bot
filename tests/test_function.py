@@ -29,7 +29,7 @@ def test_hotkey():
     assert hotkey._Hotkey__user_command('o') is None
     # assert hotkey._Hotkey__user_command('x') is None
     assert hotkey._Hotkey__user_command('k') is None
-    assert hotkey._Hotkey__user_command('k') is None # switch back
+    assert hotkey._Hotkey__user_command('k') is None  # switch back
     assert hotkey._Hotkey__user_command('v') is None
     assert hotkey._Hotkey__user_command('s') is None
     assert hotkey._Hotkey__user_command('e') is None
