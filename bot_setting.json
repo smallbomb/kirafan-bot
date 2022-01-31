@@ -21,7 +21,10 @@
     "quest_selector": "example",
     "example": {
       "loop_count": 30,
-      "crea_stop": false,
+      "crea_stop": {
+        "comm": false,
+        "craft": false
+      },
       "friend_support": {
         "use": false,
         "wave_N": 1,
@@ -30,7 +33,7 @@
       },
       "stamina": {
         "use": true,
-        "priority": ["Cu:7", "Ag", "Au"]
+        "priority": ["Cu:7", "Au:1"]
       },
       "orb": {
         "orb_name": "ゆゆ式",
@@ -62,10 +65,13 @@
     },
     "8-26": {
       "loop_count": 100,
-      "crea_stop": true,
+      "crea_stop": {
+        "comm": false,
+        "craft": true
+      },
       "stamina": {
         "use": true,
-        "priority": ["Au"]
+        "priority": ["Cu:8"]
       },
       "wave": {
         "total": 1,
@@ -76,7 +82,10 @@
     },
     "event": {
       "loop_count": 50,
-      "crea_stop": false,
+      "crea_stop": {
+        "comm": false,
+        "craft": false
+      },
       "orb": {
         "orb_name": "まほうつかい",
         "3": {"use": true, "wave_N": 2, "myturn": 0, "target": "C"}
@@ -99,7 +108,10 @@
     },
     "user_defined": {
       "loop_count": 5,
-      "crea_stop": false,
+      "crea_stop": {
+        "comm": false,
+        "craft": false
+      },
       "wave": {
         "total": 3,
         "1,2,3": {
