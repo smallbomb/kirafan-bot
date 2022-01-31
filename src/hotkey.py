@@ -86,17 +86,17 @@ class Hotkey:
         uData.reload()
         adb.reload()
         kirafan.reload()
-        logger.info(f'kirafan region = {list(kirafan.region)}')
-        logger.info('reload setting.json finish')
-        logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
-        logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+        logger.info('kirafan-bot: reload configuration finish')
+        logger.info(f'kirafan-bot: region = {list(kirafan.region)}')
+        logger.info(f'kirafan-bot: adb use = {uData.setting["adb"]["use"]}')
+        logger.info(f'kirafan-bot: quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     def __cmd_k(self):
         uData.adb_mode_switch()
         adb.reload()
         kirafan.adb_mode_switch()
-        logger.info(f'kirafan region = {list(kirafan.region)}')
-        logger.info(f'kirafan adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
+        logger.info(f'kirafan-bot: region = {list(kirafan.region)}')
+        logger.info(f'kirafan-bot: adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
         tuple_files = kirafan.miss_icon_files()
         if tuple_files:
             print('miss icon files:')

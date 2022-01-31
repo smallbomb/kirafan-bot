@@ -28,7 +28,7 @@ class Character:
         sp_id = chars_sp_order[0] if chars_sp_order else self.id
 
         for sk in self.sk_priority:
-            logger.debug(f'character action: {sk:<11} is checked now')
+            logger.debug(f'character action(): {sk:<11} is checked now')
             if self.__skill_is_ready(sk):
                 if sk == 'auto_button':
                     self.__action_auto_button()
@@ -44,12 +44,12 @@ class Character:
                     self.objects[sk].click(4)
                     if sk == 'wpn_sk' and self.ready(True):
                         continue  # has no weapons
-                logger.debug(f'character action: use \x1b[32m{sk}\x1b[0m')
+                logger.debug(f'character action(): use \x1b[32m{sk}\x1b[0m')
                 return sk
             elif ck_animate_cd and sk in ['wpn_sk', 'L_sk', 'R_sk']:
                 ck_animate_cd = False
                 if self.__action_cd_skill(sk):
-                    logger.debug(f'character action: use \x1b[32m{sk}\x1b[0m')
+                    logger.debug(f'character action(): use \x1b[32m{sk}\x1b[0m')
                     return sk
 
     def __skill_is_ready(self, sk: str) -> bool:
@@ -61,7 +61,7 @@ class Character:
         # success use skill: True, Fail to use skill: False
         if not self.objects[f'{sk}_cd'].found(False):
             return False
-        logger.debug(f'character action: try to click {sk} 0.6 sec (skill cd now?)')
+        logger.debug(f'character action(): try to click {sk} 0.6 sec (skill cd now?)')
         self.objects[sk].click_sec(0.6, 0.13)
         if self.ready(True):
             return False

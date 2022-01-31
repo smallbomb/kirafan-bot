@@ -34,12 +34,12 @@ class Orb:
             return False
 
         while not self.__slide_out_orb_list():
-            logger.info('slide out orb list failed')
+            logger.debug('orb action(): slide out orb list failed... try again')
 
         if self.__use_orb():
-            logger.info(f'orb action: use orb0{self.option} success')
+            logger.debug(f'orb action(): use orb0{self.option} success')
         else:
-            logger.info(f'orb action: use orb0{self.option} failed')
+            logger.debug(f'orb action(): use orb0{self.option} failed')
         self.use = False
         return True
 

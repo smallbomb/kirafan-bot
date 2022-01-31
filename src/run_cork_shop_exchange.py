@@ -12,7 +12,7 @@ def run(window):
         if kirafan.icons['cork_face'].scan(3):
             if kirafan.objects['shop_enhance_field'].found(False) or kirafan.objects['shop_evo_field'].found(False):
                 if kirafan.cork_shop_exchange_once(lambda: not bot.is_running()):
-                    logger.debug(f'cork shop {time} times success')
+                    logger.debug(f'cork shop: {time} times success')
                     time += 1
                     continue
             else:
@@ -21,5 +21,5 @@ def run(window):
             logger.error('please move to cork shop!')
         bot.stop()
 
-    logger.info('kirafan stop(cork shop)...')
+    logger.info('kirafan-bot stop(cork shop)...')
     bot.send_event('_update_button_cork_shop_', 'Cork Shop')

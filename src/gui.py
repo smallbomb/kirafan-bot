@@ -126,9 +126,9 @@ class kirafanbot_GUI():
            not data_compare(self.__original_sleep, self.data['sleep'])):
             self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
-        logger.info(f'kirafan region = {list(kirafan.region)}')
-        logger.info(f'kirafan adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
-        logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+        logger.info(f'kirafan-bot: region = {list(kirafan.region)}')
+        logger.debug(f'kirafan-bot: adb use = \x1b[35m{uData.setting["adb"]["use"]}\x1b[0m')
+        logger.debug(f'kirafan-bot: quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
 
     def handle_tab_event(self, tab: Tab_Frame, event: str, values: Optional[Dict]):
         if event.endswith('_rename_'):
@@ -268,7 +268,7 @@ class kirafanbot_GUI():
             self.__reload()
         self.update_stop_once_status()
         self.tabs[self.window['_tab_group_'].get()].reset(self.window)
-        logger.info(f'reset quest: {self.tabs[self.window["_tab_group_"].get()].name} finish')
+        logger.info(f'kirafan-bot: reset {self.tabs[self.window["_tab_group_"].get()].name} quest finish')
 
     def bt_stop_once_event(self):
         kirafan.stop_once = not kirafan.stop_once
@@ -518,4 +518,4 @@ class kirafanbot_GUI():
         uData.reload()
         adb.reload()
         kirafan.reload()
-        logger.info('kirafan-bot reload configuration')
+        logger.info('kirafan-bot: reload configuration finish')

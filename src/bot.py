@@ -128,7 +128,7 @@ class BOT:
             for item_count in self.stamina['priority']:
                 item, count = (item_count.split(":") + ['1'])[:2]
                 if self.objects[f'stamina_{item}'].found(False) and int(count) > 0:
-                    logger.debug(f'use stamina item: {item}:{count}')
+                    logger.debug(f'use_stamina(): use stamina {item}:{count} items')
                     self.objects[f'stamina_{item}'].click(2, 0.5)
                     if int(count) > 1:
                         self.objects['stamina_add'].click(int(count) - 1)
@@ -216,23 +216,23 @@ class BOT:
                     self.icons['ok'].click(adb_update_cache=False)
                     sleep(1)
                     return True
-            logger.error('unknown error')
+            logger.error('cork_shop_exchange_once(): unknown error')
         else:
-            logger.info('insufficient material...')
+            logger.info('Cork Shop: insufficient material...')
         return False
 
     def screenshot(self):
         i = 0
         while True:
-            if not path.exists(f'screenshot{i}.png'):
-                fname = f'screenshot{i}.png'
+            fname = f'screenshot{i}.png'
+            if not path.exists(fname):
                 break
             i += 1
         if self.data['adb']['use']:
             adb.save_img(fname)
         else:
             pyautogui.screenshot(fname, region=uData.setting['game_region'])
-        logger.info(f'screenshot file: \x1b[35m{fname}\x1b[0m')
+        logger.info(f'ScreenShot: save file name = \x1b[35m{fname}\x1b[0m')
 
     def reload(self):
         # self.wave_id = -1

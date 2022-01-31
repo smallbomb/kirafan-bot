@@ -8,7 +8,7 @@ from bot import kirafan
 def run(window):
     bot = threading.currentThread()
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
-    logger.info('visit_friend start...')
+    logger.info('visit friend start...')
     tries = 0
     while bot.is_running():
         if tries == 3:
@@ -18,7 +18,7 @@ def run(window):
             logger.info(f'visit_friend time = {tries} success')
             sleep(kirafan.sleep['loading'])
 
-    logger.info('kirafan stop(visit_friend_room)...')
+    logger.info('kirafan-bot stop(visit friend)...')
     bot.send_event('_update_button_visit_room_', 'Visit Room')
 
 
@@ -35,7 +35,7 @@ def _handle_friend_icon(tries: int) -> bool:
             sleep(2)
             return True
         elif tries != 0 and friend_icon_retry:
-            logger.debug('try a again because friend_icon.png not found')
+            logger.debug('try a again because friend_icon.png not match on game region')
             friend_icon_retry = False
         else:
             return False
@@ -52,12 +52,12 @@ def _handle_visit_room(bot, tries: int, found_friend_icon: bool) -> bool:
             kirafan.icons['visit_room'].click(2, adb_update_cache=False)
             return True
         elif visit_room_retry:
-            logger.debug('try a again because visit_room.png not found')
+            logger.debug('try a again because visit_room.png not match on game region')
             visit_room_retry = False
         elif tries == 0:
             logger.error('please move to room!')
             bot.stop()
         else:
-            logger.error('unknown error...')
+            logger.error('_handle_visit_room(): unknown error...')
             bot.stop()
     return False

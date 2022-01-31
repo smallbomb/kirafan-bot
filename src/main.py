@@ -20,10 +20,10 @@ def main():
     elif uData.setting['mode'].lower() == 'hotkey':
         try:
             hotkey = Hotkey('rslmptcoxkvei')
-            logger.info("hotkey setting finish...")
-            logger.info(f'kirafan region = {list(kirafan.region)}')
-            logger.info(f'kirafan adb use = {uData.setting["adb"]["use"]}')
-            logger.info(f'kirafan quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
+            logger.info("kirafan-bot: hotkey setting finish...")
+            logger.info(f'kirafan-bot: region = {list(kirafan.region)}')
+            logger.info(f'kirafan-bot: adb use = {uData.setting["adb"]["use"]}')
+            logger.info(f'kirafan-bot: quest setting = \x1b[41m{kirafan.quest_name}\x1b[0m')
             check_basic_information()
             logger.info('please press \'f3\' button to exit...')
             hotkey.wait('f3')

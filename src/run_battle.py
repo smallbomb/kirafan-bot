@@ -8,8 +8,8 @@ from bot import kirafan
 def run(window):
     bot = threading.currentThread()
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
-    logger.info('kirafan start...')
-    logger.info(f'loop_count = {kirafan.loop_count} now')
+    logger.info('battle start...')
+    logger.info(f'loop count = {kirafan.loop_count} now')
     while bot.is_running():
         if _is_battle_now():
             if kirafan.wave_change_flag:
@@ -22,14 +22,14 @@ def run(window):
         else:
             # is not battle (maybe transitions, loading, sp animation, crash ... etc)
             if kirafan.detect_crashes():
-                logger.warning('detect crashes')
+                logger.warning('battle(): detect crashes')
                 _battle_resume(bot)
             elif _is_last_wave():
                 _handle_award_flows(bot)
             else:
-                logger.debug(f'transitions now...({kirafan.wave_id}/{kirafan.wave_total})')
+                logger.debug(f'battle(): transitions now...({kirafan.wave_id}/{kirafan.wave_total})')
                 sleep(kirafan.sleep['wave_transitions'])
-    logger.info('kirafan stop...')
+    logger.info('kirafan-bot stop(battle)...')
     bot.send_event('_update_button_start_', 'Start')
 
 
@@ -47,9 +47,9 @@ def _handle_battle_flows():
         if wave.character_found():
             if wave.friend_action() or wave.orb_action():
                 return
-            logger.debug(f'character({wave.ch_id:<6}) action start')
+            logger.debug(f'_handle_battle_flows(): character({wave.ch_id:<6}) action start')
             wave.charater_action()
-            logger.debug(f'character({wave.ch_id:<6}) action finish')
+            logger.debug(f'_handle_battle_flows(): character({wave.ch_id:<6}) action finish')
         else:
             logger.error(f'wave-{wave.id}/{wave.total}: character not found')
     else:
@@ -71,12 +71,12 @@ def _handle_award_flows(bot):
         kirafan.wave_id = kirafan.wave_total + 1  # for wave reset.
         kirafan.loop_count -= 1
         bot.send_event('_update_loop_count_', kirafan.loop_count)
-        logger.debug('try to move next new battle')
+        logger.debug('_handle_award_flows(): try to move next new battle')
         _try_to_move_next_new_battle(bot)
     elif kirafan.icons['ok'].click(adb_update_cache=False):
         _handle_ok_button(bot)
     else:
-        logger.debug('still loading now...')
+        logger.debug('_handle_award_flows(): still loading now...')
         sleep(1)
 
 
@@ -84,8 +84,8 @@ def _try_to_move_next_new_battle(bot):
     _skip_award_result(bot)
     while bot.is_running():
         if _ck_move_to_next_battle(bot):
-            logger.debug('player is moving to next battle...')
-            logger.info(f'loop_count = {kirafan.loop_count} now')
+            logger.debug('_try_to_move_next_new_battle(): player is moving to next battle...')
+            logger.info(f'loop count = {kirafan.loop_count} now')
             sleep(kirafan.sleep['loading'])
             break
         elif not bot.is_running():
@@ -109,14 +109,14 @@ def _try_to_move_next_new_battle(bot):
 
 
 def _skip_award_result(bot):
-    logger.debug("handle award result page")
+    logger.debug("_skip_award_result(): handle award result page")
     if kirafan.stop_once:
         logger.debug('kirafan-bot will be stop beacause stop_once be setup.')
         kirafan.stop_once = False
         bot.send_event('_update_stop_once_', None)
         bot.stop()
     elif kirafan.loop_count <= 0:
-        logger.info(f'loop_count({kirafan.loop_count}) less than or equal to 0')
+        logger.info(f'loop count({kirafan.loop_count}) less than or equal to 0')
         bot.stop()
 
     ct, retry = 12, True
@@ -131,10 +131,10 @@ def _skip_award_result(bot):
             retry = True
             ct = 8
         elif retry:
-            logger.debug('try a again because again.png not found')
+            logger.debug('_skip_award_result(): try a again because again.png not match on game region')
             retry = False
         else:
-            logger.error('icon: again.png not found...')
+            logger.error('_skip_award_result(): again.png not match on game region')
             bot.stop()
 
 
@@ -148,17 +148,17 @@ def _ck_tojiru_window_in_award(bot) -> bool:
     if kirafan.objects['center_left'].found(False):
         # Is nakayoshido or crea craft?
         if kirafan.crea_craft_stop and kirafan.icons['crea_craft_occur'].found(False):
-            logger.info('crea_stop: crea craft mission')
+            logger.info('crea stop: crea craft mission')
             bot.stop()
             return True
         if kirafan.icons['tojiru'].click(adb_update_cache=False):
-            logger.debug('nakayoshido or crea craft appears')
+            logger.debug('_ck_tojiru_window_in_award(): nakayoshido or crea craft appears')
             return True
         return False
     elif kirafan.icons['crea_comm_done'].found(False):
         # crea comm
         if kirafan.crea_comm_stop:
-            logger.info('crea_stop: crea communication done')
+            logger.info('crea stop: crea communication done')
             bot.stop()
             return True
         return kirafan.icons['tojiru'].click(adb_update_cache=False)
@@ -177,16 +177,16 @@ def _ck_move_to_next_battle(bot) -> bool:
 
 
 def _battle_resume(bot):
-    logger.warning('try to resume battle...')
+    logger.warning('_battle_resume(): try to resume battle...')
     kirafan.objects['center'].click_sec(100)
     while kirafan.icons['ok'].click():
         sleep(2)
     if kirafan.icons['hai'].click():
-        logger.info('resume battle')
+        logger.info('_battle_resume(): resume battle success')
         kirafan.reset_crash_detection()
         kirafan.wave_id -= 1
     else:
-        logger.error('resume battle failed')
+        logger.error('_battle_resume(): resume battle failed')
         bot.stop()
 
 
