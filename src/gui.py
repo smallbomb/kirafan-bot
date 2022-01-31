@@ -420,13 +420,13 @@ class kirafanbot_GUI():
             sg.Text('click:', pad=((5, 0), 5)),
             sg.Input(delay['click'], size=3, pad=((0, 10), 5), key=k[0], enable_events=True),
             sg.Text('sp:', pad=((5, 0), 5)),
-            sg.Input(delay['sp'], size=3, pad=((0, 10), 5), key=k[1], enable_events=True),
+            sg.Input(delay['sp'], size=4, pad=((0, 10), 5), key=k[1], enable_events=True),
             sg.Text('loading:', pad=((5, 0), 5)),
-            sg.Input(delay['loading'], size=3, pad=((0, 10), 5), key=k[2], enable_events=True),
+            sg.Input(delay['loading'], size=4, pad=((0, 10), 5), key=k[2], enable_events=True),
             sg.Text('wave transition:', pad=((5, 0), 5)),
             sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True)
         ]]
-        return [sg.Frame('delay (s)', layout, pad=((0, 5), 5), size=(500, 70))]
+        return [sg.Frame('delay (s)', layout, pad=((0, 5), 5), size=(530, 70))]
 
     def __set_timer_area(self) -> List:
         self.__original_timer = deepcopy(self.data['set_timer'])
