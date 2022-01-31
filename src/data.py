@@ -5,9 +5,9 @@ from defined import Dict
 __VERSION__ = '3.0.0'
 
 
-@typechecked    
+@typechecked
 def data_compare(v1, v2) -> bool:
-        return json.dumps(v1, sort_keys=True) == json.dumps(v2, sort_keys=True)
+    return json.dumps(v1, sort_keys=True) == json.dumps(v2, sort_keys=True)
 
 
 @typechecked
