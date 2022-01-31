@@ -90,6 +90,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 * [**about adb**](https://developer.android.com/studio/command-line/adb)
 * [**download page**](https://developer.android.com/studio/releases/platform-tools)
 * [**how to get device serial number**](https://developer.android.com/studio/command-line/adb#directingcommands)
+* Suggest set `1280x720` resolution on emulator. But you want to set other resolution, please modify "emulator_resolution" value in [bot_setting.json](./bot_setting.json) file 
 
 # Major 3rd party library
 * [**keyboard**](https://pypi.org/project/keyboard/)
