@@ -30,7 +30,7 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 * [8-26(rank up)](https://wiki.kirafan.moe/#/quest/1108261)
 * [チノ專武關卡](https://wiki.kirafan.moe/#/quest/43001200)
 
-please refer to [おすすめスキル上げ](https://wikiwiki.jp/kirarafan/%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E3%82%B9%E3%82%AD%E3%83%AB%E4%B8%8A%E3%81%92)說明
+please refer to [おすすめスキル上げ](https://wikiwiki.jp/kirarafan/%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E3%82%B9%E3%82%AD%E3%83%AB%E4%B8%8A%E3%81%92)
 
 
 # Installation
@@ -81,6 +81,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 * `Game region`: open a window for emulator location
 * `ScreenShot`: capture a game region
 * `Log`: show/hide log area
+* `More settings`: show/hide more settings
 
 # Glossary
 !["naming"](./tutorial_img/naming.jpg)
