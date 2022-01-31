@@ -111,7 +111,7 @@ def _try_to_move_next_new_battle(bot):
 def _skip_award_result(bot):
     logger.debug("handle award result page")
     if kirafan.stop_once:
-        logger.debug('kirafan-bot.stop_once be setup. (z+o)')
+        logger.debug('kirafan-bot will be stop beacause stop_once be setup.')
         kirafan.stop_once = False
         bot.send_event('_update_stop_once_', None)
         bot.stop()

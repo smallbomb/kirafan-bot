@@ -46,9 +46,10 @@ class Icon:
     def found(self, adb_update_cache: bool = True) -> bool:
         return True if self.get_center(adb_update_cache) else False
 
-    def click(self, times: int = 1, interval: float = uData.setting['sleep']['click'], adb_update_cache: bool = True) -> bool:
+    def click(self, times: int = 1, interval: Optional[float] = None, adb_update_cache: bool = True) -> bool:
         if type(times) is not int:
             raise TypeError(f'type of argument "times" must be int; got {type(times).__qualname__} instead')
+        interval = interval or uData.setting['sleep']['click']
         coord = self.get_center(adb_update_cache)
         if coord:
             self.__click(*coord, times, interval)

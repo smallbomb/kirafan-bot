@@ -1,8 +1,7 @@
 import re
-import json
 import PySimpleGUI as sg
-from data import uData
 from copy import deepcopy
+from data import uData, data_compare
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
@@ -277,7 +276,7 @@ class Tab_Frame():
             return new_title
 
     def is_modified(self) -> bool:
-        return json.dumps(self.quest, sort_keys=True) != json.dumps(self.__original_quest, sort_keys=True)
+        return not data_compare(self.quest, self.__original_quest)
 
     def update_original_quest(self):
         self.__original_quest = deepcopy(self.quest)

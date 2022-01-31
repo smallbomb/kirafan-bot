@@ -1,7 +1,8 @@
 import re
 import PySimpleGUI as sg
 from log import logging, logger, loglevel
-from data import uData
+from copy import deepcopy
+from data import uData, data_compare
 from typeguard import typechecked
 from defined import List, Optional, Dict, Callable
 from thread import Job
@@ -120,8 +121,9 @@ class kirafanbot_GUI():
 
     def check_configure_and_status(self):
         if (self.data['questList']['quest_selector'] != self.tabs[self.window['_tab_group_'].get()].name or
-           self.__original_timer_range != self.data['set_timer']['pause_range'] or
-           self.tabs[self.window['_tab_group_'].get()].is_modified()):
+           self.tabs[self.window['_tab_group_'].get()].is_modified() or
+           not data_compare(self.__original_timer, self.data['set_timer']) or
+           not data_compare(self.__original_sleep, self.data['sleep'])):
             self.data['questList']['quest_selector'] = self.tabs[self.window['_tab_group_'].get()].name
             self.bt_reset_event()
         logger.info(f'kirafan region = {list(kirafan.region)}')
@@ -179,9 +181,9 @@ class kirafanbot_GUI():
     def handle_sleep_event(self, key: str, value: str):
         key = key[7:-1]
         if value.replace('.', '', 1).isdigit():
-            self.data[key] = float(value)
+            self.data['sleep'][key] = float(value)
         elif value == '':
-            self.data[key] = 0
+            self.data['sleep'][key] = 0
 
     def handle_timer_event(self, key: str, value):
         if key == '_timer_use_':
@@ -249,11 +251,9 @@ class kirafanbot_GUI():
         if bt_name == 'Start':
             self.check_configure_and_status()
             if not self.battle_job.is_alive():
-                logger.info('press start now!')
                 self.battle_job = Job(target=battle, args=(self.window,))
                 self.battle_job.start()
             elif self.battle_job.is_pausing():
-                logger.info('press resume now!')
                 self.battle_job.resume()
             self.update_button_status(key, 'Stop')
         elif bt_name == 'Stop':
@@ -413,6 +413,7 @@ class kirafanbot_GUI():
         )]
 
     def __sleep_area(self) -> List:
+        self.__original_sleep = deepcopy(self.data['sleep'])
         delay = self.data['sleep']
         k = ['_sleep_click_', '_sleep_sp_', '_sleep_loadding_', '_sleep_wave_transitions_']
         layout = [[
@@ -428,8 +429,8 @@ class kirafanbot_GUI():
         return [sg.Frame('delay (s)', layout, pad=((0, 5), 5), size=(500, 70))]
 
     def __set_timer_area(self) -> List:
+        self.__original_timer = deepcopy(self.data['set_timer'])
         timer = self.data['set_timer']
-        self.__original_timer_range = timer['pause_range']
         k = ['_timer_use_', '_timer_hour_start_', '_timer_min_start_', '_timer_sec_start_',
              '_timer_hour_end_', '_timer_min_end_', '_timer_sec_end_']
         frame_layout = [[
@@ -508,7 +509,8 @@ class kirafanbot_GUI():
 
     def __save(self):
         uData.save_gui_setting()
-        self.__original_timer_range = self.data['set_timer']['pause_range']
+        self.__original_sleep = deepcopy(self.data['sleep'])
+        self.__original_timer = deepcopy(self.data['set_timer'])
         if self.window['_tab_group_'].get():  # is None if event == sg.exit
             self.tabs[self.window['_tab_group_'].get()].update_original_quest()
 
@@ -516,4 +518,4 @@ class kirafanbot_GUI():
         uData.reload()
         adb.reload()
         kirafan.reload()
-        logger.info('kirafan-bot reload configure')
+        logger.info('kirafan-bot reload configuration')

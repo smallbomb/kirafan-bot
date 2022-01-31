@@ -1,7 +1,7 @@
 import pyautogui
 from time import time, sleep
 from typeguard import typechecked
-from defined import Coord, RGB, Ratio, Owner, Dict
+from defined import Coord, RGB, Ratio, Owner, Dict, Optional
 from data import uData
 from adb import adb
 
@@ -40,7 +40,8 @@ class Object():
         ratioX, ratioY = ratio
         return (int(round(x0 + ratioX * width)), int(round(y0 + ratioY * height)))
 
-    def click(self, times: int = 1, interval: float = uData.setting['sleep']['click']):
+    def click(self, times: int = 1, interval: Optional[float] = None):
+        interval = interval or uData.setting['sleep']['click']
         self.__click(*self.coord, times, interval)
         sleep(interval)
 
