@@ -7,8 +7,21 @@
   "crash_detection": false, // Note: if true AND don't use adb tool.
                             //       please screenshot 'kirafan_app_icon.png' image from your emulator
                             //       and save to img_dir folder.
+
+  // for developers
   "ratio": {
     "16:9": {
+      //  format:
+      //    "object_name": {"x": position, "y": position, "color": color_name, "owner": owner}
+      //
+      //  object_name(str): user-defined
+      //  position(float): a relative position support 16:9 ratio
+      //                   value range: 0.0~1.0
+      //                   example:
+      //                     a coordinate (500, 500) in width, height (1280, 720) region
+      //                     (500/1280, 500/720) => (0.390625, 0.694444)
+      //  color_name(str): follow color object below this file
+      //  owner(list): available list ["wave", "character", "bot", "orb"]
       "focus_ch_left": {"x":0.64460, "y":0.19032, "color":"bronze", "owner": ["character"]},
       "focus_ch_middle": {"x":0.77902, "y":0.26545, "color":"bronze", "owner": ["character"]},
       "focus_ch_right": {"x":0.91242, "y":0.19032, "color":"bronze", "owner": ["character"]},
@@ -63,6 +76,15 @@
     }
   },
   "color": {
+    //  format:
+    //    "color_name": {
+    //       "rgb": RGB,
+    //       "tolerance": tolerance
+    //    }
+    //
+    //  color_name(str): user-defined
+    //  RGB(list): RGB color values [red, green, blue]
+    //  tolerance(int): A color tolerance is a limit to how big the difference
     "white_strict": {
       "rgb": [255, 255, 255],
       "tolerance": 5
