@@ -15,7 +15,7 @@ def run(window):
             bot.stop()
         elif _handle_visit_room(bot, tries, _handle_friend_icon(tries)):
             tries += 1
-            logger.info(f'visit_friend time = {tries} success')
+            logger.info(f'visit friend room time = {tries} success')
             sleep(kirafan.sleep['loading'])
 
     logger.info('kirafan-bot stop(visit friend)...')
