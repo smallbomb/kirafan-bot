@@ -85,6 +85,12 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 
 # Glossary
 !["naming"](./tutorial_img/naming.jpg)
+* `sp` => とっておき
+* `orb` => オーブ
+* `atk` => attack
+* `R_sk`=> right skill
+* `L_sk` => left skill
+* `wpn_sk` => weapon skill
 
 # Support adb tool
 * [**about adb**](https://developer.android.com/studio/command-line/adb)
