@@ -97,9 +97,9 @@ def _try_to_move_next_new_battle(bot):
         elif kirafan.stamina['use'] and (kirafan.icons['stamina_title'].found(False) and
                                          kirafan.icons['tojiru'].click(adb_update_cache=False)):
             # disconnection after using stamina
-            sleep(0.5)
-            kirafan.icons['again'].click()
             logger.debug('_try_to_move_next_new_battle(): click tojiru button (stamina page was not closed)')
+            kirafan.icons['again'].scan(3)
+            kirafan.icons['again'].click(adb_update_cache=False)
         else:
             logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
             bot.send_event('_update_button_start_', 'Start')
@@ -170,7 +170,8 @@ def _ck_move_to_next_battle(bot) -> bool:
         if not kirafan.use_stamina(lambda: not bot.is_running()):
             bot.stop()
             return False
-        if not kirafan.icons['again'].click():
+        kirafan.icons['again'].scan(2)
+        if not kirafan.icons['again'].click(adb_update_cache=False):
             return False
 
     return kirafan.icons['kuromon'].scan(4.5)
