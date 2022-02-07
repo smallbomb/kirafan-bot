@@ -87,6 +87,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 !["naming"](./tutorial_img/naming.jpg)
 * `sp` => とっておき
 * `orb` => オーブ
+* `stamina` => スタミナ
 * `atk` => attack
 * `R_sk`=> right skill
 * `L_sk` => left skill
