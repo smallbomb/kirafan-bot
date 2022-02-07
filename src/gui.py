@@ -426,7 +426,7 @@ class kirafanbot_GUI():
             sg.Text('wave transition:', pad=((5, 0), 5)),
             sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True)
         ]]
-        return [sg.Frame('delay (s)', layout, pad=((0, 5), 5), size=(530, 70))]
+        return [sg.Frame('delay (s)', layout, pad=((0, 5), 5))]
 
     def __set_timer_area(self) -> List:
         self.__original_timer = deepcopy(self.data['set_timer'])
@@ -443,7 +443,7 @@ class kirafanbot_GUI():
             sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[5], readonly=True, initial_value=timer['pause_range'][12:14], disabled=(not timer['use']), enable_events=True), sg.Text(':', pad=(0, 0)),  # noqa: E501
             sg.Spin([f'{("0" + str(i))[-2:]}' for i in range(0, 60)], size=2, key=k[6], readonly=True, initial_value=timer['pause_range'][15:17], disabled=(not timer['use']), enable_events=True)  # noqa: E501
         ]]
-        return [sg.Frame('timer', frame_layout, size=(650, 70))]
+        return [sg.Frame('timer', frame_layout)]
 
     def __adb_area(self) -> List:
         adb = self.data['adb']
@@ -455,7 +455,7 @@ class kirafanbot_GUI():
             sg.Input(adb['path'], key='_adb_path_', size=63, enable_events=True, disabled_readonly_background_color=('white' if adb['use'] else 'gray'), disabled=True),  # noqa: E501
             sg.FileBrowse(key='_adb_browse_', size=7, disabled=not adb['use'])
         ]]
-        return [sg.Frame('adb.exe', frame_layout, pad=((0, 5), 5), size=(1160, 70))]
+        return [sg.Frame('adb.exe', frame_layout, pad=((0, 5), 5))]
 
     def __information_area(self) -> List:
         return [
@@ -474,22 +474,13 @@ class kirafanbot_GUI():
         ], element_justification='right', expand_x=True)]
 
     def __log_level_area(self) -> List:
-        level_row = [
+        level = [
             sg.Text('Log level:', pad=((5, 0), 5)),
             sg.InputCombo([e.name for e in loglevel], default_value=self.data['loglevel'].upper(),
-                          key='_log_level_', enable_events=True)
+                          key='_log_level_', enable_events=True),
         ]
-        logbox_row = [
-            sg.Column([
-                [sg.Multiline(size=(165, 10), key='_log_box_', pad=(0, 0))]
-            ], element_justification='center', expand_x=True, pad=(0, 0))
-        ]
-        return [sg.pin(
-            sg.Column([
-                level_row,
-                logbox_row
-            ], expand_x=True, k='_log_area_', visible=False)
-        )]
+        box = [sg.Multiline(size=(None, 10), key='_log_box_', pad=(0, 0), expand_x=True)]
+        return [sg.pin(sg.Column([level, box], expand_x=True, k='_log_area_', visible=False), expand_x=True)]
 
     def stop_all_safe(self):
         self.stop_safe(self.battle_job)

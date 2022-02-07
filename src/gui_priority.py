@@ -34,23 +34,23 @@ class priority_GUI():
                 sg.Listbox(values=self.available_list, size=(20, 6), pad=((5, 5), (0, 5)), key="_available_list_")
             ],
             self.__stamina_extend(),
-            [sg.Submit('Submit', pad=((170, 5), 5)), sg.Cancel('Cancel')] +
-            self.__skill_extend_button(text),
+            [sg.Submit('Submit'), sg.Cancel('Cancel')] +
+            self.__skill_extend_button(text)
         ]
 
     def __stamina_extend(self) -> List:
         if self.type != 'stamina':
             return []
         layout = [sg.Text('count:')]
-        for s in self.default_list:
-            _pad = (((0, 5), 5) if s == 'Cu' else ((0, 100), 5))
-            layout += [sg.Text(s, pad=((5, 0), 5))]
-            layout += [sg.Spin([i for i in range(1, 11)], readonly=True, initial_value=self.stamina[s], size=(2, 1), pad=_pad, key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]  # noqa: E501
+        for s, _elej in zip(self.default_list, ['left', 'center', 'right']):
+            layout += [sg.Column([[sg.Text(s, pad=((5, 0), 5)),
+                                   sg.Spin([i for i in range(1, 11)], readonly=True, initial_value=self.stamina[s], size=(2, 1), key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]],  # noqa: E501
+                                 expand_x=True, element_justification=_elej)]
         return layout
 
     def __skill_extend_button(self, text: str) -> List:
         if self.type == 'skill' and text[4] != '1':
-            return [sg.Button('Same as Wave1', pad=((33, 0), 0))]
+            return [sg.Column([[sg.Button('Same as Wave1')]], expand_x=True, element_justification='right')]
         return []
 
     def __sumbit(self) -> Optional[List]:
