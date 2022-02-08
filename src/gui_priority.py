@@ -43,9 +43,12 @@ class priority_GUI():
             return []
         layout = [sg.Text('count:')]
         for s, _elej in zip(self.default_list, ['left', 'center', 'right']):
-            layout += [sg.Column([[sg.Text(s, pad=((5, 0), 5)),
-                                   sg.Spin([i for i in range(1, 11)], readonly=True, initial_value=self.stamina[s], size=(2, 1), key=f'_stamina_count_{s}_', disabled=(s in self.available_list))]],  # noqa: E501
-                                 expand_x=True, element_justification=_elej)]
+            layout += [
+                sg.Column([[
+                    sg.Text(s, pad=((5, 0), 5)),
+                    sg.Spin([i for i in range(1, 11)], readonly=True, initial_value=self.stamina[s], size=(2, 1), key=f'_stamina_count_{s}_', disabled=(s in self.available_list))  # noqa: E501
+                ]], expand_x=True, element_justification=_elej)
+            ]
         return layout
 
     def __skill_extend_button(self, text: str) -> List:

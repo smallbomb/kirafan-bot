@@ -468,19 +468,23 @@ class kirafanbot_GUI():
     def __button_area(self) -> List:
         button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop',
                        'Game region', 'ScreenShot', 'Log', 'More settings', 'Exit']
-        return [sg.Column([
-            [sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
-                       disabled=True if bt == 'Game region' and self.data['adb']['use'] else False) for bt in button_list]
-        ], element_justification='right', expand_x=True)]
+        return [
+            sg.Column([[
+                sg.Button(bt, key=f'_button_{bt}_', mouseover_colors=None, size=12, focus=True if bt == 'Reset' else None,
+                          disabled=True if bt == 'Game region' and self.data['adb']['use'] else False) for bt in button_list
+            ]], element_justification='right', expand_x=True)
+        ]
 
     def __log_level_area(self) -> List:
         level = [
-            sg.Text('Log level:', pad=((5, 0), 5)),
-            sg.InputCombo([e.name for e in loglevel], default_value=self.data['loglevel'].upper(),
-                          key='_log_level_', enable_events=True),
+            sg.Column([[
+                sg.Text('Log level:', pad=(0, 0)),
+                sg.InputCombo([e.name for e in loglevel], default_value=self.data['loglevel'].upper(),
+                              key='_log_level_', enable_events=True)
+            ]], vertical_alignment='top')
         ]
         box = [sg.Multiline(size=(None, 10), key='_log_box_', pad=(0, 0), expand_x=True)]
-        return [sg.pin(sg.Column([level, box], expand_x=True, k='_log_area_', visible=False), expand_x=True)]
+        return [sg.pin(sg.Column([box + level], expand_x=True, k='_log_area_', visible=False), expand_x=True)]
 
     def stop_all_safe(self):
         self.stop_safe(self.battle_job)
