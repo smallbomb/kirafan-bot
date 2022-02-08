@@ -44,7 +44,7 @@ class Icon:
         return center
 
     def found(self, adb_update_cache: bool = True) -> bool:
-        return True if self.get_center(adb_update_cache) else False
+        return bool(self.get_center(adb_update_cache))
 
     def click(self, times: int = 1, interval: Optional[float] = None, adb_update_cache: bool = True) -> bool:
         if type(times) is not int:
@@ -56,17 +56,25 @@ class Icon:
             return True
         return False
 
-    def scan(self, timeout: float = -1.0, cool_down: float = 0.2) -> bool:
+    def scan(self, timeout: float = -1.0, cool_down: float = 0.2) -> Optional[Coord]:
         if timeout <= 0:
-            return self.found(False)
+            return self.get_center(False)
 
         t0 = round(time(), 1)
         duration = 0
         while duration < timeout:
-            if self.found():
-                return True
+            center = self.get_center(True)
+            if center:
+                return center
             sleep(cool_down)
             duration = round(time(), 1) - t0
+        return None
+
+    def scan_then_click(self, scan_timeout: float = -1.0, click_times: int = 1) -> bool:
+        coord = self.scan(scan_timeout)
+        if coord:
+            self.__click(*coord, click_times, uData.setting['sleep']['click'])
+            return True
         return False
 
 

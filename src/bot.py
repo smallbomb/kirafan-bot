@@ -210,10 +210,8 @@ class BOT:
             if interrupt():
                 logger.debug('cork_shop_exchange_once(): interrupt')
                 return False
-            elif self.icons['hai'].scan(3):
-                self.icons['hai'].click(2, adb_update_cache=False)
-                if self.icons['ok'].scan(5):
-                    self.icons['ok'].click(adb_update_cache=False)
+            elif self.icons['hai'].scan_then_click(scan_timeout=3, click_times=2):
+                if self.icons['ok'].scan_then_click(scan_timeout=5):
                     sleep(1)
                     return True
             logger.error('cork_shop_exchange_once(): unknown error')

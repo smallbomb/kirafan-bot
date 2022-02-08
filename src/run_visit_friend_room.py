@@ -30,8 +30,7 @@ def _handle_friend_icon(tries: int) -> bool:
         if kirafan.icons['ok'].click(2):
             logger.debug('_handle_friend_icon(): click ok button (poor internet connection)')
             sleep(2)
-        elif kirafan.icons['friend_icon'].scan(sec):
-            kirafan.icons['friend_icon'].click(2, adb_update_cache=False)
+        elif kirafan.icons['friend_icon'].scan_then_click(scan_timeout=sec, click_times=2):
             sleep(2)
             return True
         elif tries != 0 and friend_icon_retry:
@@ -48,8 +47,7 @@ def _handle_visit_room(bot, tries: int, found_friend_icon: bool) -> bool:
         if kirafan.icons['ok'].click(2):
             logger.debug('_handle_visit_room(): click ok button (poor internet connection)')
             sleep(2)
-        elif kirafan.icons['visit_room'].scan(sec):
-            kirafan.icons['visit_room'].click(2, adb_update_cache=False)
+        elif kirafan.icons['visit_room'].scan_then_click(scan_timeout=sec, click_times=2):
             return True
         elif visit_room_retry:
             logger.debug('try a again because visit_room.png not match on game region')
