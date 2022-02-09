@@ -164,13 +164,21 @@ def _ck_tojiru_window_in_award(bot) -> bool:
     return False
 
 
+@typechecked
 def _ck_move_to_next_battle(bot) -> bool:
-    if kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
+    def _ck_stamina(bot) -> bool:
         if kirafan.use_stamina(lambda: not bot.is_running()):
             return kirafan.icons['again'].scan_then_click(scan_timeout=3)
         bot.stop()
         return False
-    return kirafan.icons['kuromon'].scan(kirafan.sleep['loading'])
+
+    if kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
+        return _ck_stamina(bot)
+    elif kirafan.icons['kuromon'].scan(kirafan.sleep['loading']):
+        return True
+    elif kirafan.stamina['use'] and kirafan.icons['stamina_title'].found(False):
+        return _ck_stamina(bot)
+    return False
 
 
 def _battle_resume(bot):
