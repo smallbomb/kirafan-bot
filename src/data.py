@@ -43,6 +43,7 @@ class _UserData():
         data['quest_selector'] = data['questList']['quest_selector']
         quest = data['questList'][data['quest_selector']]
         data['loop_count'] = quest['loop_count']
+        data['wait_stamina_recovery'] = quest['wait_stamina_recovery']
         data['crea_stop'] = quest['crea_stop']
         data['stamina'] = quest['stamina']
         data['friend_support'] = quest['friend_support']
@@ -67,12 +68,17 @@ class _UserData():
         elif questlist['quest_selector'] not in questlist:
             questlist['quest_selector'] = list(questlist.keys())[1]
         for q in tuple(filter(lambda x: x != 'quest_selector', questlist.keys())):
+            self.__padding_wait_stamina_recovery(questlist[q])
             self.__padding_crea_stop(questlist[q])
             self.__padding_friend_support(questlist[q])
             self.__padding_stamina(questlist[q])
             self.__padding_orb(questlist[q])
             self.padding_wave(self.__wave_parse(questlist[q]['wave']))
         return rawdata
+
+    def __padding_wait_stamina_recovery(self, quest: Dict):
+        if 'wait_stamina_recovery' not in quest:
+            quest['wait_stamina_recovery'] = 0
 
     def __padding_crea_stop(self, quest: Dict):
         if isinstance(quest['crea_stop'], bool):

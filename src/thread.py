@@ -21,8 +21,8 @@ class Job(threading.Thread):
     def is_not_gui_button_stop(self):
         return not self.__gui_button_stop.is_set()
 
-    def wait(self):
-        return self.__not_Pause.wait()
+    def wait(self, timeout=None):
+        return self.__not_Pause.wait(timeout)
 
     def run(self):
         self._target(*self._args)
