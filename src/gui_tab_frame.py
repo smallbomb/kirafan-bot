@@ -44,7 +44,7 @@ class Tab_Frame():
         minutes = self.quest['wait_stamina_recovery']
         k = [f'{self.__prefix_key}_wait_stamina_recovery_setting_']
         return [
-            sg.Text(f'wait stamina recovery'),
+            sg.Text('wait stamina recovery'),
             sg.Spin([i for i in range(700)], size=3, key=k[0], initial_value=minutes, enable_events=True),
             sg.Text('minutes (retry to click again.png after N minutes when kirafan-bot can\'t move to next new battle)'),
         ]
