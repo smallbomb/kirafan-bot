@@ -109,9 +109,14 @@ def _try_to_move_next_new_battle(bot):
             if bot.wait(kirafan.wait_stamina):
                 break
             else:
-                logger.debug(f'kirafan-bot resume because of timeout {kirafan.wait_stamina}s')
+                logger.debug(f'_try_to_move_next_new_battle(): kirafan-bot resume because of timeout {kirafan.wait_stamina}s')
                 bot.resume()
-                continue
+                kirafan.icons['stamina_title'].found(True) and kirafan.icons['tojiru'].click(adb_update_cache=False)
+                if kirafan.icons['again'].scan_then_click(scan_timeout=3):
+                    logger.debug('_try_to_move_next_new_battle(): click again.png')
+                    continue
+                else:
+                    break
 
 
 def _skip_award_result(bot):
