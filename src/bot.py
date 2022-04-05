@@ -53,7 +53,7 @@ class BOT:
         self.quest_name = self.data['quest_selector']
         self.wave_total = self.data['wave']['total']
         self.loop_count = self.data['loop_count']
-        self.wait_stamina = self.data['wait_stamina_recovery'] * 60
+        self.wait_stamina = self.data['wait_stamina_recovery'] or None
         self.sleep = self.data['sleep']
         self.crea_craft_stop = self.data['crea_stop']['craft']
         self.crea_comm_stop = self.data['crea_stop']['comm']
@@ -240,7 +240,7 @@ class BOT:
         self.quest_name = self.data['quest_selector']
         self.wave_total = self.data['wave']['total']
         self.loop_count = self.data['loop_count']
-        self.wait_stamina = self.data['wait_stamina_recovery'] * 60
+        self.wait_stamina = self.data['wait_stamina_recovery'] or None
         self.sleep = self.data['sleep']
         self.crea_craft_stop = self.data['crea_stop']['craft']
         self.crea_comm_stop = self.data['crea_stop']['comm']

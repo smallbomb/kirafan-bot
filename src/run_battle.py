@@ -100,13 +100,13 @@ def _try_to_move_next_new_battle(bot):
             logger.debug('_try_to_move_next_new_battle(): click tojiru button (stamina page was not closed)')
             kirafan.icons['again'].scan_then_click(scan_timeout=3)
         else:
-            if kirafan.wait_stamina <= 0:
+            if kirafan.wait_stamina is None:
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
                 bot.send_event('_update_button_start_', 'Start')
             else:
                 logger.info(f'Can not move to next new battle. maybe insufficient stamina items? wait {kirafan.wait_stamina}s')
             bot.pause()
-            if bot.wait(kirafan.wait_stamina):
+            if bot.wait(kirafan.wait_stamina and kirafan.wait_stamina * 60):
                 break
             else:
                 logger.debug(f'_try_to_move_next_new_battle(): kirafan-bot resume because of timeout {kirafan.wait_stamina}s')
