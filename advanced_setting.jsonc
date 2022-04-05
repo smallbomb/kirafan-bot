@@ -69,7 +69,7 @@
       "shop_count_bar_start": {"x":0.63125, "y":0.64444, "color": "None", "owner": ["bot"]},
       "shop_count_bar_end": {"x":0.67188, "y":0.64444, "color": "None", "owner": ["bot"]},
       "shop_count_confirm": {"x":0.59922, "y":0.84444, "color": "None", "owner": ["bot"]},
-      "scan_training_button": {"x":0.44219, "y":0.39167, "color": "ivory", "owner": ["bot"]}
+      "scan_training_button": {"x":0.0375, "y":0.60277, "color": "ivory", "owner": ["bot"]}
     },
     "4:3": {
       "focus_ch_left": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}
