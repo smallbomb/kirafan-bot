@@ -61,6 +61,11 @@ class _UserData():
         self.setting['game_region'] = self.__adb_region if self.setting['adb']['use'] else self.__pyautogui_region
 
     def __padding(self, rawdata: Dict) -> Dict:
+        if 'scan_training' not in rawdata['sleep']:
+            rawdata['sleep']['scan_training'] = 10
+        return self.__padding_questList(rawdata)
+
+    def __padding_questList(self, rawdata: Dict) -> Dict:
         questlist = rawdata['questList']
         if len(questlist) <= 1:
             questlist['new tab 1'] = {'loop_count': 5, 'crea_stop': {'comm': False, 'craft': False}, 'wave': {'total': 1}}
@@ -123,7 +128,7 @@ class _UserData():
     def create_default_quest(self) -> Dict:
         q = dict()
         q['questList'] = dict()
-        q = self.__padding(q)
+        q = self.__padding_questList(q)
         return q['questList']['new tab 1']
 
     def gui_setting(self):

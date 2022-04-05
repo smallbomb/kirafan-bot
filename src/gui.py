@@ -14,6 +14,7 @@ from hotkey import Hotkey
 from run_battle import run as battle
 from run_visit_friend_room import run as visit_friend_room
 from run_cork_shop_exchange import run as cork_shop_exchange
+from run_scan_training import run as scan_training
 
 
 @typechecked
@@ -53,7 +54,7 @@ class kirafanbot_GUI():
         self.update_tab_selected(self.find_tab_by_name(self.data['questList']['quest_selector']).id)
         self.update_tabs_bind()
         self.update_adb_bind()
-        self.battle_job = self.visit_room_job = self.cork_shop_job = Job()
+        self.battle_job = self.visit_room_job = self.cork_shop_job = self.scan_training_job = Job()
         self.hotkey = Hotkey('s', mode='gui', window=self.window)
         if self.data['adb']['use']:
             self.hotkey.remove_all_hotkey()
@@ -238,6 +239,7 @@ class kirafanbot_GUI():
             'Stop once': lambda k: self.bt_stop_once_event(),
             'Visit Room': lambda k: self.bt_visit_room_event(k),
             'Cork Shop': lambda k: self.bt_cork_shop_event(k),
+            'Scan Training': lambda k: self.bt_scan_training_event(k),
             'Game region': lambda k: self.bt_game_region_event(),
             'ScreenShot': lambda k: self.bt_screenshot_event(),
             'Log': lambda k: self.window['_log_area_'].update(visible=(not self.window['_log_area_'].visible)),
@@ -314,6 +316,21 @@ class kirafanbot_GUI():
                 self.stop_safe(self.cork_shop_job)
             self.update_button_status(key, 'Cork Shop')
 
+    def bt_scan_training_event(self, key: str):
+        bt_name = self.window[key].GetText()
+        if bt_name == 'Scan Training':
+            if not self.scan_training_job.is_alive():
+                self.scan_training_job = Job(target=scan_training, args=(self.window,))
+                self.scan_training_job.start()
+            elif self.scan_training_job.is_pausing():
+                self.scan_training_job.resume()
+            self.update_button_status(key, 'Stop Scan')
+        elif bt_name == 'Stop Scan':
+            if self.scan_training_job.is_alive():
+                self.update_button_status(key, bt_name)
+                self.stop_safe(self.scan_training_job)
+            self.update_button_status(key, 'Scan Training')
+
     def handle_update_event(self, key: str, value):
         update_event_map = {
             '_update_wave_id_': lambda v: self.find_tab_by_name(self.data['questList']['quest_selector']).update_wave_id_status(self.window, v),  # noqa: E501
@@ -321,7 +338,8 @@ class kirafanbot_GUI():
             '_update_stop_once_': lambda v: self.update_stop_once_status(),
             '_update_button_start_': lambda v: self.update_button_status('_button_Start_', v),
             '_update_button_visit_room_': lambda v: self.update_button_status('_button_Visit Room_', v),
-            '_update_button_cork_shop_': lambda v: self.update_button_status('_button_Cork Shop_', v)
+            '_update_button_cork_shop_': lambda v: self.update_button_status('_button_Cork Shop_', v),
+            '_update_button_scan_training_': lambda v: self.update_button_status('_button_Scan Training_', v)
         }
         update_event_map[key](value)
 
@@ -346,7 +364,7 @@ class kirafanbot_GUI():
         if self.blocked():
             return
         if not self.data['adb']['use'] and (self.battle_job.is_alive() or self.visit_room_job.is_alive() or
-                                            self.cork_shop_job.is_alive()):
+                                            self.cork_shop_job.is_alive() or self.scan_training_job.is_alive()):
             self.window['_tips_'].update('Tips: press hotkey(z+s) to stop bot')
         else:
             self.window['_tips_'].update('')
@@ -356,26 +374,42 @@ class kirafanbot_GUI():
         toggle_other_buttons_map = {
             'Start': lambda: (self.window['_button_Visit Room_'].Update(disabled=True),
                               self.window['_button_Cork Shop_'].Update(disabled=True),
+                              self.window['_button_Scan Training_'].Update(disabled=True),
                               self.window['_button_Game region_'].Update(disabled=True)),
             'Visit Room': lambda: (self.window['_button_Start_'].Update(disabled=True),
                                    self.window['_button_Stop once_'].Update(disabled=True),
                                    self.window['_button_Cork Shop_'].Update(disabled=True),
+                                   self.window['_button_Scan Training_'].Update(disabled=True),
                                    self.window['_button_Game region_'].Update(disabled=True)),
             'Cork Shop': lambda: (self.window['_button_Start_'].Update(disabled=True),
                                   self.window['_button_Stop once_'].Update(disabled=True),
                                   self.window['_button_Visit Room_'].Update(disabled=True),
+                                  self.window['_button_Scan Training_'].Update(disabled=True),
                                   self.window['_button_Game region_'].Update(disabled=True)),
+            'Scan Training': lambda: (self.window['_button_Start_'].Update(disabled=True),
+                                      self.window['_button_Stop once_'].Update(disabled=True),
+                                      self.window['_button_Visit Room_'].Update(disabled=True),
+                                      self.window['_button_Cork Shop_'].Update(disabled=True),
+                                      self.window['_button_Game region_'].Update(disabled=True)),
             'Stop': lambda: (self.window['_button_Visit Room_'].Update(disabled=False),
                              self.window['_button_Cork Shop_'].Update(disabled=False),
+                             self.window['_button_Scan Training_'].Update(disabled=False),
                              self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
             'Stop Visit': lambda: (self.window['_button_Start_'].Update(disabled=False),
                                    self.window['_button_Stop once_'].Update(disabled=False),
                                    self.window['_button_Cork Shop_'].Update(disabled=False),
+                                   self.window['_button_Scan Training_'].Update(disabled=False),
                                    self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
             'Stop Exchange': lambda: (self.window['_button_Start_'].Update(disabled=False),
                                       self.window['_button_Stop once_'].Update(disabled=False),
                                       self.window['_button_Visit Room_'].Update(disabled=False),
+                                      self.window['_button_Scan Training_'].Update(disabled=False),
                                       self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
+            'Stop Scan': lambda: (self.window['_button_Start_'].Update(disabled=False),
+                                  self.window['_button_Stop once_'].Update(disabled=False),
+                                  self.window['_button_Visit Room_'].Update(disabled=False),
+                                  self.window['_button_Cork Shop_'].Update(disabled=False),
+                                  self.data['adb']['use'] or self.window['_button_Game region_'].Update(disabled=False)),
         }
         toggle_other_buttons_map[current_button]()
 
@@ -415,7 +449,7 @@ class kirafanbot_GUI():
     def __sleep_area(self) -> List:
         self.__original_sleep = deepcopy(self.data['sleep'])
         delay = self.data['sleep']
-        k = ['_sleep_click_', '_sleep_sp_', '_sleep_loadding_', '_sleep_wave_transitions_']
+        k = ['_sleep_click_', '_sleep_sp_', '_sleep_loadding_', '_sleep_wave_transitions_', '_sleep_scan_training_']
         layout = [[
             sg.Text('click:', pad=((5, 0), 5)),
             sg.Input(delay['click'], size=3, pad=((0, 10), 5), key=k[0], enable_events=True),
@@ -424,7 +458,9 @@ class kirafanbot_GUI():
             sg.Text('loading:', pad=((5, 0), 5)),
             sg.Input(delay['loading'], size=4, pad=((0, 10), 5), key=k[2], enable_events=True),
             sg.Text('wave transition:', pad=((5, 0), 5)),
-            sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True)
+            sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True),
+            sg.Text('scan training:', pad=((5, 0), 5)),
+            sg.Input(delay['scan_training'], size=4, pad=((0, 10), 5), key=k[4], enable_events=True)
         ]]
         return [sg.Frame('delay (s)', layout, pad=((0, 5), 5))]
 
@@ -466,7 +502,7 @@ class kirafanbot_GUI():
         ]
 
     def __button_area(self) -> List:
-        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop',
+        button_list = ['Start', 'Reset', 'Stop once', 'Visit Room', 'Cork Shop', 'Scan Training',
                        'Game region', 'ScreenShot', 'Log', 'More settings', 'Exit']
         return [
             sg.Column([[
@@ -498,7 +534,7 @@ class kirafanbot_GUI():
 
     def blocked(self):
         if not (self.battle_job.is_not_gui_button_stop() and self.visit_room_job.is_not_gui_button_stop() and
-                self.cork_shop_job.is_not_gui_button_stop()):
+                self.cork_shop_job.is_not_gui_button_stop() and self.scan_training_job.is_not_gui_button_stop()):
             return True
         return False
 
