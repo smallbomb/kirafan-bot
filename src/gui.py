@@ -525,6 +525,8 @@ class kirafanbot_GUI():
     def stop_all_safe(self):
         self.stop_safe(self.battle_job)
         self.stop_safe(self.visit_room_job)
+        self.stop_safe(self.cork_shop_job)
+        self.stop_safe(self.scan_training_job)
 
     def stop_safe(self, job: Job):
         if job.is_alive():
