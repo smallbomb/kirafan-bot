@@ -3,12 +3,10 @@ from log import logger
 from typeguard import typechecked
 from time import sleep
 from bot import kirafan
-from run_scan_training import run as run_scan_training
 
 
 def run(window):
     bot = threading.currentThread()
-    bot.window = window
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logger.info('battle start...')
     logger.info(f'loop count = {kirafan.loop_count} now')
@@ -107,7 +105,8 @@ def _try_to_move_next_new_battle(bot):
                 sleep(1)
                 kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
                 sleep(kirafan.sleep['loading'])
-                run_scan_training(bot.window)
+                bot.stop()
+                bot.send_event('_button_Scan Traning_', None)
             else:
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
                 bot.send_event('_update_button_start_', 'Start')
