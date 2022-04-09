@@ -28,6 +28,7 @@ class _Adb():
         self.__swipe_cmd = f'{adb_path} {adb_option} shell input swipe'
         self.__stop_app = f'{adb_path} {adb_option} shell am force-stop com.aniplex.kirarafantasia'
         self.__start_app = f'{adb_path} {adb_option} shell monkey -p com.aniplex.kirarafantasia -c android.intent.category.LAUNCHER 1'  # noqa: E501
+        self.__pgrep_app = f'{adb_path} {adb_option} shell pgrep -c kirarafantasia'
         self.__pixelformat = None
         self.__has_screenshot_IM = None
         self.__cv2_IM_COLOR_cache = None
@@ -126,6 +127,10 @@ class _Adb():
         _shell_command(self.__start_app).wait()
         return True
 
+    def app_running(self) -> bool:
+        out = _shell_command(self.__pgrep_app).stdout.read()
+        return True if out and int(out) > 0 else False
+
     def reload(self):
         self.__init__()
 
@@ -147,6 +152,7 @@ if __name__ == '__main__':
     # print(f'coord={coord}')
     # adb.click(*coord, 5, 0.2)
     adb.click(500, 500, 5, 0.2)
+    # print(adb.app_running())
     # rgb = adb.getpixel(*coord)
     # print(f'RGB={rgb}')
     # adb.swipe(1168, 596, 1279, 596, 1)

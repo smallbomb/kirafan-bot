@@ -169,16 +169,15 @@ class BOT:
     def detect_crashes(self) -> bool:
         self.__ck_crash_count += 1
         if self.data['crash_detection']:
+            if self.data['adb']['use']:
+                return False if adb.app_running() else adb.restart_app()
             if self.__ck_crash_count > 300:  # bot will be stoped.
                 return True
             if self.__ck_crash_count > 100:  # try to move mouse and then click.
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:
-                if self.data['adb']['use']:
-                    return adb.restart_app()
-                else:
-                    self.objects['center_left'].click()
-                    return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
+                self.objects['center_left'].click()
+                return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
         return False
 
     def ck_timer_pause(self, interrupt, callback) -> bool:
