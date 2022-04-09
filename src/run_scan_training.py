@@ -8,11 +8,17 @@ from bot import kirafan
 def run(window):
     bot = threading.currentThread()
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
-    logger.info(f"scan training start...(checking every {kirafan.sleep['scan_training']}s)")
-    if kirafan.icons['menu'].scan_then_click(scan_timeout=5):
+    if kirafan.icons['training_icon'].click():
+        _sleep(bot, 5)
+    elif kirafan.icons['menu'].scan_then_click(scan_timeout=5):
         kirafan.icons['training_icon'].scan_then_click(scan_timeout=3)
         _sleep(bot, 5)
+    else:
+        logger.error(f'unknown place...?')
+        bot.stop()
+
     while bot.is_running():
+        logger.info(f"scan training start...(checking every {kirafan.sleep['scan_training']}s)")
         if kirafan.objects['scan_training_button'].found():
             kirafan.objects['scan_training_button'].click(2)
             logger.info('run_scan_training(): click training finish button')
