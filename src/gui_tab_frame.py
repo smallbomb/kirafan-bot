@@ -5,7 +5,8 @@ from data import uData, data_compare
 from typeguard import typechecked
 from defined import List, Optional, Dict
 from gui_priority import priority_GUI
-_tab_handle_re = re.compile(r'^_(loop_count_setting|wait_stamina_recovery_setting|crea_(?:craft|comm)_stop|friend_support|stamina|orb|wave).*_$')  # noqa: E501
+from bot import kirafan
+_tab_handle_re = re.compile(r'^_(loop_count_setting|move_training_place_setting|crea_(?:craft|comm)_stop|friend_support|stamina|orb|wave).*_$')  # noqa: E501
 _tab_handle_wave_event_re = re.compile(r'^_wave\d*_.*(auto|sp_weight_enable|sp_weight|skill_priority|total)_$')
 pos = ['left', 'middle', 'right']
 sk_list = ['sp', 'wpn_sk', 'L_sk', 'R_sk', 'atk']
@@ -26,8 +27,8 @@ class Tab_Frame():
     def create_layout(self) -> List:
         return [
             self.__loop_count() +
+            self.__move_training_place() +
             self.__tab_modify(),
-            self.__wait_stamina_recovery(),
             self.__orb_area() +
             [sg.Column([self.__crea_stop(), self.__stamina_area(), self.__friend_support_area()])],
             self.__wave_area()
@@ -40,13 +41,10 @@ class Tab_Frame():
             sg.Input(self.quest['loop_count'], key=k[1], size=(4, 1), pad=0, enable_events=True)
         ]
 
-    def __wait_stamina_recovery(self) -> List:
-        minutes = self.quest['wait_stamina_recovery']
-        k = [f'{self.__prefix_key}_wait_stamina_recovery_setting_']
+    def __move_training_place(self) -> List:
+        k = [f'{self.__prefix_key}_move_training_place_setting_']
         return [
-            sg.Text('wait stamina recovery'),
-            sg.Spin([i for i in range(700)], size=3, key=k[0], initial_value=minutes, enable_events=True),
-            sg.Text('minutes (retry to click again.png after N minutes when kirafan-bot can\'t move to next new battle)'),
+            sg.Checkbox('move training place after battle', key=k[0], default=self.quest['move_training_place'], enable_events=True),  # noqa: E501
         ]
 
     def __tab_modify(self) -> List:
@@ -148,7 +146,7 @@ class Tab_Frame():
     def handle(self, window: sg.Window, event: str, values: Dict):
         _handle_map = {
             'loop_count_setting': lambda window, key, value: self.handle_loop_count_event(value),
-            'wait_stamina_recovery_setting': lambda window, key, value: self.handle_wait_stamina_recovery_event(value),
+            'move_training_place_setting': lambda window, key, value: self.handle_move_training_place_event(value),
             'orb': lambda window, key, value: self.handle_orb_event(window, key, value),
             'crea_craft_stop': lambda window, key, value: self.quest['crea_stop'].update({'craft': value}),
             'crea_comm_stop': lambda window, key, value: self.quest['crea_stop'].update({'comm': value}),
@@ -167,8 +165,9 @@ class Tab_Frame():
         elif value == '':
             self.quest['loop_count'] = 0
 
-    def handle_wait_stamina_recovery_event(self, value: int):
-        self.quest['wait_stamina_recovery'] = value
+    def handle_move_training_place_event(self, value: bool):
+        kirafan.move_training_place_after_battle = value
+        self.quest['move_training_place'] = value
 
     def handle_orb_event(self, window: sg.Window, key: str, value):
         n = key[4]

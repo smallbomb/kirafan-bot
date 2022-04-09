@@ -1,5 +1,6 @@
 import threading
 from log import logger
+from data import uData
 from time import sleep
 from bot import kirafan
 
@@ -8,6 +9,9 @@ def run(window):
     bot = threading.currentThread()
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logger.info(f"scan training start...(checking every {kirafan.sleep['scan_training']}s)")
+    if kirafan.icons['menu'].scan_then_click(scan_timeout=5):
+        kirafan.icons['training_icon'].scan_then_click(scan_timeout=3)
+        _sleep(bot, 5)
     while bot.is_running():
         if kirafan.objects['scan_training_button'].found():
             kirafan.objects['scan_training_button'].click(2)
@@ -19,10 +23,12 @@ def run(window):
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
             logger.debug('run_scan_training(): click ok button (poor internet connection)')
             _sleep(bot, 2)
+        elif uData.setting["adb"]["use"] and kirafan.detect_crashes():
+            _scan_training_resume(bot)
         _sleep(bot, kirafan.sleep['scan_training'])
 
     logger.info('kirafan-bot stop(scan training)...')
-    bot.send_event('_update_button_scan_training_', 'Visit Room')
+    bot.send_event('_update_button_scan_training_', 'Scan Training')
 
 
 def _sleep(bot, sec: float):

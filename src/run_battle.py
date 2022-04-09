@@ -3,10 +3,12 @@ from log import logger
 from typeguard import typechecked
 from time import sleep
 from bot import kirafan
+from run_scan_training import run as run_scan_training
 
 
 def run(window):
     bot = threading.currentThread()
+    bot.window = window
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logger.info('battle start...')
     logger.info(f'loop count = {kirafan.loop_count} now')
@@ -100,23 +102,17 @@ def _try_to_move_next_new_battle(bot):
             logger.debug('_try_to_move_next_new_battle(): click tojiru button (stamina page was not closed)')
             kirafan.icons['again'].scan_then_click(scan_timeout=3)
         else:
-            if kirafan.wait_stamina is None:
+            if kirafan.move_training_place_after_battle:
+                kirafan.icons['tojiru'].click(adb_update_cache=False)
+                sleep(1)
+                kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
+                sleep(kirafan.sleep['loading'])
+                run_scan_training(bot.window)
+            else:
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
                 bot.send_event('_update_button_start_', 'Start')
-            else:
-                logger.info(f'Can not move to next new battle. maybe insufficient stamina items? wait {kirafan.wait_stamina}s')
-            bot.pause()
-            if bot.wait(kirafan.wait_stamina and kirafan.wait_stamina * 60):
-                break
-            else:
-                logger.debug(f'_try_to_move_next_new_battle(): kirafan-bot resume because of timeout {kirafan.wait_stamina}s')
-                bot.resume()
-                kirafan.icons['stamina_title'].found(True) and kirafan.icons['tojiru'].click(adb_update_cache=False)
-                if kirafan.icons['again'].scan_then_click(scan_timeout=3):
-                    logger.debug('_try_to_move_next_new_battle(): click again.png')
-                    continue
-                else:
-                    break
+                bot.pause()
+                bot.wait()
 
 
 def _skip_award_result(bot):

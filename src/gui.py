@@ -449,7 +449,7 @@ class kirafanbot_GUI():
     def __sleep_area(self) -> List:
         self.__original_sleep = deepcopy(self.data['sleep'])
         delay = self.data['sleep']
-        k = ['_sleep_click_', '_sleep_sp_', '_sleep_loadding_', '_sleep_wave_transitions_', '_sleep_scan_training_']
+        k = ['_sleep_click_', '_sleep_sp_', '_sleep_loadding_', '_sleep_wave_transitions_']
         layout = [[
             sg.Text('click:', pad=((5, 0), 5)),
             sg.Input(delay['click'], size=3, pad=((0, 10), 5), key=k[0], enable_events=True),
@@ -458,9 +458,7 @@ class kirafanbot_GUI():
             sg.Text('loading:', pad=((5, 0), 5)),
             sg.Input(delay['loading'], size=4, pad=((0, 10), 5), key=k[2], enable_events=True),
             sg.Text('wave transition:', pad=((5, 0), 5)),
-            sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True),
-            sg.Text('scan training:', pad=((5, 0), 5)),
-            sg.Input(delay['scan_training'], size=4, pad=((0, 10), 5), key=k[4], enable_events=True)
+            sg.Input(delay['wave_transitions'], size=3, pad=((0, 10), 5), key=k[3], enable_events=True)
         ]]
         return [sg.Frame('delay (s)', layout, pad=((0, 5), 5))]
 
