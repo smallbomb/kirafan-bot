@@ -7,6 +7,7 @@ from bot import kirafan
 
 def run(window):
     bot = threading.currentThread()
+    bot.trigger_scan_training_button = False
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logger.info('battle start...')
     logger.info(f'loop count = {kirafan.loop_count} now')
@@ -31,7 +32,8 @@ def run(window):
                 sleep(kirafan.sleep['wave_transitions'])
     logger.info('kirafan-bot stop(battle)...')
     bot.send_event('_update_button_start_', 'Start')
-
+    if bot.trigger_scan_training_button:
+        bot.send_event('_button_Scan Training_', None)
 
 @typechecked
 def _is_battle_now() -> bool:
@@ -106,7 +108,7 @@ def _try_to_move_next_new_battle(bot):
                 kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
                 sleep(kirafan.sleep['loading'])
                 bot.stop()
-                bot.send_event('_button_Scan Traning_', None)
+                bot.trigger_scan_training_button = True
             else:
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
                 bot.send_event('_update_button_start_', 'Start')
