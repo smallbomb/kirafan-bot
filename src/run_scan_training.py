@@ -14,7 +14,7 @@ def run(window):
         kirafan.icons['training_icon'].scan_then_click(scan_timeout=3)
         _sleep(bot, 5)
     else:
-        logger.error(f'unknown place...?')
+        logger.error('unknown place...?')
         bot.stop()
 
     while bot.is_running():
