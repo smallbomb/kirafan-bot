@@ -72,7 +72,7 @@ def _ck_session_clear_text_and_resume(bot):
 
 
 def _scan_training_resume(bot):
-    logger.warning('_scan_training_resume(): try to scan training...')
+    logger.warning('_scan_training_resume(): try to resume to training place...')
     kirafan.objects['center'].click_sec(100)
     while kirafan.icons['ok'].click():
         _sleep(bot, 2)

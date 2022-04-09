@@ -35,6 +35,7 @@ def run(window):
     if bot.trigger_scan_training_button:
         bot.send_event('_button_Scan Training_', None)
 
+
 @typechecked
 def _is_battle_now() -> bool:
     return kirafan.wave_icon_found()
