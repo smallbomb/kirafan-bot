@@ -9,14 +9,7 @@ def run(window):
     bot = threading.currentThread()
     bot.send_event = lambda event, value: bot.is_not_gui_button_stop() and window.write_event_value(event, value)
     logger.info(f"scan training start...(check button every {kirafan.sleep['scan_training']}s)")
-    if kirafan.icons['training_icon'].click():
-        _sleep(bot, 5)
-    elif kirafan.icons['menu'].scan_then_click(scan_timeout=5):
-        kirafan.icons['training_icon'].scan_then_click(scan_timeout=3)
-        _sleep(bot, 5)
-    else:
-        logger.error('unknown place...?')
-        bot.stop()
+    _try_to_move_training(bot)
     bot.is_running() and logger.debug('run_scan_training(): move training place success')
     while bot.is_running():
         if kirafan.objects['scan_training_button'].found():
@@ -41,6 +34,19 @@ def _sleep(bot, sec: float):
     while bot.is_running() and sec > 0:
         sleep(1)
         sec -= 1
+
+
+def _try_to_move_training(bot):
+    if kirafan.icons['training_icon'].click():
+        _sleep(bot, 5)
+    elif kirafan.icons['menu'].scan_then_click(scan_timeout=5):
+        kirafan.icons['training_icon'].scan_then_click(scan_timeout=3)
+        _sleep(bot, 5)
+    elif uData.setting["adb"]["use"] and kirafan.detect_crashes():
+        _scan_training_resume(bot)
+    else:
+        logger.error('unknown place...?')
+        bot.stop()
 
 
 def _bulk_challenge(bot):
