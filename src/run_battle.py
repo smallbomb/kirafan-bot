@@ -122,7 +122,7 @@ def _skip_award_result(bot):
         kirafan.stop_once = False
         bot.send_event('_update_stop_once_', None)
         bot.stop()
-    elif kirafan.loop_count <= 0:
+    elif kirafan.loop_count <= 0 and not kirafan.move_training_place_after_battle:
         logger.info(f'loop count({kirafan.loop_count}) less than or equal to 0')
         bot.stop()
 
@@ -132,7 +132,9 @@ def _skip_award_result(bot):
         if not bot.is_running():
             logger.debug('_skip_award_result(): interrupt')
             break
-        elif kirafan.icons['again'].click():
+        elif kirafan.icons['again'].found():
+            if kirafan.loop_count > 0 or not kirafan.move_training_place_after_battle:
+                kirafan.icons['again'].click(adb_update_cache=False)
             break
         elif _ck_tojiru_window_in_award(bot):
             retry = True
