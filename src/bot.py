@@ -77,9 +77,7 @@ class BOT:
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png', 'stamina_title.png',
                   'friend_icon.png', 'visit_room.png', 'cork_face.png', 'crea_comm_done.png', 'bulk_challenge.png',
-                  'X.png', 'menu.png', 'training_icon.png', 'session_clear_text.png']
-        if self.loop_count > 0:
-            images += ['again.png']
+                  'X.png', 'menu.png', 'training_icon.png', 'session_clear_text.png', 'again.png']
         if self.crea_craft_stop:
             images += ['crea_craft_occur.png']
         if self.data['crash_detection'] and not self.data['adb']['use']:
