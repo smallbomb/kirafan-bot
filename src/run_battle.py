@@ -1,7 +1,6 @@
 import threading
 from log import logger
 from typeguard import typechecked
-from time import sleep
 from bot import kirafan
 
 
@@ -29,7 +28,7 @@ def run(window):
                 _handle_award_flows(bot)
             else:
                 logger.debug(f'battle(): transitions now...({kirafan.wave_id}/{kirafan.wave_total})')
-                sleep(kirafan.sleep['wave_transitions'])
+                kirafan.break_sleep(kirafan.sleep['wave_transitions'], lambda: not bot.is_running())
     logger.info('kirafan-bot stop(battle)...')
     bot.send_event('_update_button_start_', 'Start')
     if bot.trigger_scan_training_button:
@@ -80,7 +79,7 @@ def _handle_award_flows(bot):
         _handle_ok_button(bot)
     else:
         logger.debug('_handle_award_flows(): still loading now...')
-        sleep(1)
+        kirafan.break_sleep(1, lambda: not bot.is_running())
 
 
 def _try_to_move_next_new_battle(bot):
@@ -89,7 +88,7 @@ def _try_to_move_next_new_battle(bot):
         if _ck_move_to_next_battle(bot):
             logger.debug('_try_to_move_next_new_battle(): player is moving to next battle...')
             logger.info(f'loop count = {kirafan.loop_count} now')
-            sleep(kirafan.sleep['loading'])
+            kirafan.break_sleep(kirafan.sleep['loading'], lambda: not bot.is_running())
             break
         elif not bot.is_running():
             break
@@ -105,9 +104,9 @@ def _try_to_move_next_new_battle(bot):
         else:
             if kirafan.move_training_place_after_battle:
                 kirafan.icons['tojiru'].click(adb_update_cache=False)
-                sleep(1)
+                kirafan.break_sleep(1, lambda: not bot.is_running())
                 kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
-                sleep(kirafan.sleep['loading'])
+                kirafan.break_sleep(5, lambda: not bot.is_running())
                 bot.stop()
                 bot.trigger_scan_training_button = True
             else:
@@ -196,9 +195,11 @@ def _ck_move_to_next_battle(bot) -> bool:
 def _battle_resume(bot):
     logger.warning('_battle_resume(): try to resume battle...')
     kirafan.reset_crash_detection()
-    kirafan.objects['center'].click_sec(100)
+    kirafan.objects['center'].click_sec(100, interrupt=lambda: not bot.is_running())
+    if not bot.is_running():
+        return
     while kirafan.icons['ok'].click():
-        sleep(2)
+        kirafan.break_sleep(2, lambda: not bot.is_running())
     if kirafan.icons['hai'].click():
         logger.info('_battle_resume(): resume battle success')
         kirafan.wave_id -= 1

@@ -1,7 +1,6 @@
 import threading
 from log import logger
 from typeguard import typechecked
-from time import sleep
 from bot import kirafan
 
 
@@ -13,25 +12,25 @@ def run(window):
     while bot.is_running():
         if tries == 3:
             bot.stop()
-        elif _handle_visit_room(bot, tries, _handle_friend_icon(tries)):
+        elif _handle_visit_room(bot, tries, _handle_friend_icon(bot, tries)):
             tries += 1
             logger.info(f'visit friend room time = {tries} success')
-            sleep(kirafan.sleep['loading'])
+            kirafan.break_sleep(kirafan.sleep['loading'], lambda: not bot.is_running())
 
     logger.info('kirafan-bot stop(visit friend)...')
     bot.send_event('_update_button_visit_room_', 'Visit Room')
 
 
 @typechecked
-def _handle_friend_icon(tries: int) -> bool:
+def _handle_friend_icon(bot, tries: int) -> bool:
     sec = 2 if tries == 0 else 5
     friend_icon_retry = True
     while True:
         if kirafan.icons['ok'].click(2):
             logger.debug('_handle_friend_icon(): click ok button (poor internet connection)')
-            sleep(2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
         elif kirafan.icons['friend_icon'].scan_then_click(scan_timeout=sec, click_times=2):
-            sleep(2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
             return True
         elif tries != 0 and friend_icon_retry:
             logger.debug('try a again because friend_icon.png not match on game region')
@@ -46,7 +45,7 @@ def _handle_visit_room(bot, tries: int, found_friend_icon: bool) -> bool:
     while bot.is_running():
         if kirafan.icons['ok'].click(2):
             logger.debug('_handle_visit_room(): click ok button (poor internet connection)')
-            sleep(2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
         elif kirafan.icons['visit_room'].scan_then_click(scan_timeout=sec, click_times=2):
             return True
         elif visit_room_retry:

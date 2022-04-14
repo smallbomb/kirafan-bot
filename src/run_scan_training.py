@@ -1,7 +1,6 @@
 import threading
 from log import logger
 from data import uData
-from time import sleep
 from bot import kirafan
 
 
@@ -15,33 +14,28 @@ def run(window):
         if kirafan.objects['scan_training_button'].found():
             kirafan.objects['scan_training_button'].click(2)
             logger.info('run_scan_training(): click training finish button')
-            _sleep(bot, 2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
             _bulk_challenge(bot)
         elif _ck_session_clear_text_and_resume(bot):
             continue
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
             logger.debug('run_scan_training(): click ok button (poor internet connection)')
-            _sleep(bot, 2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
         elif uData.setting["adb"]["use"] and kirafan.detect_crashes():
             _scan_training_resume(bot)
-        _sleep(bot, kirafan.sleep['scan_training'])
+        kirafan.break_sleep(kirafan.sleep['scan_training'], lambda: not bot.is_running())
 
     logger.info('kirafan-bot stop(scan training)...')
     bot.send_event('_update_button_scan_training_', 'Scan Training')
 
 
-def _sleep(bot, sec: float):
-    while bot.is_running() and sec > 0:
-        sleep(1)
-        sec -= 1
-
-
 def _try_to_move_training(bot):
+    kirafan.icons['X'].click()
     if kirafan.icons['training_icon'].click():
-        _sleep(bot, 5)
+        kirafan.break_sleep(5, lambda: not bot.is_running())
     elif kirafan.icons['menu'].scan_then_click(scan_timeout=5):
         kirafan.icons['training_icon'].scan_then_click(scan_timeout=3)
-        _sleep(bot, 5)
+        kirafan.break_sleep(5, lambda: not bot.is_running())
     elif uData.setting["adb"]["use"] and kirafan.detect_crashes():
         _scan_training_resume(bot)
     else:
@@ -57,15 +51,15 @@ def _bulk_challenge(bot):
             break
         if kirafan.icons['bulk_challenge'].scan_then_click(scan_timeout=3):
             logger.debug('_bulk_challenge(): click bulk challenge button')
-            _sleep(bot, 2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
             break
         elif _ck_session_clear_text_and_resume(bot):
             break
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
             logger.debug('bulk_challenge(): click ok button (poor internet connection)')
-            _sleep(bot, 2)
+            kirafan.break_sleep(2, lambda: not bot.is_running())
         tries -= 1
-        _sleep(bot, 1)
+        kirafan.break_sleep(1, lambda: not bot.is_running())
 
 
 def _ck_session_clear_text_and_resume(bot):
@@ -79,14 +73,16 @@ def _ck_session_clear_text_and_resume(bot):
 
 def _scan_training_resume(bot):
     logger.warning('_scan_training_resume(): try to resume to training place...')
-    kirafan.objects['center'].click_sec(100)
+    kirafan.objects['center'].click_sec(100, interrupt=lambda: not bot.is_running())
+    if not bot.is_running():
+        return
     while kirafan.icons['ok'].click():
-        _sleep(bot, 2)
+        kirafan.break_sleep(2, lambda: not bot.is_running())
     kirafan.icons['X'].click(adb_update_cache=False)
     kirafan.icons['menu'].scan_then_click(scan_timeout=3)
     if kirafan.icons['training_icon'].scan_then_click(scan_timeout=3):
         logger.info('_scan_training_resume(): resume to scan training success')
-        _sleep(bot, 5)
+        kirafan.break_sleep(5, lambda: not bot.is_running())
     else:
         logger.error('_scan_training_resume(): resume to scan training failed')
         bot.stop()

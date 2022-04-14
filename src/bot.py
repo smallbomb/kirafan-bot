@@ -257,6 +257,11 @@ class BOT:
         for wave_id in range(1, self.wave_total + 1):
             self.waves[str(wave_id)].adb_mode_switch()
 
+    def break_sleep(self, sec: float, interrupt: Callable[[], bool] = lambda: False):
+        while not interrupt() and sec > 0:
+            sleep(1)
+            sec -= 1
+
 
 kirafan = BOT()
 # Test

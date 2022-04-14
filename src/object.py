@@ -1,7 +1,7 @@
 import pyautogui
 from time import time, sleep
 from typeguard import typechecked
-from defined import Coord, RGB, Ratio, Owner, Dict, Optional
+from defined import Coord, RGB, Ratio, Owner, Dict, Optional, Callable
 from data import uData
 from adb import adb
 
@@ -45,12 +45,12 @@ class Object():
         self.__click(*self.coord, times, interval)
         sleep(interval)
 
-    def click_sec(self, sec: float = 0.0, interval: float = 1.0):
+    def click_sec(self, sec: float = 0.0, interval: float = 1.0, interrupt: Callable[[], bool] = lambda: False):
         if sec <= 0:
             return
         duration = 0.0
         t0 = round(time(), 1)
-        while duration < sec:
+        while not interrupt() and duration < sec:
             self.__click(*self.coord)
             if sec - duration >= interval:
                 sleep(interval)
