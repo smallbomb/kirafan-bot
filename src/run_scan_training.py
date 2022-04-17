@@ -46,8 +46,8 @@ def _try_to_move_training(bot):
 
 
 def _ck_session_timer(bot):
-    if uData.setting["adb"]["use"] and kirafan.ck_timer_pause(lambda: not bot.is_running(), lambda s: bot.send_event('_timer_countdown_', s), run_mode='scan_training'):  # noqa: E501
-        logger.info('run_scan_training(): restart kirafan app beacause end of timer')
+    if uData.setting["adb"]["use"] and kirafan.ck_timer_pause(lambda: not bot.is_running(), lambda s: bot.send_event('_timer_countdown_', s), run_mode='scan_training') and bot.is_running():  # noqa: E501
+        logger.info('run_scan_training(): restart kirafan app beacause session timer is up.')
         adb.restart_app()
         _scan_training_resume(bot)
 
