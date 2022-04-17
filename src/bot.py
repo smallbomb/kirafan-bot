@@ -77,7 +77,7 @@ class BOT:
     def __load_icons(self) -> Dict:
         images = ['kirara_face.png', 'kuromon.png', 'ok.png', 'hai.png', 'tojiru.png', 'stamina_title.png',
                   'friend_icon.png', 'visit_room.png', 'cork_face.png', 'crea_comm_done.png', 'bulk_challenge.png',
-                  'X.png', 'menu.png', 'training_icon.png', 'session_clear_text.png', 'again.png']
+                  'X.png', 'menu.png', 'training_icon.png', 'session_clear_text.png', 'again.png', 'nakayoshido.png']
         if self.crea_craft_stop:
             images += ['crea_craft_occur.png']
         if self.data['crash_detection'] and not self.data['adb']['use']:
@@ -171,14 +171,14 @@ class BOT:
                 return False if adb.app_running() else adb.restart_app()
             if self.__ck_crash_count > 300:  # bot will be stoped.
                 return True
-            if self.__ck_crash_count > 100:  # try to move mouse and then click.
+            if self.__ck_crash_count > 100:  # try to move mouse and click.
                 self.objects['center'].click()
             if self.__ck_crash_count > 50:
                 self.objects['center_left'].click()
                 return self.icons['kirafan_app_icon'].click() or self.icons['start_screen'].found()
         return False
 
-    def ck_timer_pause(self, interrupt, callback) -> bool:
+    def ck_timer_pause(self, interrupt, callback, run_mode='battle') -> bool:
         def time_in_range(start: datetime, end: datetime, now: datetime) -> bool:
             if start <= end:
                 return start <= now <= end
@@ -191,7 +191,7 @@ class BOT:
             end_time = datetime.strptime(str(datetime.now().date()) + "T" + end_clock, "%Y-%m-%dT%H:%M:%S")
             now_time = datetime.now()
             if time_in_range(start_time, end_time, now_time):
-                if self.get_current_wave().is_myTurn():
+                if run_mode == 'scan_training' or (run_mode == 'battle' and self.get_current_wave().is_myTurn()):
                     wait_until(end_time if end_time >= now_time else end_time + timedelta(days=1), interrupt, callback)
                 else:
                     self.objects['center'].click(3)  # advoid auto mode

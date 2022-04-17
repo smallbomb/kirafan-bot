@@ -2,6 +2,7 @@ import threading
 from log import logger
 from data import uData
 from bot import kirafan
+from adb import adb
 
 
 def run(window):
@@ -11,6 +12,7 @@ def run(window):
     _try_to_move_training(bot)
     bot.is_running() and logger.debug('run_scan_training(): move training place success')
     while bot.is_running():
+        _ck_session_timer(bot)
         if kirafan.objects['scan_training_button'].found():
             kirafan.objects['scan_training_button'].click(2)
             logger.info('run_scan_training(): click training finish button')
@@ -43,12 +45,22 @@ def _try_to_move_training(bot):
         bot.stop()
 
 
+def _ck_session_timer(bot):
+    if uData.setting["adb"]["use"] and kirafan.ck_timer_pause(lambda: not bot.is_running(), lambda s: bot.send_event('_timer_countdown_', s), run_mode='scan_training'):  # noqa: E501
+        logger.info('run_scan_training(): restart kirafan app beacause end of timer')
+        adb.restart_app()
+        _scan_training_resume(bot)
+
+
 def _bulk_challenge(bot):
     tries = 3
     while bot.is_running():
         if tries <= 0:
             logger.debug('_bulk_challenge(): bulk_challenge.png not found')
             break
+        if tries == 3 and kirafan.icons['nakayoshido'].scan(2):
+            kirafan.objects['nakayoshido_tojiru'].click(2)
+            continue
         if kirafan.icons['bulk_challenge'].scan_then_click(scan_timeout=3):
             logger.debug('_bulk_challenge(): click bulk challenge button')
             kirafan.break_sleep(2, lambda: not bot.is_running())
