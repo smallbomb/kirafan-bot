@@ -134,7 +134,7 @@ def _skip_award_result(bot):
             logger.debug('_skip_award_result(): interrupt')
             break
         elif kirafan.icons['again'].found():
-            if kirafan.loop_count > 0 or not kirafan.move_training_place_after_battle:
+            if not (kirafan.loop_count <= 0 and kirafan.move_training_place_after_battle):
                 kirafan.icons['again'].click(adb_update_cache=False)
             break
         elif _ck_tojiru_window_in_award(bot):
@@ -183,7 +183,10 @@ def _ck_move_to_next_battle(bot) -> bool:
         bot.stop()
         return False
 
-    if kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
+    if kirafan.loop_count <= 0 and kirafan.move_training_place_after_battle:
+        # just return false because we don't click button
+        return False
+    elif kirafan.stamina['use'] and kirafan.icons['stamina_title'].scan(2.5):
         return _ck_stamina(bot)
     elif kirafan.icons['kuromon'].scan(kirafan.sleep['loading']):
         return True
