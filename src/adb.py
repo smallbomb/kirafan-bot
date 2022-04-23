@@ -39,11 +39,7 @@ class _Adb():
             else:
                 logger.warning(f'{adb_path} does not exist')
 
-    def _screenshot(self, grayscale: bool = False):
-        if self.__has_screenshot_IM:
-            return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
-
-        img_bytes = None
+    def __image_bytes_data(self):
         if self.__pixelformat is None:
             for i in range(2):
                 _shell_command(self.__devices_cmd).communicate()
@@ -58,23 +54,26 @@ class _Adb():
             self.__width = int.from_bytes(img_bytes[:4], byteorder='little')
             self.__height = int.from_bytes(img_bytes[4:8], byteorder='little')
             self.__pixelformat = int.from_bytes(img_bytes[8:12], byteorder='little')
+            return img_bytes
+        else:
+            return _shell_command(self.__sreencap_cmd).stdout.read().replace(b'\r\n', b'\n')
 
-        if self.__pixelformat == 1:  # RGBA
-            img_bytes = img_bytes or _shell_command(self.__sreencap_cmd).stdout.read().replace(b'\r\n', b'\n')
-            try:
+    def _screenshot(self, grayscale: bool = False):
+        if self.__has_screenshot_IM:
+            return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
+
+        img_bytes = self.__image_bytes_data()
+        try:
+            if self.__pixelformat == 1:  # RGBA
                 npbuffer = np.frombuffer(img_bytes[12:], dtype=np.uint8).reshape(self.__height, self.__width, 4)
                 self.__cv2_IM_COLOR_cache = cv2.cvtColor(npbuffer, cv2.COLOR_RGBA2BGR)
-                self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
-            except ValueError:
-                self.__pixelformat = None
-        else:
-            img_bytes = _shell_command(f'{self.__sreencap_cmd} -p').stdout.read().replace(b'\r\n', b'\n')
-            try:
+            else:
                 self.__cv2_IM_COLOR_cache = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
-                self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
-            except ValueError:
-                self.__pixelformat = None
-        self.__has_screenshot_IM = True
+            self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
+            self.__has_screenshot_IM = True
+        except ValueError:
+            self.__pixelformat = None
+
         return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
 
     def set_update_cv2_IM_cache_flag(self):
