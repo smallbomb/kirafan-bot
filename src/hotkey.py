@@ -13,6 +13,7 @@ from position import Position, Shot, monitor_mode
 from run_battle import run as battle
 from run_visit_friend_room import run as visit_friend_room
 from run_cork_shop_exchange import run as cork_shop_exchange
+from run_scan_training import run as scan_training
 
 
 class fake_window:
@@ -26,7 +27,7 @@ class Hotkey:
         self.mode = mode
         self.window = window
         self.shot_job = None
-        self.battle_job = self.visit_room_job = self.cork_shop_job = self.monitor_job = Job()
+        self.battle_job = self.visit_room_job = self.cork_shop_job = self.scan_training_job = self.monitor_job = Job()
         self.kb = KBHit()
         self.positions = [Position(_id) for _id in range(1, 10)]
         self.keys = [f'z+{i}' for i in (list(range(1, 10)) if mode == 'hotkey' else []) + list(keys)]
@@ -66,6 +67,13 @@ class Hotkey:
             self.cork_shop_job.start()
         elif self.cork_shop_job.is_pausing():
             self.cork_shop_job.resume()
+
+    def __cmd_n(self):
+        if self.process_idle():
+            self.scan_training_job = Job(target=scan_training, args=(fake_window,))
+            self.scan_training_job.start()
+        elif self.scan_training_job.is_pausing():
+            self.scan_training_job.resume()
 
     def __cmd_i(self):
         kirafan.screenshot()
@@ -177,7 +185,8 @@ class Hotkey:
         return keyboard.wait(hotkey)
 
     def process_idle(self) -> bool:
-        return not (self.battle_job.is_alive() or self.visit_room_job.is_alive() or self.cork_shop_job.is_alive())
+        return not (self.battle_job.is_alive() or self.visit_room_job.is_alive() or self.cork_shop_job.is_alive() or
+                    self.scan_training_job.is_alive())
 
     def safe_exit(self):
         if self.battle_job.is_alive():
@@ -192,6 +201,9 @@ class Hotkey:
         if self.cork_shop_job.is_alive():
             self.cork_shop_job.stop()
             self.cork_shop_job.join()
+        if self.scan_training_job.is_alive():
+            self.scan_training_job.stop()
+            self.scan_training_job.join()
 
         sleep(0.1)
         while self.kb.kbhit():

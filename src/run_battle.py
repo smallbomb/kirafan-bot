@@ -32,6 +32,9 @@ def run(window):
     logger.info('kirafan-bot stop(battle)...')
     bot.send_event('_update_button_start_', 'Start')
     if bot.trigger_scan_training_button:
+        if kirafan.data['mode'] == 'hotkey':
+            from run_scan_training import run as scan_training
+            scan_training(window)
         bot.send_event('_button_Scan Training_', None)
 
 
