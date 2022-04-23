@@ -61,14 +61,19 @@ class _Adb():
 
         if self.__pixelformat == 1:  # RGBA
             img_bytes = img_bytes or _shell_command(self.__sreencap_cmd).stdout.read().replace(b'\r\n', b'\n')
-            npbuffer = np.frombuffer(img_bytes[12:], dtype=np.uint8).reshape(self.__height, self.__width, 4)
-            self.__cv2_IM_COLOR_cache = cv2.cvtColor(npbuffer, cv2.COLOR_RGBA2BGR)
-            self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
+            try:
+                npbuffer = np.frombuffer(img_bytes[12:], dtype=np.uint8).reshape(self.__height, self.__width, 4)
+                self.__cv2_IM_COLOR_cache = cv2.cvtColor(npbuffer, cv2.COLOR_RGBA2BGR)
+                self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
+            except ValueError:
+                self.__pixelformat = None
         else:
             img_bytes = _shell_command(f'{self.__sreencap_cmd} -p').stdout.read().replace(b'\r\n', b'\n')
-            self.__cv2_IM_COLOR_cache = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
-            self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
-
+            try:
+                self.__cv2_IM_COLOR_cache = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
+                self.__cv2_IM_GRAY_cache = cv2.cvtColor(self.__cv2_IM_COLOR_cache, cv2.COLOR_BGR2GRAY)
+            except ValueError:
+                self.__pixelformat = None
         self.__has_screenshot_IM = True
         return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
 
