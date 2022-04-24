@@ -110,6 +110,8 @@ def _try_to_move_next_new_battle(bot):
                 kirafan.break_sleep(1, lambda: not bot.is_running())
                 kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
                 kirafan.break_sleep(5, lambda: not bot.is_running())
+                while kirafan.icons['iie'].scan_then_click(scan_timeout=3):
+                    pass
                 bot.stop()
                 bot.trigger_scan_training_button = True
             else:
