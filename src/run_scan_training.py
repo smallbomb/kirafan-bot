@@ -16,7 +16,6 @@ def run(window):
         if kirafan.objects['scan_training_button'].found():
             kirafan.objects['scan_training_button'].click(2)
             logger.info('run_scan_training(): click training finish button')
-            kirafan.break_sleep(2, lambda: not bot.is_running())
             _bulk_challenge(bot)
         elif _ck_session_clear_text_and_resume(bot):
             continue
@@ -60,6 +59,8 @@ def _bulk_challenge(bot):
             break
         if tries == 3 and kirafan.icons['nakayoshido'].scan(2):
             kirafan.objects['nakayoshido_tojiru'].click(2)
+            continue
+        elif tries == 3 and kirafan.icons['iie'].click(adb_update_cache=False):
             continue
         if kirafan.icons['bulk_challenge'].scan_then_click(scan_timeout=3):
             logger.debug('_bulk_challenge(): click bulk challenge button')
