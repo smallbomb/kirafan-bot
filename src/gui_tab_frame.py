@@ -44,7 +44,7 @@ class Tab_Frame():
     def __move_training_place(self) -> List:
         k = [f'{self.__prefix_key}_move_training_place_setting_']
         return [
-            sg.Checkbox('move training place after battle', key=k[0], default=self.quest['move_training_place'], enable_events=True),  # noqa: E501
+            sg.Checkbox('scan training after battle finish', key=k[0], default=self.quest['move_training_place'], enable_events=True),  # noqa: E501
         ]
 
     def __tab_modify(self) -> List:

@@ -20,6 +20,8 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 9. 拜訪好友房間3次
 10. 自動交換素材 (**Note: 只支援強化和進化素材**)
 11. 截遊戲畫面功能
+12. 偵測訓練場項目
+13. 戰鬥完成後，可開始偵測訓練場課程
 
 # Frequently used quest
 * [○○修練場](https://wiki.kirafan.moe/#/questlibrary/3502) (**recommend**👍)
@@ -67,6 +69,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 * z+v (visit friend room three times)
 * z+e (exchenge material) ('強化素材' or '進化素材' only)
 * z+i (screenshot)
+* z+n (scan training)
 
 ## GUI mode
 !["gui_image"](./tutorial_img/gui.jpg)  
@@ -82,6 +85,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 * `ScreenShot`: capture a game region
 * `Log`: show/hide log area
 * `More settings`: show/hide more settings
+* `Scan Training`: watch and report training course
 
 # Glossary
 !["naming"](./tutorial_img/naming.jpg)
