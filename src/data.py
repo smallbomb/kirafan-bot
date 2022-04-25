@@ -2,7 +2,7 @@ import copy
 import json
 from typeguard import typechecked
 from defined import Dict
-__VERSION__ = '3.0.1'
+__VERSION__ = '3.2.0'
 
 
 @typechecked
