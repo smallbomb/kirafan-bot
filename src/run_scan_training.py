@@ -71,6 +71,7 @@ def _bulk_challenge(bot):
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
             logger.debug('bulk_challenge(): click ok button (poor internet connection)')
             kirafan.break_sleep(2, lambda: not bot.is_running())
+            continue
         tries -= 1
         kirafan.break_sleep(1, lambda: not bot.is_running())
 
