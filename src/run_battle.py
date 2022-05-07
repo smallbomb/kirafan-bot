@@ -106,14 +106,7 @@ def _try_to_move_next_new_battle(bot):
             kirafan.icons['again'].scan_then_click(scan_timeout=3)
         else:
             if kirafan.move_training_place_after_battle:
-                kirafan.icons['tojiru'].click(adb_update_cache=False)
-                kirafan.break_sleep(1, lambda: not bot.is_running())
-                kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
-                kirafan.break_sleep(5, lambda: not bot.is_running())
-                while kirafan.icons['iie'].scan_then_click(scan_timeout=3):
-                    pass
-                bot.stop()
-                bot.trigger_scan_training_button = True
+                _handle_move_training_place_after_battle(bot)
             else:
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
                 bot.send_event('_update_button_start_', 'Start')
@@ -198,6 +191,30 @@ def _ck_move_to_next_battle(bot) -> bool:
     elif kirafan.stamina['use'] and kirafan.icons['stamina_title'].found(False):
         return _ck_stamina(bot)
     return False
+
+
+def _handle_move_training_place_after_battle(bot):
+    kirafan.icons['tojiru'].click(adb_update_cache=False)
+    kirafan.break_sleep(1, lambda: not bot.is_running())
+    kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
+    kirafan.break_sleep(5, lambda: not bot.is_running())
+    while kirafan.icons['iie'].scan_then_click(scan_timeout=3):
+        pass
+
+    '''
+    check all missions and get all items
+    '''
+    if kirafan.icons['menu'].scan_then_click(scan_timeout=5):
+        kirafan.icons['mission_icon'].scan_then_click(scan_timeout=3)
+        kirafan.icons['bulk_receiving'].scan_then_click(scan_timeout=3)
+        kirafan.break_sleep(3, lambda: not bot.is_running())
+        while bot.is_running() and (kirafan.icons['ok'].scan_then_click(scan_timeout=2) or
+                                    kirafan.icons['tojiru'].scan_then_click(scan_timeout=2)):
+            pass
+    else:
+        logger.error('_handle_move_training_palce_after_battle(): menu.png not found...?')
+    bot.stop()
+    bot.trigger_scan_training_button = True
 
 
 def _battle_resume(bot):
