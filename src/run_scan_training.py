@@ -17,6 +17,9 @@ def run(window):
             kirafan.objects['scan_training_button'].click(2)
             logger.info('run_scan_training(): click training finish button')
             _bulk_challenge(bot)
+        elif kirafan.icons['bulk_challenge'].found(adb_update_cache=False):
+            logger.warning('run_scan_training(): retry bulk_challenge')
+            _bulk_challenge(bot)
         elif _ck_session_clear_text_and_resume(bot):
             continue
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
