@@ -60,8 +60,7 @@ def _bulk_challenge(bot):
         if tries <= 0:
             logger.debug('_bulk_challenge(): bulk_challenge.png not found')
             break
-        if tries == 3 and kirafan.icons['nakayoshido'].scan(2):
-            kirafan.objects['nakayoshido_tojiru'].click(2)
+        if tries == 3 and kirafan.icons['nakayoshido'].scan(2) and kirafan.icons['tojiru'].click(adb_update_cache=False):
             continue
         elif tries == 3 and kirafan.icons['iie'].click(adb_update_cache=False):
             continue
