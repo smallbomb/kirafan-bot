@@ -194,27 +194,70 @@ def _ck_move_to_next_battle(bot) -> bool:
 
 
 def _handle_move_training_place_after_battle(bot):
-    kirafan.icons['tojiru'].click(adb_update_cache=False)
-    kirafan.break_sleep(1, lambda: not bot.is_running())
-    kirafan.icons['tojiru'].scan_then_click(scan_timeout=3)
-    kirafan.break_sleep(5, lambda: not bot.is_running())
-    while kirafan.icons['iie'].scan_then_click(scan_timeout=3):
+    '''
+    previous:
+        click again.png failed OR loop count less than or equal to 0
+
+    flows:
+        1. end of battle
+        2. check mission and get all items
+        3. move training place (flag)
+    '''
+    _end_of_battle(bot)
+    _ck_mission_and_get_all_items(bot)
+    bot.trigger_scan_training_button = True
+    bot.stop()
+
+
+def _end_of_battle(bot):
+    '''
+    tojiru (stanima page or battle end)
+    ↓
+    tojiru (*maybe no)
+    '''
+    if kirafan.icons['tojiru'].click(adb_update_cache=False):
+        kirafan.break_sleep(1, lambda: not bot.is_running())
+    if kirafan.icons['tojiru'].scan_then_click(scan_timeout=3):
+        kirafan.break_sleep(3, lambda: not bot.is_running())
+
+    # iie: when the nakayoshido level up (1~5), it will ask whether user reads character script.
+    # not_apply_for: when user selects guest partner instead of friend, it will ask wherther user sends a friend request.
+    while kirafan.icons['iie'].scan_then_click(scan_timeout=3) or kirafan.icons['not_apply_for'].click(adb_update_cache=False):
         pass
 
+
+def _ck_mission_and_get_all_items(bot):
     '''
-    check all missions and get all items
+    flows:
+        menu
+        ↓
+        mission_icon
+        ↓
+        bulk_receiving
+        ↓
+        tojiru (mission page)
+    ok.png:
+        for poor internet
     '''
-    if kirafan.icons['menu'].scan_then_click(scan_timeout=5):
-        kirafan.icons['mission_icon'].scan_then_click(scan_timeout=3)
-        kirafan.icons['bulk_receiving'].scan_then_click(scan_timeout=3)
+    while True:
+        if not kirafan.icons['menu'].scan_then_click(scan_timeout=5):
+            logger.error('_handle_move_training_palce_after_battle(): menu.png not found')
+            break
+        if not kirafan.icons['mission_icon'].scan_then_click(scan_timeout=3):
+            logger.debug('_handle_move_training_place_after_battle(): mission_icon.png not found')
+            break
+        if not kirafan.icons['bulk_receiving'].scan_then_click(scan_timeout=3):
+            logger.debug('_handle_move_training_place_after_battle(): bulk_receiving.png not found')
+            break
         kirafan.break_sleep(3, lambda: not bot.is_running())
         while bot.is_running() and (kirafan.icons['ok'].scan_then_click(scan_timeout=2) or
                                     kirafan.icons['tojiru'].scan_then_click(scan_timeout=2)):
-            pass
-    else:
-        logger.error('_handle_move_training_palce_after_battle(): menu.png not found...?')
-    bot.stop()
-    bot.trigger_scan_training_button = True
+            if kirafan.icons['ok'].found(adb_update_cache=False):
+                logger.debug('_handle_move_training_place_after_battle(): ok.png found')
+            elif kirafan.icons['tojiru'].found(adb_update_cache=False):
+                logger.debug('_handle_move_training_place_after_battle(): tojiru.png found')
+        logger.info('_handle_move_training_place_after_battle(): get all mission items success')
+        break
 
 
 def _battle_resume(bot):
