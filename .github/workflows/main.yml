@@ -41,8 +41,7 @@ jobs:
       if: "startsWith(matrix.os, 'macos')"
       run: |
         "/Library/Application Support/VMware Tools/vmware-resolutionSet" 2560 1440
-        brew install tcl-tk
-        brew info tcl-tk
+        brew install tcl-tk@8.5
         sudo pytest -s
 
   installer:
