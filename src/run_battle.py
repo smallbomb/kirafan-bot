@@ -217,14 +217,15 @@ def _end_of_battle(bot):
     '''
     if kirafan.icons['tojiru'].click(adb_update_cache=False):
         kirafan.break_sleep(1, lambda: not bot.is_running())
+
     if kirafan.icons['tojiru'].scan_then_click(scan_timeout=3):
+        kirafan.break_sleep(6, lambda: not bot.is_running())
+    else:
         kirafan.break_sleep(3, lambda: not bot.is_running())
 
     # iie: when the nakayoshido level up (1~5), it will ask whether user reads character script.
     # not_apply_for: when user selects guest partner instead of friend, it will ask wherther user sends a friend request.
-    scan_sec = 6
-    while kirafan.icons['iie'].scan_then_click(scan_timeout=scan_sec) or kirafan.icons['not_apply_for'].click(adb_update_cache=False):
-        scan_sec = 3
+    while kirafan.icons['iie'].scan_then_click(scan_timeout=3) or kirafan.icons['not_apply_for'].click(adb_update_cache=False):
         pass
 
 
