@@ -222,7 +222,9 @@ def _end_of_battle(bot):
 
     # iie: when the nakayoshido level up (1~5), it will ask whether user reads character script.
     # not_apply_for: when user selects guest partner instead of friend, it will ask wherther user sends a friend request.
-    while kirafan.icons['iie'].scan_then_click(scan_timeout=3) or kirafan.icons['not_apply_for'].click(adb_update_cache=False):
+    scan_sec = 6
+    while kirafan.icons['iie'].scan_then_click(scan_timeout=scan_sec) or kirafan.icons['not_apply_for'].click(adb_update_cache=False):
+        scan_sec = 3
         pass
 
 
