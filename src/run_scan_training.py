@@ -11,12 +11,19 @@ def run(window):
     logger.info(f"scan training start...(check button every {kirafan.sleep['scan_training']}s)")
     _try_to_move_training(bot)
     bot.is_running() and logger.debug('run_scan_training(): move training place success')
+    training_icon_found_count = 0
     while bot.is_running():
         _ck_session_timer(bot)
         if kirafan.objects['scan_training_button'].found():
             kirafan.objects['scan_training_button'].click(2)
             logger.info('run_scan_training(): click training finish button')
             _bulk_challenge(bot)
+        elif kirafan.icons['training_icon'].found(adb_update_cache=False):
+            if training_icon_found_count > 10:
+                kirafan.icons['training_icon'].click(adb_update_cache=False)
+            else:
+                training_icon_found_count += 1
+                continue
         elif kirafan.icons['bulk_challenge'].found(adb_update_cache=False):
             logger.warning('run_scan_training(): retry bulk_challenge')
             _bulk_challenge(bot)
@@ -25,9 +32,13 @@ def run(window):
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
             logger.debug('run_scan_training(): click ok button (poor internet connection)')
             kirafan.break_sleep(2, lambda: not bot.is_running())
+        elif kirafan.icons['iie'].click(adb_update_cache=False):
+            logger.debug('run_scan_training(): click iie button (scenario open)')
+            kirafan.break_sleep(2, lambda: not bot.is_running())
         elif uData.setting["adb"]["use"] and kirafan.detect_crashes():
             _scan_training_resume(bot)
         kirafan.break_sleep(kirafan.sleep['scan_training'], lambda: not bot.is_running())
+        training_icon_found_count = 0
 
     logger.info('kirafan-bot stop(scan training)...')
     bot.send_event('_update_button_scan_training_', 'Scan Training')
@@ -60,9 +71,9 @@ def _bulk_challenge(bot):
         if tries <= 0:
             logger.debug('_bulk_challenge(): bulk_challenge.png not found')
             break
-        if tries == 3 and kirafan.icons['nakayoshido'].scan(2) and kirafan.icons['tojiru'].click(adb_update_cache=False):
+        if tries >= 2 and kirafan.icons['nakayoshido'].scan(2) and kirafan.icons['tojiru'].click(adb_update_cache=False):
             continue
-        elif tries == 3 and kirafan.icons['iie'].click(adb_update_cache=False):
+        elif tries >= 2 and kirafan.icons['iie'].click(adb_update_cache=False):
             continue
         if kirafan.icons['bulk_challenge'].scan_then_click(scan_timeout=3):
             logger.debug('_bulk_challenge(): click bulk challenge button')
