@@ -31,7 +31,7 @@ def run(window):
                 kirafan.break_sleep(kirafan.sleep['wave_transitions'], lambda: not bot.is_running())
     logger.info('kirafan-bot stop(battle)...')
     bot.send_event('_update_button_start_', 'Start')
-    if bot.trigger_scan_training_button:
+    if bot.trigger_scan_training_button or kirafan.detect_crashes():
         if kirafan.data['mode'] == 'hotkey':
             from run_scan_training import run as scan_training
             scan_training(window)
