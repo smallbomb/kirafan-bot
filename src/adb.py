@@ -49,7 +49,7 @@ class _Adb():
                 elif i == 0:
                     _shell_command(self.__killserver_cmd).communicate()
                 else:
-                    raise Exception(err.decode('utf8'))
+                    raise Exception(err.decode('utf8'))  # emulator is down?
             img_bytes = out.replace(b'\r\n', b'\n')
             self.__width = int.from_bytes(img_bytes[:4], byteorder='little')
             self.__height = int.from_bytes(img_bytes[4:8], byteorder='little')
@@ -73,6 +73,12 @@ class _Adb():
             self.__has_screenshot_IM = True
         except ValueError:
             self.__pixelformat = None
+        except cv2.error:
+            """
+            cv2.error: There is a high probability error if the reset button is pressed while running.
+            self.__pixelformat = None after pressing reset button. It make self.__cv2_IM_COLOR_cache value format incorrect.
+            """
+            return self._screenshot(grayscale)
 
         return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
 
