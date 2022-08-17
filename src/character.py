@@ -68,18 +68,23 @@ class Character:
         return True
 
     def __action_auto_button(self):
+        i = 0  # avoid infinite loop while emulator crash.
         adb_update_cache = False
-        while not self.objects['auto_button'].found(adb_update_cache):
+        while not self.objects['auto_button'].found(adb_update_cache) and i < 10:
             self.objects['auto_button'].click(1, 0.5)
             adb_update_cache = True
+            i += 1
         self.objects['center'].click(2)
 
     def __action_sp(self):
+        i = 0  # avoid infinite loop while emulator crash.
         self.objects['sp'].click(1, 0.5)
-        while not self.objects['sp_cancel'].found():
+        while not self.objects['sp_cancel'].found() and i < 10:
             self.objects['sp'].click(1, 0.5)
-        while not self.objects['sp_ch1_set'].found():
+            i += 1
+        while not self.objects['sp_ch1_set'].found() and i < 10:
             self.objects['sp_ch1'].click(1, 0.5)
+            i += 1
         self.objects['sp_submit'].click(2)
         self.objects['sp_cancel'].click(2)  # play safe
         self.objects['center'].click_sec(self.sp_sleep, 0.5)
