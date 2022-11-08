@@ -24,14 +24,14 @@ def run(window):
             else:
                 training_icon_found_count += 1
                 continue
-        elif kirafan.icons['bulk_challenge'].found(adb_update_cache=False):
-            logger.warning('run_scan_training(): retry bulk_challenge')
-            _bulk_challenge(bot)
         elif _ck_session_clear_text_and_resume(bot):
             continue
         elif kirafan.icons['ok'].click(2, adb_update_cache=False):
-            logger.debug('run_scan_training(): click ok button (poor internet connection)')
+            logger.debug('run_scan_training(): click ok button (poor internet connection or kirara coin are full)')
             kirafan.break_sleep(2, lambda: not bot.is_running())
+        elif kirafan.icons['bulk_challenge'].found(adb_update_cache=False):
+            logger.warning('run_scan_training(): retry bulk_challenge')
+            _bulk_challenge(bot)
         elif kirafan.icons['iie'].click(adb_update_cache=False):
             logger.debug('run_scan_training(): click iie button (scenario open)')
             kirafan.break_sleep(2, lambda: not bot.is_running())
@@ -71,20 +71,25 @@ def _bulk_challenge(bot):
         if tries <= 0:
             logger.debug('_bulk_challenge(): bulk_challenge.png not found')
             break
-        if tries >= 2 and kirafan.icons['nakayoshido'].scan(2) and kirafan.icons['tojiru'].click(adb_update_cache=False):
+
+        '''
+        check nakayoshido or character story
+        '''
+        if tries >= 2 and kirafan.icons['nakayoshido'].scan(2.5) and kirafan.icons['tojiru'].click(adb_update_cache=False):
             continue
         elif tries >= 2 and kirafan.icons['iie'].click(adb_update_cache=False):
             continue
-        if kirafan.icons['bulk_challenge'].scan_then_click(scan_timeout=3):
+
+        if _ck_session_clear_text_and_resume(bot):
+            break
+        elif kirafan.icons['ok'].click(2, adb_update_cache=False):
+            logger.debug('bulk_challenge(): click ok button (poor internet connection or kirara coin are full)')
+            kirafan.break_sleep(2, lambda: not bot.is_running())
+            continue
+        elif kirafan.icons['bulk_challenge'].scan_then_click(scan_timeout=3):
             logger.debug('_bulk_challenge(): click bulk challenge button')
             kirafan.break_sleep(2, lambda: not bot.is_running())
             break
-        elif _ck_session_clear_text_and_resume(bot):
-            break
-        elif kirafan.icons['ok'].click(2, adb_update_cache=False):
-            logger.debug('bulk_challenge(): click ok button (poor internet connection)')
-            kirafan.break_sleep(2, lambda: not bot.is_running())
-            continue
         tries -= 1
         kirafan.break_sleep(1, lambda: not bot.is_running())
 
