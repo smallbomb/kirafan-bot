@@ -67,7 +67,7 @@ please modify the [advanced_setting.jsonc](./advanced_setting.jsonc) file if you
 * z+x (open game region window for adjusting location)
 * z+k (switch adb/pyautogui mode)
 * z+v (visit friend room three times)
-* z+e (exchenge material) ('強化素材' or '進化素材' only)
+* z+e (exchenge material) ('強化素材' or '進化素材' or 'treasure chest' only)
 * z+i (screenshot)
 * z+n (scan training)
 

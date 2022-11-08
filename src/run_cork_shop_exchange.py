@@ -15,8 +15,10 @@ def run(window):
                     logger.debug(f'cork shop: {time} times success')
                     time += 1
                     continue
+            elif kirafan.objects['treasure_chest_10'].found(False):
+                kirafan.cork_shop_treasure_chest_10_exchange(lambda: not bot.is_running())
             else:
-                logger.error('please select \'強化素材\' or \'進化素材\'!')
+                logger.error('please select \'強化素材\' or \'進化素材\' or \'treasure chest(10回) cannot be clicked\'!')
         else:
             logger.error('please move to cork shop!')
         bot.stop()

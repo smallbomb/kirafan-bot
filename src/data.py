@@ -63,6 +63,8 @@ class _UserData():
     def __padding(self, rawdata: Dict) -> Dict:
         if 'scan_training' not in rawdata['sleep']:
             rawdata['sleep']['scan_training'] = 10
+        if 'treasure_chest_reset_first' not in rawdata:
+            rawdata['treasure_chest_reset_first'] = False
         return self.__padding_questList(rawdata)
 
     def __padding_questList(self, rawdata: Dict) -> Dict:

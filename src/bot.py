@@ -57,6 +57,7 @@ class BOT:
         self.sleep = self.data['sleep']
         self.crea_craft_stop = self.data['crea_stop']['craft']
         self.crea_comm_stop = self.data['crea_stop']['comm']
+        self.treasure_chest_reset_first = self.data['treasure_chest_reset_first']
         self.stamina = self.data['stamina'] or {"use": False}
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()
@@ -217,6 +218,61 @@ class BOT:
             logger.info('Cork Shop: insufficient material...')
         return False
 
+    def __treasure_chest_reset(self) -> bool:
+        if self.objects['treasure_chest_reset'].found(False):
+            self.objects['treasure_chest_reset'].click(2, 0.5)
+            if self.icons['hai'].scan_then_click(scan_timeout=3, click_times=2):
+                sleep(2)
+            return True
+        return False
+
+    def __treasure_chest_10_click(self, element: Dict) -> bool:
+        if self.objects['treasure_chest_10'].found(False):
+            self.objects['treasure_chest_10'].click(2, 0.5)
+            self.objects['center_left'].click(2, 0.5)
+            retry = 3
+            while not self.icons['tojiru'].click(2, 0.2) and retry > 0:
+                self.objects['center_left'].click(2, 0.2)
+                retry -= 1
+            if retry <= 0:
+                element['error'] = True
+                element['message'] = 'click treasure_chest_10 timeout...?'
+                return False
+            sleep(2)
+            return True
+        return False
+
+    def cork_shop_treasure_chest_10_exchange(self, interrupt: Callable[[], bool]):
+        time = 0
+        element = {'error': False, 'message': ''}
+        logger.debug(f'cork shop: treasure_chest_reset_first={self.treasure_chest_reset_first}')
+        while not interrupt():
+            if self.treasure_chest_reset_first:
+                if self.__treasure_chest_reset():
+                    pass
+                elif self.__treasure_chest_10_click(element):
+                    time += 1
+                    logger.debug(f'cork shop: {time} times success')
+                elif element['error']:
+                    logger.error('Cork Shop: {element["message"]}')
+                    break
+                else:
+                    logger.info('Cork Shop: insufficient material...')
+                    break
+            else:
+                if self.__treasure_chest_10_click(element):
+                    time += 1
+                    logger.debug(f'cork shop: {time} times success')
+                elif element['error']:
+                    logger.error('Cork Shop: {element["message"]}')
+                    break
+                elif self.__treasure_chest_reset():
+                    pass
+                else:
+                    logger.info('Cork Shop: insufficient material...')
+                    break
+            adb.set_update_cv2_IM_cache_flag()
+
     def screenshot(self):
         i = 0
         while True:
@@ -243,6 +299,7 @@ class BOT:
         self.sleep = self.data['sleep']
         self.crea_craft_stop = self.data['crea_stop']['craft']
         self.crea_comm_stop = self.data['crea_stop']['comm']
+        self.treasure_chest_reset_first = self.data['treasure_chest_reset_first']
         self.stamina = self.data['stamina'] or {"use": False}
         self.objects = Load_Objects("bot")
         self.icons = self.__load_icons()

@@ -70,7 +70,9 @@
       "shop_count_bar_end": {"x":0.67188, "y":0.64444, "color": "None", "owner": ["bot"]},
       "shop_count_confirm": {"x":0.59922, "y":0.84444, "color": "None", "owner": ["bot"]},
       "scan_training_button": {"x":0.0375, "y":0.60277, "color": "ivory", "owner": ["bot"]},
-      "nakayoshido_tojiru" :{"x":0.46094, "y":0.74722, "color": "ivory", "owner": ["bot"]}
+      "nakayoshido_tojiru": {"x":0.46094, "y":0.74722, "color": "ivory", "owner": ["bot"]},
+      "treasure_chest_reset": {"x":0.75859, "y":0.40278, "color": "ivory", "owner": ["bot"]},
+      "treasure_chest_10": {"x":0.74219, "y":0.69167, "color": "light_khaki", "owner": ["bot"]}
     },
     "4:3": {
       "focus_ch_left": {"x":0.1234, "y":0.1234, "color":"bronze", "owner": ["character"]}

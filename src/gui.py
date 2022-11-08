@@ -60,7 +60,7 @@ class kirafanbot_GUI():
             self.hotkey.remove_all_hotkey()
         logger.propagate = False
         logger.addHandler(GUI_Handler(self.window, '_log_box_', self.blocked))
-        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level|sleep)_.*$')
+        self._open_re = re.compile(r'^_(\d+|button|update|tab_group|adb|timer|log_level|sleep|cork_shop_options)_.*$')
 
     def open(self):
         _map = {
@@ -69,6 +69,7 @@ class kirafanbot_GUI():
             'sleep': lambda event, values: self.handle_sleep_event(event, values[event]),
             'timer': lambda event, values: self.handle_timer_event(event, values[event]),
             'adb': lambda event, values: self.handle_adb_event(event, values[event]),
+            'cork_shop_options': lambda event, values: self.handle_cork_shop_options_event(event, values[event]),
             'button': lambda event, values: self.handle_button_event(event),
             'log_level': lambda event, values: (self.data.update({'loglevel': values[event]}), logger.setLevel(values[event])),
             'update': lambda event, values: self.handle_update_event(event, values[event])
@@ -231,6 +232,12 @@ class kirafanbot_GUI():
                 self.data['adb'][key] = new_serial
                 self.window[f'_adb_{key}_'].update(new_serial)
                 self.__reload()
+
+    def handle_cork_shop_options_event(self, key: str, value):
+        key = key[19:-1]
+        if key == 'treasure_chest_reset_first':
+            kirafan.treasure_chest_reset_first = value
+            self.data['treasure_chest_reset_first'] = value
 
     def handle_button_event(self, key: str):
         button_event_map = {
@@ -442,7 +449,7 @@ class kirafanbot_GUI():
         return [sg.pin(
             sg.Column([
                 self.__sleep_area() + self.__set_timer_area(),
-                self.__adb_area()
+                self.__adb_area() + self.__cork_shop_options_area()
             ], k='_more_settings_area_', visible=False)
         )]
 
@@ -492,6 +499,13 @@ class kirafanbot_GUI():
             sg.FileBrowse(key='_adb_browse_', size=7, disabled=not adb['use'])
         ]]
         return [sg.Frame('adb.exe', frame_layout, pad=((0, 5), 5))]
+
+    def __cork_shop_options_area(self) -> List:
+        k = ['_cork_shop_options_treasure_chest_reset_first_']
+        layout = [[
+            sg.Checkbox('reset treasure chest first', key=k[0], default=self.data['treasure_chest_reset_first'], enable_events=True),  # noqa: E501
+        ]]
+        return [sg.Frame('cork shop options', layout)]
 
     def __information_area(self) -> List:
         return [
