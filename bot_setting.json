@@ -1,6 +1,7 @@
 {
   "loglevel": "info",
   "location": [0, 40],
+  "treasure_chest_reset_first": false,
   "sleep": {
     "click": 0.2,
     "sp": 7,
