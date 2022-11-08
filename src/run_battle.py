@@ -143,6 +143,7 @@ def _skip_award_result(bot):
             retry = False
         else:
             logger.error('_skip_award_result(): again.png not match on game region')
+            bot.trigger_scan_training_button = True
             bot.stop()
 
 
