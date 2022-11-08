@@ -23,7 +23,7 @@ def run(window):
 
 @typechecked
 def _handle_friend_icon(bot, tries: int) -> bool:
-    sec = 2 if tries == 0 else 5
+    sec = 7 if tries == 0 else 5
     friend_icon_retry = True
     while True:
         if kirafan.icons['ok'].click(2):
