@@ -18,7 +18,7 @@ Social game [kirarafantasia](https://kirarafantasia.com/) bot. Automatic trainin
 7. 偵測作品珠任務
 8. 偵測遊戲crash，並嘗試回到戰鬥中 (**Note: 如果戰鬥結束時發生時，則無法回復**)
 9. 拜訪好友房間3次
-10. 自動交換素材 (**Note: 只支援強化和進化素材和開寶箱**)
+10. 自動交換素材 (**Note: 只支援強化素材和進化素材和開寶箱**)
 11. 截遊戲畫面功能
 12. 偵測訓練場項目
 13. 戰鬥完成後，可開始偵測訓練場課程
