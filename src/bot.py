@@ -238,7 +238,7 @@ class BOT:
                 element['error'] = True
                 element['message'] = 'click treasure_chest_10 timeout...?'
                 return False
-            sleep(2)
+            sleep(1)
             return True
         return False
 
@@ -247,30 +247,22 @@ class BOT:
         element = {'error': False, 'message': ''}
         logger.debug(f'cork shop: treasure_chest_reset_first={self.treasure_chest_reset_first}')
         while not interrupt():
-            if self.treasure_chest_reset_first:
-                if self.__treasure_chest_reset():
-                    pass
-                elif self.__treasure_chest_10_click(element):
-                    time += 1
-                    logger.debug(f'cork shop: {time} times success')
-                elif element['error']:
-                    logger.error('Cork Shop: {element["message"]}')
-                    break
-                else:
-                    logger.info('Cork Shop: insufficient material...')
-                    break
+            if self.treasure_chest_reset_first and self.__treasure_chest_reset():
+                pass
+            elif self.__treasure_chest_10_click(element):
+                time += 1
+                logger.debug(f'cork shop: {time} times success')
+            elif element['error']:
+                logger.error('Cork Shop: {element["message"]}')
+                break
+            elif not self.treasure_chest_reset_first and self.__treasure_chest_reset():
+                pass
+            elif self.icons['ok'].click(2, 0.2, adb_update_cache=False):
+                logger.debug('Cork Shop: item limit exceeded')
+                sleep(1)
             else:
-                if self.__treasure_chest_10_click(element):
-                    time += 1
-                    logger.debug(f'cork shop: {time} times success')
-                elif element['error']:
-                    logger.error('Cork Shop: {element["message"]}')
-                    break
-                elif self.__treasure_chest_reset():
-                    pass
-                else:
-                    logger.info('Cork Shop: insufficient material...')
-                    break
+                logger.info('Cork Shop: insufficient material...')
+                break
             adb.set_update_cv2_IM_cache_flag()
 
     def screenshot(self):
