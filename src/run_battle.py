@@ -105,7 +105,10 @@ def _try_to_move_next_new_battle(bot):
             logger.debug('_try_to_move_next_new_battle(): click tojiru button (stamina page was not closed)')
             kirafan.icons['again'].scan_then_click(scan_timeout=3)
         else:
-            if kirafan.move_training_place_after_battle:
+            if kirafan.detect_crashes():
+                logger.warning('_try_to_move_next_new_battle(): detect crashes')
+                _battle_resume(bot)
+            elif kirafan.move_training_place_after_battle:
                 _handle_move_training_place_after_battle(bot)
             else:
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
@@ -134,6 +137,7 @@ def _skip_award_result(bot):
         elif kirafan.icons['again'].found():
             if not (kirafan.loop_count <= 0 and kirafan.move_training_place_after_battle):
                 kirafan.icons['again'].click(adb_update_cache=False)
+                logger.debug('_skip_award_result(): click again.png')
             break
         elif _ck_tojiru_window_in_award(bot):
             retry = True
@@ -246,7 +250,7 @@ def _ck_mission_and_get_all_items(bot):
     '''
     while True:
         if not kirafan.icons['menu'].scan_then_click(scan_timeout=5):
-            logger.error('_handle_move_training_palce_after_battle(): menu.png not found')
+            logger.error('_handle_move_training_place_after_battle(): menu.png not found')
             break
         if not kirafan.icons['mission_icon'].scan_then_click(scan_timeout=3):
             logger.debug('_handle_move_training_place_after_battle(): mission_icon.png not found')
