@@ -103,9 +103,11 @@ def _ck_session_clear_text_and_resume(bot):
     return False
 
 
-def _scan_training_resume(bot):
+def _scan_training_resume(bot, retry: int = 0):
     logger.warning('_scan_training_resume(): try to resume to training place...')
-    kirafan.objects['center'].click_sec(100, interrupt=lambda: not bot.is_running())
+    kirafan.objects['center'].click_sec(10, interrupt=lambda: not bot.is_running())
+    if not (uData.setting["adb"]["use"] and kirafan.detect_crashes()):
+        kirafan.objects['center'].click_sec(90, interrupt=lambda: not bot.is_running())
     if not bot.is_running():
         return
     while kirafan.icons['ok'].click():
@@ -117,4 +119,10 @@ def _scan_training_resume(bot):
         kirafan.break_sleep(5, lambda: not bot.is_running())
     else:
         logger.error('_scan_training_resume(): resume to scan training failed')
-        bot.stop()
+        if retry > 2:
+            bot.stop()
+        else:
+            logger.debug(f'_scan_training_resume(): retry {retry+1}')
+            adb.restart_emulator()
+            kirafan.break_sleep(30, lambda: not bot.is_running())
+            _scan_training_resume(bot, retry+1)
