@@ -2,6 +2,7 @@ import threading
 from log import logger
 from typeguard import typechecked
 from bot import kirafan
+from adb import adb
 
 
 def run(window):
@@ -269,10 +270,12 @@ def _ck_mission_and_get_all_items(bot):
         break
 
 
-def _battle_resume(bot):
+def _battle_resume(bot, retry: int = 0):
     logger.warning('_battle_resume(): try to resume battle...')
     kirafan.reset_crash_detection()
-    kirafan.objects['center'].click_sec(100, interrupt=lambda: not bot.is_running())
+    kirafan.objects['center'].click_sec(10, interrupt=lambda: not bot.is_running())
+    if not (kirafan.data['adb']['use'] and kirafan.detect_crashes()):
+        kirafan.objects['center'].click_sec(90, interrupt=lambda: not bot.is_running())
     if not bot.is_running():
         return
     while kirafan.icons['ok'].click():
@@ -282,7 +285,14 @@ def _battle_resume(bot):
         kirafan.wave_id -= 1
     else:
         logger.error('_battle_resume(): resume battle failed')
-        bot.stop()
+        if retry > 1:
+            bot.trigger_scan_training_button = True
+            bot.stop()
+        else:
+            logger.debug(f'_battle_resume(): retry {retry+1}')
+            adb.restart_emulator()
+            kirafan.break_sleep(30, lambda: not bot.is_running())
+            _battle_resume(bot, retry+1)
 
 
 def _handle_ok_button(bot):
