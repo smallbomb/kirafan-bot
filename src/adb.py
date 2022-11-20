@@ -62,7 +62,14 @@ class _Adb():
         if self.__has_screenshot_IM:
             return self.__cv2_IM_GRAY_cache if grayscale else self.__cv2_IM_COLOR_cache
 
-        img_bytes = self.__image_bytes_data()
+        while True:
+            try:
+                img_bytes = self.__image_bytes_data()
+                break
+            except Exception:  # emulator is down, need to restart it.
+                _shell_command('taskkill /f /im HD-Player.exe').wait()
+                Popen('start "" "C:\\Program Files\\BlueStacks_nxt\\HD-Player.exe" --instance Nougat32', stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True).wait()  # noqa: E501
+                sleep(20)
         try:
             if self.__pixelformat == 1:  # RGBA
                 npbuffer = np.frombuffer(img_bytes[12:], dtype=np.uint8).reshape(self.__height, self.__width, 4)
@@ -135,6 +142,11 @@ class _Adb():
     def restart_app(self) -> bool:
         _shell_command(self.__stop_app).wait()
         _shell_command(self.__start_app).wait()
+        return True
+
+    def restart_emulator(self) -> bool:
+        _shell_command('taskkill /f /im HD-Player.exe').wait()
+        Popen('start "" "C:\\Program Files\\BlueStacks_nxt\\HD-Player.exe" --instance Nougat32 --cmd launchApp --package "com.aniplex.kirarafantasia"', stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True).wait()  # noqa: E501
         return True
 
     def app_running(self) -> bool:
