@@ -200,7 +200,7 @@ class BOT:
                 return True
         return False
 
-    def cork_shop_exchange_once(self, interrupt: Callable[[], bool]) -> int:
+    def cork_shop_exchange_once(self, interrupt: Callable[[], bool], retry: bool = True) -> int:
         if self.objects['shop_material'].found(False):
             self.objects['shop_material'].click(2, 0.5)
             self.objects['shop_exchange'].click(2, 0.5)
@@ -214,6 +214,10 @@ class BOT:
                     sleep(1)
                     return True
             logger.error('cork_shop_exchange_once(): unknown error')
+        elif retry:
+            sleep(2)
+            adb.set_update_cv2_IM_cache_flag()
+            self.cork_shop_exchange_once(interrupt, retry=False)
         else:
             logger.info('Cork Shop: insufficient material...')
         return False
@@ -253,7 +257,7 @@ class BOT:
                 time += 1
                 logger.debug(f'cork shop: {time} times success')
             elif element['error']:
-                logger.error('Cork Shop: {element["message"]}')
+                logger.error(f'Cork Shop: {element["message"]}')
                 break
             elif not self.treasure_chest_reset_first and self.__treasure_chest_reset():
                 pass
