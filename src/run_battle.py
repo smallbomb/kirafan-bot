@@ -64,7 +64,7 @@ def _handle_battle_flows():
 
 @typechecked
 def _is_last_wave() -> bool:
-    return kirafan.wave_id >= kirafan.wave_total or kirafan.wave_change_flag is None
+    return kirafan.wave_id >= kirafan.wave_total - 1 or kirafan.wave_change_flag is None
 
 
 def _handle_award_flows(bot):
@@ -88,6 +88,7 @@ def _handle_award_flows(bot):
 
 def _try_to_move_next_new_battle(bot):
     _skip_award_result(bot)
+    retry = 5
     while bot.is_running():
         if _ck_move_to_next_battle(bot):
             logger.debug('_try_to_move_next_new_battle(): player is moving to next battle...')
@@ -96,7 +97,7 @@ def _try_to_move_next_new_battle(bot):
             break
         elif not bot.is_running():
             break
-        elif kirafan.icons['ok'].click(adb_update_cache=False):
+        elif kirafan.icons['ok'].click(adb_update_cache=True):
             # if event is session clear, bot will not resume battle. because of batttle finish.
             # if event is poor internet connection, just click it.
             logger.debug('_try_to_move_next_new_battle(): click ok button (poor internet connection)')
@@ -112,6 +113,10 @@ def _try_to_move_next_new_battle(bot):
             elif kirafan.move_training_place_after_battle:
                 _handle_move_training_place_after_battle(bot)
             else:
+                if retry > 0:
+                    logger.error(f'_try_to_move_next_new_battle: retry = {retry}')
+                    retry -= 1
+                    continue
                 logger.error('Can not move to next new battle. maybe insufficient stamina items? pause now...')
                 bot.send_event('_update_button_start_', 'Start')
                 bot.pause()
