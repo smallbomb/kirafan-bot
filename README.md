@@ -1,5 +1,5 @@
 [!["License"](https://img.shields.io/github/license/smallbomb/kirafan-bot.svg?color=informational&style=plastic)](https://github.com/smallbomb/kirafan-bot/blob/master/LICENSE)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=plastic)](https://github.com/smallbomb/kirafan-bot/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-No-red.svg?style=plastic)](https://github.com/smallbomb/kirafan-bot/graphs/commit-activity)
 [!["Releases"](https://img.shields.io/github/v/release/smallbomb/kirafan-bot.svg?color=success&style=plastic)](https://github.com/smallbomb/kirafan-bot/releases)
 !["Releases-Date"](https://img.shields.io/github/release-date/smallbomb/kirafan-bot.svg?style=plastic)
 
