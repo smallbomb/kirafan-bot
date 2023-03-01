@@ -248,6 +248,7 @@ class BOT:
 
     def cork_shop_treasure_chest_10_exchange(self, interrupt: Callable[[], bool]):
         time = 0
+        retry = 2
         element = {'error': False, 'message': ''}
         logger.debug(f'cork shop: treasure_chest_reset_first={self.treasure_chest_reset_first}')
         while not interrupt():
@@ -264,9 +265,15 @@ class BOT:
             elif self.icons['ok'].click(2, 0.2, adb_update_cache=False):
                 logger.debug('Cork Shop: item limit exceeded')
                 sleep(1)
+            elif retry > 0:
+                logger.info(f'Cork Shop: insufficient material... retry {retry}')
+                retry -= 1
+                adb.set_update_cv2_IM_cache_flag()
+                continue
             else:
                 logger.info('Cork Shop: insufficient material...')
                 break
+            retry = 2
             adb.set_update_cv2_IM_cache_flag()
 
     def screenshot(self):
